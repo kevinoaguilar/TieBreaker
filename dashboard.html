@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body bgcolor="#7cc2ff">
+    <font face="Arial">
+    
+    <!-- Top bar -->
+    <div style="background-color: white; padding: 15px;">
+        <table width="100%">
+            <tr>
+                <td><b style="font-size: 20px;">ByteMe Decider</b></td>
+                <td align="right">
+                    <a href="dashboard.html">Dashboard</a> | 
+                    <a href="index.html">Logout</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <br><br>
+    
+    <center>
+        <h1 style="color: white; font-size: 40px;">Ready to Decide?</h1>
+        <p style="color: white; font-size: 20px;">Choose what you're deciding on</p>
+        
+        <br><br>
+        
+        <h2 style="color: white;">Create a New Session</h2>
+        
+        <br>
+        
+        <!-- Food option -->
+        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 10px; display: inline-block; margin: 10px;">
+            <p style="font-size: 50px;">🍕</p>
+            <h2>Find Food</h2>
+            <p>Decide where to eat together</p>
+            <a href="hostfood.html">
+                <button style="background-color: #ff6b6b; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px;">
+                    Start Food Session
+                </button>
+            </a>
+        </div>
+        
+        <!-- Movies option -->
+        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 10px; display: inline-block; margin: 10px;">
+            <p style="font-size: 50px;">🎬</p>
+            <h2>Pick a Movie/Show</h2>
+            <p>Choose what to watch together</p>
+            <a href="hostmovies.html">
+                <button style="background-color: #ff6b6b; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px;">
+                    Start Movie Session
+                </button>
+            </a>
+        </div>
+        
+        <!-- Activities option -->
+        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 10px; display: inline-block; margin: 10px;">
+            <p style="font-size: 50px;">🎉</p>
+            <h2>Choose Activity</h2>
+            <p>Decide what to do together</p>
+            <a href="hostactivities.html">
+                <button style="background-color: #ff6b6b; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px;">
+                    Start Activity Session
+                </button>
+            </a>
+        </div>
+        
+        <br><br><br>
+        
+        <h2 style="color: white;">Or Join an Existing Session</h2>
+        
+        <div style="background-color: white; width: 400px; padding: 30px; border-radius: 10px;">
+            <h2>Join Session</h2>
+            <p>Enter the group code shared by your host</p>
+            <input type="text" id="groupCode" placeholder="Enter 6-Digit Code" maxlength="6" size="30" style="padding: 10px; font-size: 16px; text-align: center;">
+            <br><br>
+            <button onclick="joinSession()" style="background-color: #4ecdc4; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 18px;">
+                Join Session
+            </button>
+        </div>
+    </center>
+    
+    </font>
+    
+    <script>
+        function joinSession() {
+            var code = document.getElementById('groupCode').value;
+            if (code.length == 6) {
+                alert('Joining session: ' + code);
+                window.location.href = 'joinsession.html?code=' + code;
+            } else {
+                alert('Please enter a valid 6-digit code');
+            }
+        }
+    </script>
+</body>
+</html>
