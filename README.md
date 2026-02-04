@@ -1,6 +1,6 @@
 # BytemeDecider
+** About the Project
 
-# About the Project
 TieBreaker is a web-based decision-making platform designed to help two or more people quickly decide what to eat, what to watch, or what activity to do, without the need for anoy debates or indecision.
 
 The application acts as a neutral third party that produces recommendations based off the host's locations of the session. As users login to the application, it gathers further preferences based on previous decisions. TieBreaker is built to reduce decision fatigue and make group planning faster, simpler, and more enjoyable.
