@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Join Session</title>
+</head>
+<body bgcolor="#7cc2ff">
+    <font face="Arial">
+    
+    <!-- Top bar -->
+    <div style="background-color: white; padding: 15px;">
+        <table width="100%">
+            <tr>
+                <td><b style="font-size: 20px;">ByteMe Decider</b></td>
+                <td align="right">
+                    <a href="dashboard.html">Back to Dashboard</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <br><br><br>
+    
+    <center>
+        <div style="background-color: white; width: 500px; padding: 40px; border-radius: 10px;">
+            <h1>Join Session</h1>
+            
+            <p id="statusMsg" style="color: gray; font-size: 18px;">Connecting to session...</p>
+            
+            <br>
+            
+            <div id="sessionInfo" style="display: none;">
+                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px;">
+                    <h2 id="sessionMode">Session Mode</h2>
+                    <p>Hosted by: <b id="hostName">Loading...</b></p>
+                    <p>Participants: <b id="participantCount">0</b></p>
+                </div>
+                
+                <br><br>
+                
+                <h2>Waiting for host to start...</h2>
+                
+                <div id="participantsList" style="background-color: #f8f9fa; padding: 20px; border-radius: 10px;">
+                    <div style="background-color: white; padding: 10px; margin: 5px; border-left: 4px solid red; border-radius: 5px;">
+                        Host <span style="background-color: red; color: white; padding: 5px; border-radius: 5px; font-size: 12px;">HOST</span>
+                    </div>
+                    <div style="background-color: white; padding: 10px; margin: 5px; border-left: 4px solid #4ecdc4; border-radius: 5px;">
+                        You
+                    </div>
+                </div>
+                
+                <br>
+                
+                <button onclick="location.href='dashboard.html'" style="background-color: #ff6b6b; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold;">
+                    Leave Session
+                </button>
+            </div>
+        </div>
+    </center>
+    
+    </font>
+    
+    <script>
+        // Get code from URL
+        var url = window.location.href;
+        var code = url.split('code=')[1];
+        
+        // Show the session info after 2 seconds (fake loading)
+        setTimeout(function() {
+            document.getElementById('statusMsg').innerHTML = 'Connected! Session Code: ' + code;
+            document.getElementById('sessionInfo').style.display = 'block';
+            document.getElementById('sessionMode').innerHTML = '🍕 Food Session';
+            document.getElementById('hostName').innerHTML = 'Session Host';
+            document.getElementById('participantCount').innerHTML = '2';
+        }, 2000);
+    </script>
+</body>
+</html>
