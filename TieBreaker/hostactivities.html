@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Host Food Session</title>
+    <title>Host Activities Session</title>
 </head>
 <body bgcolor="#7cc2ff">
     <font face="Arial">
@@ -10,7 +10,7 @@
     <div style="background-color: white; padding: 15px;">
         <table width="100%">
             <tr>
-                <td><b style="font-size: 20px;">ByteMe Decider</b></td>
+                <td><b style="font-size: 20px;">TieBreaker</b></td>
                 <td align="right">
                     <a href="dashboard.html">Leave Session</a>
                 </td>
@@ -22,10 +22,10 @@
     
     <center>
         <div style="background-color: white; width: 500px; padding: 40px; border-radius: 10px;">
-            <h1>🍕 Food Session Ready!</h1>
+            <h1>🎉 Activities Session Ready!</h1>
             
             <div style="background-color: yellow; padding: 10px; border-radius: 5px;">
-                <b>MODE: FOOD 🍕</b>
+                <b>MODE: ACTIVITIES 🎉</b>
             </div>
             
             <br><br>
@@ -52,7 +52,7 @@
             
             <br>
             
-            <button id="startBtn" disabled onclick="location.href='votefood.html'" style="background-color: gray; color: white; padding: 18px; width: 100%; border: none; border-radius: 10px; font-size: 20px; font-weight: bold;">
+            <button id="startBtn" disabled onclick="alert('Activities voting not ready yet')" style="background-color: gray; color: white; padding: 18px; width: 100%; border: none; border-radius: 10px; font-size: 20px; font-weight: bold;">
                 Start Session
             </button>
             <p style="color: gray; font-size: 14px;">Need at least 2 people to start</p>
@@ -79,7 +79,7 @@
             alert('Code copied: ' + code);
         }
         
-        // Add person to list (not connected to real backend yet)
+        // Add person to list
         function addPerson(name) {
             var list = document.getElementById('participantsList');
             var waiting = document.getElementById('waitingMsg');
@@ -106,10 +106,6 @@
                 btn.style.backgroundColor = '#ff6b6b';
             }
         }
-        
-        // Test - uncomment to see it work
-        // setTimeout(function() { addPerson('Alex'); }, 3000);
-        // setTimeout(function() { addPerson('Jordan'); }, 5000);
     </script>
 </body>
 </html>
