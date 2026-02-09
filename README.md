@@ -87,7 +87,7 @@ TieBreaker is being developed as a college senior capstone project with an empha
 
 The following diagram outlines the high-level architecture of the TieBreaker application, demonstrating the data flow from the client to the database.
 
-![System Architecture Diagram](TieBreakerSystemArchitecture.jpg)
+![System Architecture Diagram](docs/images/TieBreakerSystemArchitecture.jpg)
 
 ### Architecture Overview
 
