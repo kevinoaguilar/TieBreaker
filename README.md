@@ -83,6 +83,59 @@ TieBreaker is being developed as a college senior capstone project with an empha
 
 ---
 
-## Authors
+## System Architecture
 
+The following diagram outlines the high-level architecture of the TieBreaker application, demonstrating the data flow from the client to the database.
+
+![System Architecture Diagram](system-architecture.png)
+
+### Architecture Overview
+
+**1. Client Layer**
+The "front door" of the application, consisting of the Mobile and Desktop browsers. This layer handles user interactions (HTML/CSS/JS) and sends HTTPS requests to the server.
+
+**2. API Gateway & Web Server**
+Acts as the entry point for the backend. It receives requests (e.g., "Join Session") and routes them to the appropriate service, ensuring valid traffic flow.
+
+**3. Backend Services Layer**
+Contains the core application logic, split into modular services:
+* **Session Management:** Handles room codes, user tracking, and lobby states.
+* **Voting & Preferences:** Collects and records user choices.
+* **Decision Engine:** The core logic component that processes votes and applies the tie-breaking algorithm to determine a winner.
+* **External Data Fetcher:** Communicates with third-party APIs to retrieve real-world data (e.g., movie or restaurant details).
+
+**4. Data Layer**
+* **Database:** Stores persistent data such as active session IDs, user votes, and history (SQL/NoSQL).
+* **External APIs:** Third-party services used to populate options for users.
+
+---
+
+
+
+##  Project Structure
+
+Here is the overview of the file structure for the TieBreaker application.
+
+```bash
+TieBreaker/
+├── docs/                  # Documentation files
+│   ├── images/            # Architecture diagrams and screenshots
+│   └── setup.md           # Extended setup instructions
+├── src/                   # Source code
+│   ├── client/            # Frontend (HTML, CSS, JS)
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── index.html
+│   └── server/           # Backend (Node.js/Java)
+│       ├── controllers/   # Route logic (Session, Vote)
+│       ├── models/        # Database schemas
+│       ├── routes/        # API endpoints
+│       └── app.js         # Main entry point
+├── database/              # SQL scripts and DB configs
+│   └── schema.sql         # Database initialization
+├── .gitignore             # Files to ignore (node_modules, env)
+└── README.md              # Project overview
+'''bash
+
+## Authors
 Developed by **Christopher Bogash** & **Kevin Aguilar** as part of a senior capstone project.
