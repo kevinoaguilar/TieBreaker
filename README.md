@@ -116,7 +116,7 @@ Contains the core application logic, split into modular services:
 
 Here is the overview of the file structure for the TieBreaker application.
 
-```bash
+```
 TieBreaker/
 ├── docs/                  # Documentation files
 │   ├── images/            # Architecture diagrams and screenshots
@@ -135,7 +135,7 @@ TieBreaker/
 │   └── schema.sql         # Database initialization
 ├── .gitignore             # Files to ignore (node_modules, env)
 └── README.md              # Project overview
-
+```
 
 ## Authors
 Developed by **Christopher Bogash** & **Kevin Aguilar** as part of a senior capstone project.
