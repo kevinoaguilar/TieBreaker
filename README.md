@@ -87,7 +87,7 @@ TieBreaker is being developed as a college senior capstone project with an empha
 
 The following diagram outlines the high-level architecture of the TieBreaker application, demonstrating the data flow from the client to the database.
 
-![System Architecture Diagram](system-architecture.png)
+![System Architecture Diagram](TieBreakerSystemArchitecture.jpg)
 
 ### Architecture Overview
 
@@ -135,7 +135,7 @@ TieBreaker/
 │   └── schema.sql         # Database initialization
 ├── .gitignore             # Files to ignore (node_modules, env)
 └── README.md              # Project overview
-'''bash
+
 
 ## Authors
 Developed by **Christopher Bogash** & **Kevin Aguilar** as part of a senior capstone project.
