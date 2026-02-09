@@ -1,100 +1,88 @@
-# BytemeDecider
+# TieBreaker
 
-**About the Project**
-TieBreaker is a web-based decision-making platform designed to help two or more people quickly decide what to eat, what to watch, or what activity to do, without the need for anoy debates or indecision.
-The application acts as a neutral third party that produces recommendations based off the host's locations of the session. As users login to the application, it gathers further preferences based on previous decisions. TieBreaker is built to reduce decision fatigue and make group planning faster, simpler, and more enjoyable.
+**TieBreaker** is a web-based decision-making platform designed to help two or more people quickly decide what to eat, what to watch, or what activity to do, without the need for annoying debates or indecision.
 
-**Problem Statement**
+The application acts as a neutral third party that produces recommendations based on the host's location. As users log in to the application, it gathers further preferences based on previous decisions. TieBreaker is built to reduce decision fatigue and make group planning faster, simpler, and more enjoyable.
+
+---
+
+## Problem Statement
+
 Group decisions often break down because:
-
-  People have different preferences
-
-  No one wants to make the final call
-
-  Conversations loop without resolution
-  
+* People have different preferences.
+* No one wants to make the final call.
+* Conversations loop without resolution.
 
 TieBreaker solves this problem by structuring the decision process and applying consistent logic to reach a clear result everyone can move forward with.
 
+---
 
-**Core Features**
-👥 Multi-user sessions for group decisions
+## Core Features
 
-🍔 Food selection based on shared preferences
+* **Multi-user Sessions:** Facilitates group decisions in real-time.
+* **Food Selection:** Generates dining options based on shared preferences.
+* **Entertainment Selection:** Suggests movies or shows based on genres and availability.
+* **Activity Selection:** Recommends activities based on interests and constraints.
+* **Tie-breaking Logic:** Resolves conflicting inputs fairly.
+* **Session Workflow:** Uses shared links or codes for easy access.
 
-🎬 Movie/show selection based on genres and availability
+---
 
-🎉 Activity selection based on interests and constraints
+## How TieBreaker Works
 
-⚖️ Tie-breaking logic to resolve conflicting inputs
+1.  **Create a Session:** A user selects a decision type: Food, Movie/Show, or Activity.
+2.  **Join the Session:** Other participants join using a session link or code.
+3.  **Submit Preferences:** Each participant inputs their preferences (genres, cuisines, activity types, etc.).
+4.  **Decision Processing:** The system filters and evaluates all inputs using decision logic designed to be fair and unbiased.
+5.  **Final Result:** TieBreaker presents a single outcome—the final decision.
 
-🔗 Session-based workflow using shared links or codes
+---
 
+## User Experience
 
-**How TieBreaker Works**
+* Simple and intuitive interface.
+* Minimal setup time.
+* Mobile-friendly design.
+* Clear decision flow from start to finish.
 
-Create a Session
-A user selects a decision type: Food, Movie/Show, or Activity.
+---
 
-Join the Session
-Other participants join using a session link or code.
+## Technology Stack
 
-Submit Preferences
-Each participant inputs their preferences (genres, cuisines, activity types, etc.).
+**Frontend**
+* HTML
+* CSS
+* JavaScript
 
-Decision Processing
-The system filters and evaluates all inputs using decision logic designed to be fair and unbiased.
+**Backend**
+* Java / Node.js
+* SQL / NoSQL
 
-Final Result
-TieBreaker presents a single outcome—the final decision.
+**Infrastructure**
+* **Session Handling:** Unique session IDs and links
+* **Deployment:** GitHub Pages / Cloud hosting
 
+---
 
-**User Experience**
-
-Simple and intuitive interface
-
-Minimal setup time
-
-Mobile-friendly design
-
-Clear decision flow from start to finish
-
-🛠️ Technology Stack
-
-Planned / In Progress
-
-Frontend: HTML, CSS, JavaScript
-
-Backend: Java / Node.js
-
-Database: SQL / NoSQL
-
-Session Handling: Unique session IDs and links
-
-Deployment: GitHub Pages / Cloud hosting
-
-🎓 Project Context
+## Project Context
 
 TieBreaker is being developed as a college senior capstone project with an emphasis on:
+* Full-stack development
+* Real-world problem solving
+* Usability and fairness in system design
 
-Full-stack development
+---
 
-Real-world problem solving
+## Future Enhancements
 
-Usability and fairness in system design
+* [ ] Location-based recommendations
+* [ ] Weighted or ranked preferences
+* [ ] AI-assisted suggestions
+* [ ] Real-time session updates
+* [ ] Decision history and analytics
 
-🚀 Future Enhancements
+---
 
-Location-based recommendations
+## Authors
 
-Weighted or ranked preferences
-
-AI-assisted suggestions
-
-Real-time session updates
-
-Decision history and analytics
-
-👤 Author
-
-Developed by Christopher Bogash & Kevin Aguilar as part of a senior capstone project.
+Developed by **Christopher Bogash** & **Kevin Aguilar** as part of a senior capstone project.
