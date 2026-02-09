@@ -11,18 +11,18 @@ The application acts as a neutral third party that produces recommendations base
 Group decisions often break down because:
 * People have different preferences.
 * No one wants to make the final call.
-* Conversations loop without resolution.
+* Plans that never make it out of the group chat
 
-TieBreaker solves this problem by structuring the decision process and applying consistent logic to reach a clear result everyone can move forward with.
+TieBreaker solves this problem by structuring the decision process and applying logic to reach a clear result that everyone can agree on.
 
 ---
 
 ## Core Features
 
-* **Multi-user Sessions:** Facilitates group decisions in real-time.
-* **Food Selection:** Generates dining options based on shared preferences.
+* **Multi-user Sessions:** Simplifies group decisions in real-time with multiple users.
+* **Food Selection:** Generates dining options based on shared preferences/locations.
 * **Entertainment Selection:** Suggests movies or shows based on genres and availability.
-* **Activity Selection:** Recommends activities based on interests and constraints.
+* **Activity Selection:** Recommends activities based on interests and location.
 * **Tie-breaking Logic:** Resolves conflicting inputs fairly.
 * **Session Workflow:** Uses shared links or codes for easy access.
 
@@ -31,10 +31,10 @@ TieBreaker solves this problem by structuring the decision process and applying 
 ## How TieBreaker Works
 
 1.  **Create a Session:** A user selects a decision type: Food, Movie/Show, or Activity.
-2.  **Join the Session:** Other participants join using a session link or code.
+2.  **Join the Session:** Other participants join using a session through link or code.
 3.  **Submit Preferences:** Each participant inputs their preferences (genres, cuisines, activity types, etc.).
 4.  **Decision Processing:** The system filters and evaluates all inputs using decision logic designed to be fair and unbiased.
-5.  **Final Result:** TieBreaker presents a single outcome—the final decision.
+5.  **Final Result:** TieBreaker presents a single outcome, a final decision.
 
 ---
 
