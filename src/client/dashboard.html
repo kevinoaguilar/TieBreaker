@@ -2,18 +2,18 @@
 <html>
 <head>
     <title>Dashboard</title>
+    <link rel="icon" type="image/png" href="/TieBreaker/docs/images/tieBreaker.png">
 </head>
-<body bgcolor="#7cc2ff">
+<body bgcolor="#8ac1f1">
     <font face="Arial">
     
-    <!-- Top bar -->
-    <div style="background-color: white; padding: 15px;">
+    <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
         <table width="100%">
             <tr>
                 <td><b style="font-size: 20px;">TieBreaker</b></td>
                 <td align="right">
-                    <a href="dashboard.html">Dashboard</a> | 
-                    <a href="index.html">Logout</a>
+                    <a href="dashboard.html" style="text-decoration: none; color: black; font-weight: bold;">Dashboard</a> | 
+                    <a href="index.html" style="text-decoration: none; color: red; font-weight: bold;">Logout</a>
                 </td>
             </tr>
         </table>
@@ -22,7 +22,7 @@
     <br><br>
     
     <center>
-        <h1 style="color: white; font-size: 40px;">Ready to Decide?</h1>
+        <h1 style="color: white; font-size: 40px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Ready to Decide?</h1>
         <p style="color: white; font-size: 20px;">Choose what you're deciding on</p>
         
         <br><br>
@@ -31,37 +31,34 @@
         
         <br>
         
-        <!-- Food option -->
-        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 10px; display: inline-block; margin: 10px;">
-            <p style="font-size: 50px;">🍕</p>
+        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 20px; display: inline-block; margin: 10px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+            <p style="font-size: 50px; margin: 0;">🍕</p>
             <h2>Find Food</h2>
             <p>Decide where to eat together</p>
             <a href="hostfood.html">
-                <button style="background-color: #ff6b6b; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px;">
+                <button style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
                     Start Food Session
                 </button>
             </a>
         </div>
         
-        <!-- Movies option -->
-        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 10px; display: inline-block; margin: 10px;">
-            <p style="font-size: 50px;">🎬</p>
+        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 20px; display: inline-block; margin: 10px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+            <p style="font-size: 50px; margin: 0;">🎬</p>
             <h2>Pick a Movie/Show</h2>
             <p>Choose what to watch together</p>
             <a href="hostmovies.html">
-                <button style="background-color: #ff6b6b; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px;">
+                <button style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
                     Start Movie Session
                 </button>
             </a>
         </div>
         
-        <!-- Activities option -->
-        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 10px; display: inline-block; margin: 10px;">
-            <p style="font-size: 50px;">🎉</p>
+        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 20px; display: inline-block; margin: 10px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+            <p style="font-size: 50px; margin: 0;">🎉</p>
             <h2>Choose Activity</h2>
             <p>Decide what to do together</p>
             <a href="hostactivities.html">
-                <button style="background-color: #ff6b6b; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px;">
+                <button style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
                     Start Activity Session
                 </button>
             </a>
@@ -71,12 +68,12 @@
         
         <h2 style="color: white;">Or Join an Existing Session</h2>
         
-        <div style="background-color: white; width: 400px; padding: 30px; border-radius: 10px;">
-            <h2>Join Session</h2>
+        <div style="background-color: white; width: 400px; padding: 35px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+            <h2 style="margin-top: 0;">Join Session</h2>
             <p>Enter the group code shared by your host</p>
-            <input type="text" id="groupCode" placeholder="Enter 6-Digit Code" maxlength="6" size="30" style="padding: 10px; font-size: 16px; text-align: center;">
+            <input type="text" id="groupCode" placeholder="Enter 6-Digit Code" maxlength="6" size="30" style="padding: 12px; font-size: 16px; text-align: center; border: 1px solid #ccc; border-radius: 5px;">
             <br><br>
-            <button onclick="joinSession()" style="background-color: #4ecdc4; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 18px;">
+            <button onclick="joinSession()" style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 18px; cursor: pointer;">
                 Join Session
             </button>
         </div>
@@ -84,6 +81,8 @@
     
     </font>
     
+    <br><br>
+
     <script>
         function joinSession() {
             var code = document.getElementById('groupCode').value;
