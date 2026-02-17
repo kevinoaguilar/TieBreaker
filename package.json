@@ -1,0 +1,33 @@
+{
+  "name": "tiebreaker",
+  "version": "1.0.0",
+  "description": "**TieBreaker** is a web-based decision-making platform designed to help two or more people quickly decide what to eat, what to watch, or what activity to do, without the need for annoying debates or indecision.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node src/server/app.js",
+    "dev": "nodemon src/server/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinoaguilar/TieBreaker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kevinoaguilar/TieBreaker/issues"
+  },
+  "homepage": "https://github.com/kevinoaguilar/TieBreaker#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "nanoid": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
