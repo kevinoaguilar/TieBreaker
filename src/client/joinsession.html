@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Join Session</title>
+    <title>Join Session - TieBreaker</title>
+    <link rel="icon" type="image/png" href="/TieBreaker/docs/images/tieBreaker.png">
 </head>
-<body bgcolor="#7cc2ff">
+<body bgcolor="#8ac1f1">
     <font face="Arial">
     
-    <!-- Top bar -->
-    <div style="background-color: white; padding: 15px;">
+    <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
         <table width="100%">
             <tr>
-                <td><b style="font-size: 20px;">TieBreaker</b></td>
+                <td><b style="font-size: 20px; color: #333;">TieBreaker</b></td>
                 <td align="right">
-                    <a href="dashboard.html">Back to Dashboard</a>
+                    <a href="dashboard.html" style="text-decoration: none; color: #333; font-weight: bold;">Back to Dashboard</a>
                 </td>
             </tr>
         </table>
@@ -21,36 +21,36 @@
     <br><br><br>
     
     <center>
-        <div style="background-color: white; width: 500px; padding: 40px; border-radius: 10px;">
-            <h1>Join Session</h1>
+        <div style="background-color: white; width: 500px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+            <h1 style="margin-top: 0; color: #333;">Join Session</h1>
             
             <p id="statusMsg" style="color: gray; font-size: 18px;">Connecting to session...</p>
             
             <br>
             
             <div id="sessionInfo" style="display: none;">
-                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px;">
-                    <h2 id="sessionMode">Session Mode</h2>
-                    <p>Hosted by: <b id="hostName">Loading...</b></p>
-                    <p>Participants: <b id="participantCount">0</b></p>
-                </div>
-                
-                <br><br>
-                
-                <h2>Waiting for host to start...</h2>
-                
-                <div id="participantsList" style="background-color: #f8f9fa; padding: 20px; border-radius: 10px;">
-                    <div style="background-color: white; padding: 10px; margin: 5px; border-left: 4px solid red; border-radius: 5px;">
-                        Host <span style="background-color: red; color: white; padding: 5px; border-radius: 5px; font-size: 12px;">HOST</span>
-                    </div>
-                    <div style="background-color: white; padding: 10px; margin: 5px; border-left: 4px solid #4ecdc4; border-radius: 5px;">
-                        You
-                    </div>
+                <div style="background-color: #f1f5f9; padding: 20px; border-radius: 15px; border: 1px solid #e2e8f0;">
+                    <h2 id="sessionMode" style="color: #333; margin-top: 0;">Session Mode</h2>
+                    <p style="margin: 5px 0;">Hosted by: <b id="hostName">Loading...</b></p>
+                    <p style="margin: 5px 0;">Participants: <b id="participantCount">0</b></p>
                 </div>
                 
                 <br>
                 
-                <button onclick="location.href='dashboard.html'" style="background-color: #ff6b6b; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold;">
+                <h2 style="color: green;">Waiting for host to start...</h2>
+                
+                <div id="participantsList" style="background-color: #f1f5f9; padding: 15px; border-radius: 15px;">
+                    <div style="background-color: white; padding: 12px; margin: 8px; border-left: 5px solid red; border-radius: 8px; text-align: left; box-shadow: 0px 2px 5px rgba(0,0,0,0.05);">
+                        Host <span style="background-color: red; color: white; padding: 3px 8px; border-radius: 5px; font-size: 11px; float: right; font-weight: bold;">HOST</span>
+                    </div>
+                    <div style="background-color: white; padding: 12px; margin: 8px; border-left: 5px solid green; border-radius: 8px; text-align: left; box-shadow: 0px 2px 5px rgba(0,0,0,0.05);">
+                        You
+                    </div>
+                </div>
+                
+                <br><br>
+                
+                <button onclick="location.href='dashboard.html'" style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.2);">
                     Leave Session
                 </button>
             </div>
@@ -62,11 +62,11 @@
     <script>
         // Get code from URL
         var url = window.location.href;
-        var code = url.split('code=')[1];
+        var code = url.split('code=')[1] || "000000";
         
         // Show the session info after 2 seconds (fake loading)
         setTimeout(function() {
-            document.getElementById('statusMsg').innerHTML = 'Connected! Session Code: ' + code;
+            document.getElementById('statusMsg').innerHTML = 'Connected! Code: <b style="color: #333;">' + code + '</b>';
             document.getElementById('sessionInfo').style.display = 'block';
             document.getElementById('sessionMode').innerHTML = '🍕 Food Session';
             document.getElementById('hostName').innerHTML = 'Session Host';
