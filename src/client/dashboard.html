@@ -1,8 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>TieBreaker | Dashboard</title>
     <link rel="icon" type="image/png" href="/TieBreaker/docs/images/tieBreaker.png">
+    
+    <script>
+        // 1. THE GATEKEEPER: Check for token BEFORE the body loads
+        const token = localStorage.getItem('tiebreaker_token');
+        if (!token) {
+            alert("Please log in first!");
+            window.location.href = 'index.html'; 
+        }
+
+        // 2. THE LOGOUT: Clears the digital pass and kicks them out
+        function handleLogout() {
+            localStorage.removeItem('tiebreaker_token');
+            localStorage.removeItem('user_info');
+            alert("Logging you out...");
+            window.location.href = 'index.html';
+        }
+
+        // 3. THE JOINER: Sends the room code to the next page
+        function joinSession() {
+            const codeInput = document.getElementById('groupCode');
+            const code = codeInput.value.trim().toUpperCase();
+
+            if (code.length === 6) {
+                window.location.href = `joinsession.html?code=${code}`;
+            } else {
+                alert('Please enter a valid 6-character room code.');
+            }
+        }
+    </script>
 </head>
 <body bgcolor="#8ac1f1">
     <font face="Arial">
@@ -13,86 +42,48 @@
                 <td><b style="font-size: 20px;">TieBreaker</b></td>
                 <td align="right">
                     <a href="dashboard.html" style="text-decoration: none; color: black; font-weight: bold;">Dashboard</a> | 
-                    <a href="index.html" style="text-decoration: none; color: red; font-weight: bold;">Logout</a>
+                    <a href="#" onclick="handleLogout()" style="text-decoration: none; color: red; font-weight: bold;">Logout</a>
                 </td>
             </tr>
         </table>
     </div>
     
-    <br><br>
-    
     <center>
-        <h1 style="color: white; font-size: 40px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Ready to Decide?</h1>
-        <p style="color: white; font-size: 20px;">Choose what you're deciding on</p>
-        
-        <br><br>
-        
-        <h2 style="color: white;">Create a New Session</h2>
+        <h1 style="color: white; font-size: 40px; margin-top: 50px;">Ready to Decide?</h1>
+        <p style="color: white; font-size: 20px;">Choose a category to start a new session</p>
         
         <br>
         
         <div style="background-color: white; width: 250px; padding: 30px; border-radius: 20px; display: inline-block; margin: 10px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
             <p style="font-size: 50px; margin: 0;">🍕</p>
-            <h2>Find Food</h2>
-            <p>Decide where to eat together</p>
-            <a href="hostfood.html">
-                <button style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
-                    Start Food Session
-                </button>
-            </a>
+            <h2>Food</h2>
+            <p>Decide where to eat</p>
+            <button onclick="window.location.href='hostfood.html'" style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
+                Start Food Session
+            </button>
         </div>
         
         <div style="background-color: white; width: 250px; padding: 30px; border-radius: 20px; display: inline-block; margin: 10px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
             <p style="font-size: 50px; margin: 0;">🎬</p>
-            <h2>Pick a Movie/Show</h2>
-            <p>Choose what to watch together</p>
-            <a href="hostmovies.html">
-                <button style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
-                    Start Movie Session
-                </button>
-            </a>
+            <h2>Movies</h2>
+            <p>Pick what to watch</p>
+            <button onclick="window.location.href='hostmovies.html'" style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
+                Start Movie Session
+            </button>
         </div>
-        
-        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 20px; display: inline-block; margin: 10px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-            <p style="font-size: 50px; margin: 0;">🎉</p>
-            <h2>Choose Activity</h2>
-            <p>Decide what to do together</p>
-            <a href="hostactivities.html">
-                <button style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
-                    Start Activity Session
-                </button>
-            </a>
-        </div>
-        
+
         <br><br><br>
         
-        <h2 style="color: white;">Or Join an Existing Session</h2>
-        
         <div style="background-color: white; width: 400px; padding: 35px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-            <h2 style="margin-top: 0;">Join Session</h2>
-            <p>Enter the group code shared by your host</p>
-            <input type="text" id="groupCode" placeholder="Enter 6-Digit Code" maxlength="6" size="30" style="padding: 12px; font-size: 16px; text-align: center; border: 1px solid #ccc; border-radius: 5px;">
+            <h2 style="margin-top: 0;">Join Existing Room</h2>
+            <p>Enter the 6-character code shared by your host</p>
+            <input type="text" id="groupCode" placeholder="ABC123" maxlength="6" style="padding: 12px; font-size: 20px; text-align: center; border: 1px solid #ccc; border-radius: 5px; width: 80%;">
             <br><br>
             <button onclick="joinSession()" style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 18px; cursor: pointer;">
                 Join Session
             </button>
         </div>
     </center>
-    
     </font>
-    
-    <br><br>
-
-    <script>
-        function joinSession() {
-            var code = document.getElementById('groupCode').value;
-            if (code.length == 6) {
-                alert('Joining session: ' + code);
-                window.location.href = 'joinsession.html?code=' + code;
-            } else {
-                alert('Please enter a valid 6-digit code');
-            }
-        }
-    </script>
 </body>
 </html>

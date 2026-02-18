@@ -1,7 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const { nanoid } = require('nanoid'); // Tool to make IDs
 require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const authRoutes = require('./routes/authRoutes.js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,46 +10,22 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/api/auth', authRoutes);
 
-// --- TEMPORARY DATABASE (In-Memory) ---
-// This will reset every time you save the file/restart server.
-let sessions = [];
+// --- DATABASE CONNECTION ---
+// We use the URI from your screenshot here
+const mongoURI = "mongodb+srv://kaguilar:bzhulATvKoMEZ4MQ@tiebreaker-db.qvak35y.mongodb.net/TieBreaker?retryWrites=true&w=majority";
 
-// --- ROUTES ---
+mongoose.connect(mongoURI)
+    .then(() => console.log("Successfully connected to TieBreaker-DB on Azure!"))
+    .catch(err => console.error("Connection error:", err));
 
-// 1. Health Check
 app.get('/', (req, res) => {
-    res.send('TieBreaker Backend is Running!');
+    res.send('TieBreaker Backend is live and connected!');
 });
 
-// 2. Create a New Session
-app.post('/api/sessions', (req, res) => {
-    // Generate a unique 6-character room code
-    const sessionId = nanoid(6).toUpperCase();
-
-    const newSession = {
-        id: sessionId,
-        host: req.body.hostName || 'Anonymous', // Get name from frontend, default to Anonymous
-        decisionType: req.body.decisionType || 'Food', // Default to Food
-        votes: [],
-        isActive: true
-    };
-
-    // Save to our temporary list
-    sessions.push(newSession);
-
-    console.log(`🆕 Session Created: ${sessionId} by ${newSession.host}`);
-    
-    // Send the room code back to the frontend
-    res.json({ success: true, sessionId: sessionId, message: 'Session created!' });
-});
-
-// 3. Get All Sessions (For debugging)
-app.get('/api/sessions', (req, res) => {
-    res.json(sessions);
-});
-
-// Start Server
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
+
+console.log("My Secret Key is:", process.env.JWT_SECRET);

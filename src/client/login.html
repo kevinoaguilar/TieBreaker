@@ -20,15 +20,15 @@
             <h1 style="color: #333; margin-bottom: 5px;">Welcome Back!</h1>
             <div style="height: 4px; width: 300px; background-color: green; border-radius: 10px; margin-bottom: 25px;"></div>
             
-            <form>
-                <p style="text-align: left; margin-bottom: 5px;"><b>Email:</b></p>
-                <input type="text" name="email" placeholder="your.email@example.com" 
+            <form id="loginForm">
+                <p style="text-align: left; margin-bottom: 5px;"><b>Username or Email:</b></p>
+                <input type="text" id="identifier" placeholder="Enter username or email" required
                        style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
                 
                 <br><br>
                 
                 <p style="text-align: left; margin-bottom: 5px;"><b>Password:</b></p>
-                <input type="password" name="password" placeholder="Enter your password" 
+                <input type="password" id="password" placeholder="Enter your password" required
                        style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
                 
                 <p style="text-align: right; margin-top: 10px;">
@@ -37,7 +37,7 @@
                 
                 <br>
                 
-                <button type="button" onclick="location.href='dashboard.html'" 
+                <button type="submit" 
                         style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 128, 0, 0.3);">
                     Login
                 </button>
@@ -49,5 +49,41 @@
     </center>
     
     </font>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Stop page from refreshing
+
+            const identifier = document.getElementById('identifier').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Fetching the login route from your backend
+                const response = await fetch('http://localhost:3000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Save the JWT token to bypass the "Please log in first!" gatekeeper
+                    localStorage.setItem('tiebreaker_token', data.token);
+                    
+                    // Optional: Save user info for personalization
+                    localStorage.setItem('user_info', JSON.stringify(data.user));
+
+                    alert("Login Successful!");
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert(data.message || "Login failed. Please check your credentials.");
+                }
+            } catch (error) {
+                console.error("Connection Error:", error);
+                alert("Could not connect to the server. Is your backend running?");
+            }
+        });
+    </script>
 </body>
 </html>

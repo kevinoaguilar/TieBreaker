@@ -18,7 +18,7 @@
     <center>
         <div style="background-color: white; width: 600px; padding: 50px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
             
-            <img src="/TieBreaker/docs/images/tieBreaker.png" width="auto" height="auto" style="border-radius: 20px;">
+            <img src="/TieBreaker/docs/images/tieBreaker.png" width="150" height="auto" style="border-radius: 20px;">
             
             <br><br>
             
@@ -32,23 +32,31 @@
                 <tr>
                     <td>
                         <a href="register.html">
-                            <button style="background-color: red; color: white; padding: 15px 40px; font-size: 18px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; width: 160px; box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.3);">
+                            <button style="background-color: red; color: white; padding: 15px 40px; font-size: 18px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; width: 180px; box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.3);">
                                 Register
                             </button>
                         </a>
                     </td>
                     <td>
                         <a href="login.html">
-                            <button style="background-color: green; color: white; padding: 15px 40px; font-size: 18px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; width: 160px; box-shadow: 0px 4px 10px rgba(0, 128, 0, 0.3);">
+                            <button style="background-color: green; color: white; padding: 15px 40px; font-size: 18px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; width: 180px; box-shadow: 0px 4px 10px rgba(0, 128, 0, 0.3);">
                                 Login
                             </button>
                         </a>
                     </td>
                 </tr>
             </table>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            
+            <p style="font-size: 12px; color: #999;">Backend Connection Tests:</p>
+            <button onclick="handleRegister()" style="cursor:pointer; background:none; border:1px solid #ccc; border-radius:5px; padding:5px;">Test Prompt Register</button>
+            <button onclick="handleLogin()" style="cursor:pointer; background:none; border:1px solid #ccc; border-radius:5px; padding:5px;">Test Prompt Login</button>
+
         </div>
     </center>
     
     </font>
+    <script src="api.js"></script>
 </body>
 </html>

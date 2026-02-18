@@ -1,0 +1,16 @@
+const mongoose = require('mongoose');
+
+const sessionSchema = new mongoose.Schema({
+    // A unique 6-character code for friends to join
+    roomCode: { type: String, required: true, unique: true },
+    // The name of the person who started the room
+    hostName: { type: String, required: true },
+    // What the group is deciding (e.g., "Dinner", "Movies")
+    decisionType: { type: String, default: 'Food' },
+    // A list of names of people who joined
+    participants: [String],
+    // The date the session was created
+    createdAt: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('Session', sessionSchema);

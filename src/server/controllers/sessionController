@@ -1,0 +1,23 @@
+const Session = require('../models/Session');
+
+// Logic to create a new room
+exports.createSession = async (req, res) => {
+    try {
+        const { hostName, decisionType } = req.body;
+        
+        // Generate a simple 6-character room code
+        const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        
+        const newSession = new Session({
+            roomCode,
+            hostName,
+            decisionType,
+            participants: [hostName]
+        });
+
+        await newSession.save();
+        res.status(201).json(newSession);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
