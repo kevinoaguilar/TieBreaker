@@ -30,6 +30,8 @@
                 <p style="text-align: left; margin-bottom: 5px;"><b>Password:</b></p>
                 <input type="password" id="password" placeholder="Enter your password" required
                        style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
+
+                <input type="checkbox" onclick="document.getElementById('password').type = this.checked ? 'text' : 'password'"> Show Password
                 
                 <p style="text-align: right; margin-top: 10px;">
                     <a href="forgotpassword.html" style="color: #666; font-size: 14px; text-decoration: none;">Forgot password?</a>
@@ -51,6 +53,12 @@
     </font>
 
     <script>
+
+        function showError(msg) {
+            const box = document.getElementById('errorMsg');
+            box.innerHTML = msg;
+            box.style.display = 'block';
+        }
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault(); // Stop page from refreshing
 
