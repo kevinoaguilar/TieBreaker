@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Vote for Food - TieBreaker</title>
+    <title>Vote for Movies - TieBreaker</title>
     <link rel="icon" type="image/png" href="/TieBreaker/docs/images/tieBreaker.png">
 </head>
 <body bgcolor="#8ac1f1">
@@ -25,26 +25,26 @@
         <!-- Voting Card -->
         <div id="votingCard" style="background-color: white; width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
 
-            <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Restaurant 1 of 6</p>
+            <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Movie 1 of 6</p>
 
-            <!-- Restaurant Image -->
-            <img id="cardImg" src="" alt="Restaurant photo" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; display: block; margin-bottom: 15px;">
+            <!-- Movie Poster -->
+            <img id="cardImg" src="" alt="Movie poster" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; display: block; margin-bottom: 15px;">
 
             <!-- Name -->
             <h2 id="cardName" style="margin: 0 0 10px 0; color: #333;"></h2>
 
             <!-- Info Row -->
             <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">
-                <b>Cuisine:</b> <span id="cardCuisine"></span> &nbsp;|&nbsp;
-                <b>Price:</b> <span id="cardPrice"></span> &nbsp;|&nbsp;
-                <b>Distance:</b> <span id="cardDistance"></span>
+                <b>Genre:</b> <span id="cardGenre"></span> &nbsp;|&nbsp;
+                <b>Rating:</b> <span id="cardRating"></span> &nbsp;|&nbsp;
+                <b>Runtime:</b> <span id="cardRuntime"></span>
             </p>
             <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">
-                <b>Rating:</b> <span id="cardRating"></span>
+                <b>Score:</b> <span id="cardScore"></span>
             </p>
 
-            <!-- Menu Link -->
-            <a id="cardMenuLink" href="#" target="_blank" style="color: #8ac1f1; font-weight: bold; font-size: 14px;">🔗 View Menu / Website</a>
+            <!-- More Info Link -->
+            <a id="cardLink" href="#" target="_blank" style="color: #8ac1f1; font-weight: bold; font-size: 14px;">🔗 More Info</a>
 
             <br><br><br>
 
@@ -87,66 +87,65 @@
 
     <script>
         // -------------------------------------------------------
-        // MOCK DATA — structured to match Yelp Fusion API response
+        // MOCK DATA — structured to match TMDB (The Movie Database) API response
         // TODO: Replace this array with a real fetch call once backend is ready:
         //   GET /api/sessions/:code/options
-        //   The backend should hit the Yelp API using the host's location
-        //   and return restaurants in this same format
+        //   The backend should hit the TMDB API and return movies in this same format
         // -------------------------------------------------------
-        var restaurants = [
+        var movies = [
             {
-                name: "McDonald's",
-                cuisine: "Fast Food",
-                price: "$",
-                distance: "0.3 mi",
-                rating: "3.5 ⭐ (842 reviews)",
-                menuUrl: "https://www.mcdonalds.com/us/en-us/full-menu.html",
-                image_url: "https://images.unsplash.com/photo-1586816001966-79b736744398?w=600&q=80"
+                name: "The Dark Knight",
+                genre: "Action",
+                rating: "PG-13",
+                runtime: "2h 32m",
+                score: "9.0 ⭐ (2.8M reviews)",
+                link: "https://www.imdb.com/title/tt0468569/",
+                image_url: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=600&q=80"
             },
             {
-                name: "Sushi Zen",
-                cuisine: "Japanese",
-                price: "$$$",
-                distance: "0.8 mi",
-                rating: "4.7 ⭐ (312 reviews)",
-                menuUrl: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80"
+                name: "Interstellar",
+                genre: "Sci-Fi",
+                rating: "PG-13",
+                runtime: "2h 49m",
+                score: "8.7 ⭐ (1.9M reviews)",
+                link: "https://www.imdb.com/title/tt0816692/",
+                image_url: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&q=80"
             },
             {
-                name: "Taco Town",
-                cuisine: "Mexican",
-                price: "$",
-                distance: "2.5 mi",
-                rating: "4.2 ⭐ (589 reviews)",
-                menuUrl: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80"
+                name: "The Lion King",
+                genre: "Animation",
+                rating: "G",
+                runtime: "1h 28m",
+                score: "8.5 ⭐ (1.1M reviews)",
+                link: "https://www.imdb.com/title/tt0110357/",
+                image_url: "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=600&q=80"
             },
             {
-                name: "Burger Palace",
-                cuisine: "American",
-                price: "$$",
-                distance: "1.2 mi",
-                rating: "4.4 ⭐ (1,204 reviews)",
-                menuUrl: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80"
+                name: "Inception",
+                genre: "Sci-Fi / Thriller",
+                rating: "PG-13",
+                runtime: "2h 28m",
+                score: "8.8 ⭐ (2.4M reviews)",
+                link: "https://www.imdb.com/title/tt1375666/",
+                image_url: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=600&q=80"
             },
             {
-                name: "Pasta Prima",
-                cuisine: "Italian",
-                price: "$$",
-                distance: "1.7 mi",
-                rating: "4.6 ⭐ (445 reviews)",
-                menuUrl: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&q=80"
+                name: "Get Out",
+                genre: "Horror / Thriller",
+                rating: "R",
+                runtime: "1h 44m",
+                score: "7.7 ⭐ (620K reviews)",
+                link: "https://www.imdb.com/title/tt5052448/",
+                image_url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&q=80"
             },
             {
-                name: "Spice Garden",
-                cuisine: "Indian",
-                price: "$$",
-                distance: "3.1 mi",
-                rating: "4.8 ⭐ (278 reviews)",
-                menuUrl: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80"
+                name: "Crazy Rich Asians",
+                genre: "Romance / Comedy",
+                rating: "PG-13",
+                runtime: "2h 0m",
+                score: "6.9 ⭐ (180K reviews)",
+                link: "https://www.imdb.com/title/tt3104988/",
+                image_url: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=600&q=80"
             }
         ];
 
@@ -156,26 +155,26 @@
         loadCard(currentIndex);
 
         function loadCard(i) {
-            var r = restaurants[i];
-            document.getElementById('cardImg').src          = r.image_url;
-            document.getElementById('cardName').innerHTML   = r.name;
-            document.getElementById('cardCuisine').innerHTML = r.cuisine;
-            document.getElementById('cardPrice').innerHTML  = r.price;
-            document.getElementById('cardDistance').innerHTML = r.distance;
-            document.getElementById('cardRating').innerHTML = r.rating;
-            document.getElementById('cardMenuLink').href    = r.menuUrl;
-            document.getElementById('progressMsg').innerHTML = 'Restaurant ' + (i + 1) + ' of ' + restaurants.length;
+            var m = movies[i];
+            document.getElementById('cardImg').src           = m.image_url;
+            document.getElementById('cardName').innerHTML    = m.name;
+            document.getElementById('cardGenre').innerHTML   = m.genre;
+            document.getElementById('cardRating').innerHTML  = m.rating;
+            document.getElementById('cardRuntime').innerHTML = m.runtime;
+            document.getElementById('cardScore').innerHTML   = m.score;
+            document.getElementById('cardLink').href         = m.link;
+            document.getElementById('progressMsg').innerHTML = 'Movie ' + (i + 1) + ' of ' + movies.length;
         }
 
         function vote(choice) {
-            if (choice === 'yes') yesVotes.push(restaurants[currentIndex]);
+            if (choice === 'yes') yesVotes.push(movies[currentIndex]);
 
             // TODO: Send vote to backend once ready
-            // POST /api/votes { sessionCode, optionName: restaurants[currentIndex].name, vote: choice }
+            // POST /api/votes { sessionCode, optionName: movies[currentIndex].name, vote: choice }
 
             currentIndex++;
 
-            if (currentIndex < restaurants.length) {
+            if (currentIndex < movies.length) {
                 loadCard(currentIndex);
             } else {
                 document.getElementById('votingCard').style.display = 'none';
@@ -184,8 +183,8 @@
                 if (yesVotes.length === 0) {
                     picksList.innerHTML = '<p style="color:#999; margin:0;">You said no to everything!</p>';
                 } else {
-                    yesVotes.forEach(function(r) {
-                        picksList.innerHTML += '<p style="margin: 5px 0;">✔ <b>' + r.name + '</b> — ' + r.cuisine + ' ' + r.price + '</p>';
+                    yesVotes.forEach(function(m) {
+                        picksList.innerHTML += '<p style="margin: 5px 0;">✔ <b>' + m.name + '</b> — ' + m.genre + ' | ' + m.rating + '</p>';
                     });
                 }
 

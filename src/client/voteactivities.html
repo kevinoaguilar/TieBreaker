@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Vote for Food - TieBreaker</title>
+    <title>Vote for Activities - TieBreaker</title>
     <link rel="icon" type="image/png" href="/TieBreaker/docs/images/tieBreaker.png">
 </head>
 <body bgcolor="#8ac1f1">
@@ -25,17 +25,17 @@
         <!-- Voting Card -->
         <div id="votingCard" style="background-color: white; width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
 
-            <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Restaurant 1 of 6</p>
+            <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Activity 1 of 6</p>
 
-            <!-- Restaurant Image -->
-            <img id="cardImg" src="" alt="Restaurant photo" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; display: block; margin-bottom: 15px;">
+            <!-- Activity Image -->
+            <img id="cardImg" src="" alt="Activity photo" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; display: block; margin-bottom: 15px;">
 
             <!-- Name -->
             <h2 id="cardName" style="margin: 0 0 10px 0; color: #333;"></h2>
 
             <!-- Info Row -->
             <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">
-                <b>Cuisine:</b> <span id="cardCuisine"></span> &nbsp;|&nbsp;
+                <b>Type:</b> <span id="cardType"></span> &nbsp;|&nbsp;
                 <b>Price:</b> <span id="cardPrice"></span> &nbsp;|&nbsp;
                 <b>Distance:</b> <span id="cardDistance"></span>
             </p>
@@ -43,8 +43,8 @@
                 <b>Rating:</b> <span id="cardRating"></span>
             </p>
 
-            <!-- Menu Link -->
-            <a id="cardMenuLink" href="#" target="_blank" style="color: #8ac1f1; font-weight: bold; font-size: 14px;">🔗 View Menu / Website</a>
+            <!-- More Info Link -->
+            <a id="cardLink" href="#" target="_blank" style="color: #8ac1f1; font-weight: bold; font-size: 14px;">🔗 More Info / Website</a>
 
             <br><br><br>
 
@@ -91,62 +91,62 @@
         // TODO: Replace this array with a real fetch call once backend is ready:
         //   GET /api/sessions/:code/options
         //   The backend should hit the Yelp API using the host's location
-        //   and return restaurants in this same format
+        //   and return activities in this same format
         // -------------------------------------------------------
-        var restaurants = [
+        var activities = [
             {
-                name: "McDonald's",
-                cuisine: "Fast Food",
-                price: "$",
-                distance: "0.3 mi",
-                rating: "3.5 ⭐ (842 reviews)",
-                menuUrl: "https://www.mcdonalds.com/us/en-us/full-menu.html",
-                image_url: "https://images.unsplash.com/photo-1586816001966-79b736744398?w=600&q=80"
+                name: "Lucky Strike Bowling",
+                type: "Indoor",
+                price: "$$",
+                distance: "3.5 mi",
+                rating: "4.2 ⭐ (530 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=600&q=80"
             },
             {
-                name: "Sushi Zen",
-                cuisine: "Japanese",
+                name: "Adventure Mini Golf",
+                type: "Outdoor",
+                price: "$",
+                distance: "5.0 mi",
+                rating: "4.5 ⭐ (210 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=600&q=80"
+            },
+            {
+                name: "Main Street Cinema",
+                type: "Indoor",
+                price: "$$",
+                distance: "1.1 mi",
+                rating: "4.0 ⭐ (890 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=600&q=80"
+            },
+            {
+                name: "Escape Room Challenge",
+                type: "Indoor",
                 price: "$$$",
-                distance: "0.8 mi",
-                rating: "4.7 ⭐ (312 reviews)",
-                menuUrl: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80"
+                distance: "2.3 mi",
+                rating: "4.7 ⭐ (340 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1518644730709-0835105d9daa?w=600&q=80"
             },
             {
-                name: "Taco Town",
-                cuisine: "Mexican",
-                price: "$",
-                distance: "2.5 mi",
-                rating: "4.2 ⭐ (589 reviews)",
-                menuUrl: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80"
+                name: "Riverside Hiking Trail",
+                type: "Outdoor",
+                price: "Free",
+                distance: "4.2 mi",
+                rating: "4.6 ⭐ (1,100 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&q=80"
             },
             {
-                name: "Burger Palace",
-                cuisine: "American",
+                name: "Laser Tag Arena",
+                type: "Indoor",
                 price: "$$",
-                distance: "1.2 mi",
-                rating: "4.4 ⭐ (1,204 reviews)",
-                menuUrl: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80"
-            },
-            {
-                name: "Pasta Prima",
-                cuisine: "Italian",
-                price: "$$",
-                distance: "1.7 mi",
-                rating: "4.6 ⭐ (445 reviews)",
-                menuUrl: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&q=80"
-            },
-            {
-                name: "Spice Garden",
-                cuisine: "Indian",
-                price: "$$",
-                distance: "3.1 mi",
-                rating: "4.8 ⭐ (278 reviews)",
-                menuUrl: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80"
+                distance: "6.0 mi",
+                rating: "4.3 ⭐ (420 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1563213126-a4273aed2016?w=600&q=80"
             }
         ];
 
@@ -156,26 +156,26 @@
         loadCard(currentIndex);
 
         function loadCard(i) {
-            var r = restaurants[i];
-            document.getElementById('cardImg').src          = r.image_url;
-            document.getElementById('cardName').innerHTML   = r.name;
-            document.getElementById('cardCuisine').innerHTML = r.cuisine;
-            document.getElementById('cardPrice').innerHTML  = r.price;
-            document.getElementById('cardDistance').innerHTML = r.distance;
-            document.getElementById('cardRating').innerHTML = r.rating;
-            document.getElementById('cardMenuLink').href    = r.menuUrl;
-            document.getElementById('progressMsg').innerHTML = 'Restaurant ' + (i + 1) + ' of ' + restaurants.length;
+            var a = activities[i];
+            document.getElementById('cardImg').src           = a.image_url;
+            document.getElementById('cardName').innerHTML    = a.name;
+            document.getElementById('cardType').innerHTML    = a.type;
+            document.getElementById('cardPrice').innerHTML   = a.price;
+            document.getElementById('cardDistance').innerHTML = a.distance;
+            document.getElementById('cardRating').innerHTML  = a.rating;
+            document.getElementById('cardLink').href         = a.link;
+            document.getElementById('progressMsg').innerHTML = 'Activity ' + (i + 1) + ' of ' + activities.length;
         }
 
         function vote(choice) {
-            if (choice === 'yes') yesVotes.push(restaurants[currentIndex]);
+            if (choice === 'yes') yesVotes.push(activities[currentIndex]);
 
             // TODO: Send vote to backend once ready
-            // POST /api/votes { sessionCode, optionName: restaurants[currentIndex].name, vote: choice }
+            // POST /api/votes { sessionCode, optionName: activities[currentIndex].name, vote: choice }
 
             currentIndex++;
 
-            if (currentIndex < restaurants.length) {
+            if (currentIndex < activities.length) {
                 loadCard(currentIndex);
             } else {
                 document.getElementById('votingCard').style.display = 'none';
@@ -184,8 +184,8 @@
                 if (yesVotes.length === 0) {
                     picksList.innerHTML = '<p style="color:#999; margin:0;">You said no to everything!</p>';
                 } else {
-                    yesVotes.forEach(function(r) {
-                        picksList.innerHTML += '<p style="margin: 5px 0;">✔ <b>' + r.name + '</b> — ' + r.cuisine + ' ' + r.price + '</p>';
+                    yesVotes.forEach(function(a) {
+                        picksList.innerHTML += '<p style="margin: 5px 0;">✔ <b>' + a.name + '</b> — ' + a.type + ' | ' + a.price + '</p>';
                     });
                 }
 
