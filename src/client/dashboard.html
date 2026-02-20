@@ -31,6 +31,14 @@
                 alert('Please enter a valid 6-character room code.');
             }
         }
+
+        // showError(msg) → displays msg in a red box on screen (replace alerts later)
+        function showError(msg) {
+            const box = document.getElementById('errorMsg');
+            box.innerHTML = msg;
+            box.style.display = 'block';
+        }
+
     </script>
 </head>
 <body bgcolor="#8ac1f1">
@@ -48,6 +56,8 @@
         </table>
     </div>
     
+    <div id="errorMsg" style="display: none; background-color: #ffe0e0; color: red; padding: 10px; border-radius: 8px; margin: 10px; font-size: 14px;"></div>
+
     <center>
         <h1 style="color: white; font-size: 40px; margin-top: 50px;">Ready to Decide?</h1>
         <p style="color: white; font-size: 20px;">Choose a category to start a new session</p>
@@ -69,6 +79,15 @@
             <p>Pick what to watch</p>
             <button onclick="window.location.href='hostmovies.html'" style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
                 Start Movie Session
+            </button>
+        </div>
+
+        <div style="background-color: white; width: 250px; padding: 30px; border-radius: 20px; display: inline-block; margin: 10px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+            <p style="font-size: 50px; margin: 0;">🎉</p>
+            <h2>Activities</h2>
+            <p>Find something fun to do</p>
+            <button onclick="window.location.href='hostactivities.html'" style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
+                Start Activity Session
             </button>
         </div>
 
