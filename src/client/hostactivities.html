@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Host Activities Session - TieBreaker</title>
+    <link rel="icon" type="image/png" href="images/tieBreaker.png">
+    
+    <style>
+        .user-row {
+            background-color: white; padding: 12px; margin: 8px;
+            border-left: 5px solid green; border-radius: 8px;
+            text-align: left; box-shadow: 0px 2px 5px rgba(0,0,0,0.05);
+            font-family: Arial, sans-serif; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .user-row:first-child { border-left: 5px solid red; }
+        .host-badge {
+            background-color: red; color: white; padding: 3px 8px;
+            border-radius: 5px; font-size: 11px; font-weight: bold;
+        }
+    </style>
+</head>
+
+<body bgcolor="#8ac1f1">
+    <font face="Arial">
+
+        <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+            <table width="100%">
+                <tr>
+                    <td><b style="font-size: 20px; color: #333;">TieBreaker</b></td>
+                    <td align="right">
+                        <a href="dashboard.html" style="text-decoration: none; color: red; font-weight: bold;">Leave Session</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <br><br>
+
+        <center>
+            <div style="background-color: white; width: 500px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+                <h1 style="margin-top: 0; color: #333;">🎉 Activities Session Ready!</h1>
+
+                <div style="background-color: #f3e5f5; padding: 10px; border-radius: 10px; border: 1px solid #7b1fa2; color: #4a148c; display: inline-block; width: 80%;">
+                    <b>MODE: ACTIVITIES 🎉</b>
+                </div>
+
+                <br><br>
+
+                <div style="border: 2px dashed #8ac1f1; padding: 25px; background-color: #f1f5f9; border-radius: 15px;">
+                    <p style="margin-top: 0; color: #666;">Share this code with your group:</p>
+                    <h1 id="groupCode" style="font-size: 45px; color: red; letter-spacing: 5px; margin: 10px 0;">...</h1>
+                    <p style="color: #666; font-size: 14px;">They can enter this on the dashboard to join</p>
+                    <button onclick="copyCode()" style="background-color: #333; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Copy Code</button>
+                </div>
+
+                <br><br>
+
+                <h2 id="participant-count">Participants (0)</h2>
+
+                <div id="participants-container" style="background-color: #f1f5f9; padding: 15px; border-radius: 15px; min-height: 100px;">
+                    <p id="waitingMsg" style="color: gray; margin: 10px 0;"><i>Waiting for others to join...</i></p>
+                </div>
+
+                <br>
+
+                <button id="start-session-btn" disabled 
+                    style="background-color: #ccc; color: white; padding: 18px; width: 100%; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: not-allowed; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+                    Start Session
+                </button>
+                
+                <p id="requirementMsg" style="color: gray; font-size: 14px; margin-top: 10px;">
+                    Need at least 2 people to start
+                </p>
+            </div>
+        </center>
+
+    </font>
+    
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentPin = urlParams.get('code');
+
+        // 1. Initialize
+        if (currentPin) {
+            document.getElementById('groupCode').innerText = currentPin;
+            startPolling(); // Start the built-in polling
+        } else {
+            document.getElementById('groupCode').innerText = "ERROR";
+            alert("No Session Code found! Please go back to Dashboard.");
+        }
+
+        // 2. Copy Code
+        function copyCode() {
+            var code = document.getElementById('groupCode').innerText;
+            navigator.clipboard.writeText(code);
+            alert('Code copied: ' + code);
+        }
+
+        // 3. Built-in Polling Logic (Fixes "User not showing" issue)
+        async function startPolling() {
+            fetchUsers();
+            setInterval(fetchUsers, 2000); // Check every 2 seconds
+        }
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/session/${currentPin}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update Count
+                    document.getElementById('participant-count').innerText = `Participants (${data.users.length})`;
+
+                    // Update List
+                    const list = document.getElementById('participants-container');
+                    list.innerHTML = ''; 
+
+                    if (data.users.length === 0) {
+                        list.innerHTML = '<p style="color: gray; margin: 10px 0;"><i>Waiting for others to join...</i></p>';
+                    } else {
+                        data.users.forEach((u, index) => {
+                            const isHost = index === 0;
+                            const row = document.createElement('div');
+                            row.className = 'user-row';
+                            row.innerHTML = `<span>${u}</span> ${isHost ? '<span class="host-badge">HOST</span>' : ''}`;
+                            list.appendChild(row);
+                        });
+                    }
+
+                    // Enable/Disable Start Button
+                    const startBtn = document.getElementById('start-session-btn');
+                    const reqMsg = document.getElementById('requirementMsg');
+
+                    if (data.users.length >= 2) {
+                        startBtn.disabled = false;
+                        startBtn.style.backgroundColor = 'green';
+                        startBtn.style.cursor = 'pointer';
+                        reqMsg.style.color = 'green';
+                        reqMsg.innerText = "Ready to start!";
+                    } else {
+                        startBtn.disabled = true;
+                        startBtn.style.backgroundColor = '#ccc';
+                        startBtn.style.cursor = 'not-allowed';
+                        reqMsg.style.color = 'gray';
+                        reqMsg.innerText = "Need at least 2 people to start";
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching participants:", err);
+            }
+        }
+
+        // 4. Start Button Logic
+        document.getElementById('start-session-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/api/session/start/${currentPin}`, {
+                    method: 'PUT'
+                });
+                
+                if (response.ok) {
+                    // Redirect specifically for Activities
+                    window.location.href = `voteactivities.html?code=${currentPin}`;
+                } else {
+                    alert("Failed to start session. Try again.");
+                }
+            } catch (err) {
+                console.error("Error starting session:", err);
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Vote for Food - TieBreaker</title>
+    <link rel="icon" type="image/png" href="images/tieBreaker.png">
+</head>
+
+<body bgcolor="#8ac1f1">
+    <font face="Arial">
+
+        <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+            <table width="100%">
+                <tr>
+                    <td><b style="font-size: 20px; color: #333;">TieBreaker</b></td>
+                    <td align="right">
+                        <a href="dashboard.html" style="text-decoration: none; color: red; font-weight: bold;">Leave
+                            Session</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <br><br>
+
+        <center>
+
+            <!-- Voting Card -->
+            <div id="votingCard"
+                style="background-color: white; width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+
+                <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Restaurant 1 of 6</p>
+
+                <!-- Restaurant Image -->
+                <img id="cardImg" src="" alt="Restaurant photo"
+                    style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; display: block; margin-bottom: 15px;">
+
+                <!-- Name -->
+                <h2 id="cardName" style="margin: 0 0 10px 0; color: #333;"></h2>
+
+                <!-- Info Row -->
+                <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">
+                    <b>Cuisine:</b> <span id="cardCuisine"></span> &nbsp;|&nbsp;
+                    <b>Price:</b> <span id="cardPrice"></span> &nbsp;|&nbsp;
+                    <b>Distance:</b> <span id="cardDistance"></span>
+                </p>
+                <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">
+                    <b>Rating:</b> <span id="cardRating"></span>
+                </p>
+
+                <!-- Menu Link -->
+                <a id="cardMenuLink" href="#" target="_blank"
+                    style="color: #8ac1f1; font-weight: bold; font-size: 14px;">🔗 View Menu / Website</a>
+
+                <br><br><br>
+
+                <!-- Vote Buttons -->
+                <table width="100%" cellspacing="10">
+                    <tr>
+                        <td width="50%">
+                            <button onclick="vote('no')"
+                                style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                                ✖ No
+                            </button>
+                        </td>
+                        <td width="50%">
+                            <button onclick="vote('yes')"
+                                style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                                ✔ Yes
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+            <!-- Done Screen -->
+            <div id="doneCard"
+                style="display: none; background-color: white; width: 450px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+                <h1 style="color: #333; margin-top: 0;">All Done! 🎉</h1>
+                <p style="color: #666; font-size: 16px;">Waiting for the rest of your group to finish voting...</p>
+                <br>
+                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 10px; text-align: left;">
+                    <p style="margin: 0 0 10px 0;"><b>Your Picks:</b></p>
+                    <div id="picksList"></div>
+                </div>
+                <br><br>
+                <button onclick="location.href='dashboard.html'"
+                    style="background-color: #333; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
+                    Back to Dashboard
+                </button>
+            </div>
+
+        </center>
+
+    </font>
+
+    <script>
+        // -------------------------------------------------------
+        // MOCK DATA — structured to match Yelp Fusion API response
+        // TODO: Replace this array with a real fetch call once backend is ready:
+        //   GET /api/sessions/:code/options
+        //   The backend should hit the Yelp API using the host's location
+        //   and return restaurants in this same format
+        // -------------------------------------------------------
+        var restaurants = [
+            {
+                name: "McDonald's",
+                cuisine: "Fast Food",
+                price: "$",
+                distance: "0.3 mi",
+                rating: "3.5 ⭐ (842 reviews)",
+                menuUrl: "https://www.mcdonalds.com/us/en-us/full-menu.html",
+                image_url: "https://images.unsplash.com/photo-1586816001966-79b736744398?w=600&q=80"
+            },
+            {
+                name: "Sushi Zen",
+                cuisine: "Japanese",
+                price: "$$$",
+                distance: "0.8 mi",
+                rating: "4.7 ⭐ (312 reviews)",
+                menuUrl: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80"
+            },
+            {
+                name: "Taco Town",
+                cuisine: "Mexican",
+                price: "$",
+                distance: "2.5 mi",
+                rating: "4.2 ⭐ (589 reviews)",
+                menuUrl: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80"
+            },
+            {
+                name: "Burger Palace",
+                cuisine: "American",
+                price: "$$",
+                distance: "1.2 mi",
+                rating: "4.4 ⭐ (1,204 reviews)",
+                menuUrl: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80"
+            },
+            {
+                name: "Pasta Prima",
+                cuisine: "Italian",
+                price: "$$",
+                distance: "1.7 mi",
+                rating: "4.6 ⭐ (445 reviews)",
+                menuUrl: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&q=80"
+            },
+            {
+                name: "Spice Garden",
+                cuisine: "Indian",
+                price: "$$",
+                distance: "3.1 mi",
+                rating: "4.8 ⭐ (278 reviews)",
+                menuUrl: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80"
+            }
+        ];
+
+        var currentIndex = 0;
+        var yesVotes = [];
+
+        loadCard(currentIndex);
+
+        function loadCard(i) {
+            var r = restaurants[i];
+            document.getElementById('cardImg').src = r.image_url;
+            document.getElementById('cardName').innerHTML = r.name;
+            document.getElementById('cardCuisine').innerHTML = r.cuisine;
+            document.getElementById('cardPrice').innerHTML = r.price;
+            document.getElementById('cardDistance').innerHTML = r.distance;
+            document.getElementById('cardRating').innerHTML = r.rating;
+            document.getElementById('cardMenuLink').href = r.menuUrl;
+            document.getElementById('progressMsg').innerHTML = 'Restaurant ' + (i + 1) + ' of ' + restaurants.length;
+        }
+
+        function vote(choice) {
+            if (choice === 'yes') yesVotes.push(restaurants[currentIndex]);
+
+            // TODO: Send vote to backend once ready
+            // POST /api/votes { sessionCode, optionName: restaurants[currentIndex].name, vote: choice }
+
+            currentIndex++;
+
+            if (currentIndex < restaurants.length) {
+                loadCard(currentIndex);
+            } else {
+                document.getElementById('votingCard').style.display = 'none';
+
+                var picksList = document.getElementById('picksList');
+                if (yesVotes.length === 0) {
+                    picksList.innerHTML = '<p style="color:#999; margin:0;">You said no to everything!</p>';
+                } else {
+                    yesVotes.forEach(function (r) {
+                        picksList.innerHTML += '<p style="margin: 5px 0;">✔ <b>' + r.name + '</b> — ' + r.cuisine + ' ' + r.price + '</p>';
+                    });
+                }
+
+                document.getElementById('doneCard').style.display = 'block';
+
+                // TODO: Poll GET /api/results/:sessionCode until all group members are done
+                // then redirect to results.html
+            }
+        }
+    </script>
+
+</body>
+
+</html>

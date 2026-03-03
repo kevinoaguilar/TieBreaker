@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Vote for Activities - TieBreaker</title>
+    <link rel="icon" type="image/png" href="images/tieBreaker.png">
+</head>
+
+<body bgcolor="#8ac1f1">
+    <font face="Arial">
+
+        <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+            <table width="100%">
+                <tr>
+                    <td><b style="font-size: 20px; color: #333;">TieBreaker</b></td>
+                    <td align="right">
+                        <a href="dashboard.html" style="text-decoration: none; color: red; font-weight: bold;">Leave
+                            Session</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <br><br>
+
+        <center>
+
+            <!-- Voting Card -->
+            <div id="votingCard"
+                style="background-color: white; width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+
+                <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Activity 1 of 6</p>
+
+                <!-- Activity Image -->
+                <img id="cardImg" src="" alt="Activity photo"
+                    style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; display: block; margin-bottom: 15px;">
+
+                <!-- Name -->
+                <h2 id="cardName" style="margin: 0 0 10px 0; color: #333;"></h2>
+
+                <!-- Info Row -->
+                <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">
+                    <b>Type:</b> <span id="cardType"></span> &nbsp;|&nbsp;
+                    <b>Price:</b> <span id="cardPrice"></span> &nbsp;|&nbsp;
+                    <b>Distance:</b> <span id="cardDistance"></span>
+                </p>
+                <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">
+                    <b>Rating:</b> <span id="cardRating"></span>
+                </p>
+
+                <!-- More Info Link -->
+                <a id="cardLink" href="#" target="_blank" style="color: #8ac1f1; font-weight: bold; font-size: 14px;">🔗
+                    More Info / Website</a>
+
+                <br><br><br>
+
+                <!-- Vote Buttons -->
+                <table width="100%" cellspacing="10">
+                    <tr>
+                        <td width="50%">
+                            <button onclick="vote('no')"
+                                style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                                ✖ No
+                            </button>
+                        </td>
+                        <td width="50%">
+                            <button onclick="vote('yes')"
+                                style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                                ✔ Yes
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+            <!-- Done Screen -->
+            <div id="doneCard"
+                style="display: none; background-color: white; width: 450px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+                <h1 style="color: #333; margin-top: 0;">All Done! 🎉</h1>
+                <p style="color: #666; font-size: 16px;">Waiting for the rest of your group to finish voting...</p>
+                <br>
+                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 10px; text-align: left;">
+                    <p style="margin: 0 0 10px 0;"><b>Your Picks:</b></p>
+                    <div id="picksList"></div>
+                </div>
+                <br><br>
+                <button onclick="location.href='dashboard.html'"
+                    style="background-color: #333; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
+                    Back to Dashboard
+                </button>
+            </div>
+
+        </center>
+
+    </font>
+
+    <script>
+        // -------------------------------------------------------
+        // MOCK DATA — structured to match Yelp Fusion API response
+        // TODO: Replace this array with a real fetch call once backend is ready:
+        //   GET /api/sessions/:code/options
+        //   The backend should hit the Yelp API using the host's location
+        //   and return activities in this same format
+        // -------------------------------------------------------
+        var activities = [
+            {
+                name: "Lucky Strike Bowling",
+                type: "Indoor",
+                price: "$$",
+                distance: "3.5 mi",
+                rating: "4.2 ⭐ (530 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=600&q=80"
+            },
+            {
+                name: "Adventure Mini Golf",
+                type: "Outdoor",
+                price: "$",
+                distance: "5.0 mi",
+                rating: "4.5 ⭐ (210 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=600&q=80"
+            },
+            {
+                name: "Main Street Cinema",
+                type: "Indoor",
+                price: "$$",
+                distance: "1.1 mi",
+                rating: "4.0 ⭐ (890 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=600&q=80"
+            },
+            {
+                name: "Escape Room Challenge",
+                type: "Indoor",
+                price: "$$$",
+                distance: "2.3 mi",
+                rating: "4.7 ⭐ (340 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1518644730709-0835105d9daa?w=600&q=80"
+            },
+            {
+                name: "Riverside Hiking Trail",
+                type: "Outdoor",
+                price: "Free",
+                distance: "4.2 mi",
+                rating: "4.6 ⭐ (1,100 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&q=80"
+            },
+            {
+                name: "Laser Tag Arena",
+                type: "Indoor",
+                price: "$$",
+                distance: "6.0 mi",
+                rating: "4.3 ⭐ (420 reviews)",
+                link: "https://www.yelp.com",
+                image_url: "https://images.unsplash.com/photo-1563213126-a4273aed2016?w=600&q=80"
+            }
+        ];
+
+        var currentIndex = 0;
+        var yesVotes = [];
+
+        loadCard(currentIndex);
+
+        function loadCard(i) {
+            var a = activities[i];
+            document.getElementById('cardImg').src = a.image_url;
+            document.getElementById('cardName').innerHTML = a.name;
+            document.getElementById('cardType').innerHTML = a.type;
+            document.getElementById('cardPrice').innerHTML = a.price;
+            document.getElementById('cardDistance').innerHTML = a.distance;
+            document.getElementById('cardRating').innerHTML = a.rating;
+            document.getElementById('cardLink').href = a.link;
+            document.getElementById('progressMsg').innerHTML = 'Activity ' + (i + 1) + ' of ' + activities.length;
+        }
+
+        function vote(choice) {
+            if (choice === 'yes') yesVotes.push(activities[currentIndex]);
+
+            // TODO: Send vote to backend once ready
+            // POST /api/votes { sessionCode, optionName: activities[currentIndex].name, vote: choice }
+
+            currentIndex++;
+
+            if (currentIndex < activities.length) {
+                loadCard(currentIndex);
+            } else {
+                document.getElementById('votingCard').style.display = 'none';
+
+                var picksList = document.getElementById('picksList');
+                if (yesVotes.length === 0) {
+                    picksList.innerHTML = '<p style="color:#999; margin:0;">You said no to everything!</p>';
+                } else {
+                    yesVotes.forEach(function (a) {
+                        picksList.innerHTML += '<p style="margin: 5px 0;">✔ <b>' + a.name + '</b> — ' + a.type + ' | ' + a.price + '</p>';
+                    });
+                }
+
+                document.getElementById('doneCard').style.display = 'block';
+
+                // TODO: Poll GET /api/results/:sessionCode until all group members are done
+                // then redirect to results.html
+            }
+        }
+    </script>
+
+</body>
+
+</html>

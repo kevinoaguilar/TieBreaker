@@ -1,0 +1,111 @@
+const Session = require('../models/Session');
+
+// Helper to generate a 4-digit PIN
+const generatePin = () => Math.floor(1000 + Math.random() * 9000).toString();
+
+// 1. Create a New Session
+const createSession = async (req, res) => {
+    try {
+        const { username, category } = req.body;
+        let pin = generatePin();
+        
+        // Create the session in the database
+        const newSession = new Session({
+            pin: pin,
+            users: [username],
+            category: category || 'food',
+            status: 'waiting'
+        });
+
+        await newSession.save();
+
+        res.status(201).json({ 
+            success: true, 
+            pin: pin, 
+            message: "Session created!" 
+        });
+
+    } catch (error) {
+        console.error("Create Session Error:", error);
+        res.status(500).json({ error: "Could not create session" });
+    }
+};
+
+// 2. Join an Existing Session
+const joinSession = async (req, res) => {
+    try {
+        const { pin, username } = req.body;
+
+        const session = await Session.findOne({ pin: pin });
+
+        if (!session) {
+            return res.status(404).json({ error: "Session not found" });
+        }
+
+        if (!session.isActive) {
+            return res.status(400).json({ error: "Session is closed" });
+        }
+
+        // Add user if they aren't already in it
+        if (!session.users.includes(username)) {
+            session.users.push(username);
+            await session.save();
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            message: "Joined successfully!", 
+            users: session.users 
+        });
+
+    } catch (error) {
+        console.error("Join Session Error:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+};
+
+// 3. Get Session Details (for polling)
+const getSession = async (req, res) => {
+    try {
+        const { pin } = req.params; // Get PIN from URL
+        const session = await Session.findOne({ pin: pin });
+
+        if (!session) {
+            return res.status(404).json({ error: "Session not found" });
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            users: session.users, 
+            status: session.status,
+            category: session.category,
+            isActive: session.isActive 
+        });
+
+    } catch (error) {
+        console.error("Get Session Error:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+};
+
+// 4. Start the Session (Host clicks "Start")
+const startSession = async (req, res) => {
+    try {
+        const { pin } = req.params;
+        const session = await Session.findOneAndUpdate(
+            { pin: pin },
+            { status: 'started' },
+            { new: true }
+        );
+
+        if (!session) return res.status(404).json({ error: "Session not found" });
+
+        res.status(200).json({ success: true, message: "Session started!" });
+    } catch (error) {
+        console.error("Start Session Error:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+};
+
+// Export ALL functions so the router can find them
+module.exports = { createSession, joinSession, getSession, startSession };

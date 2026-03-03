@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TieBreaker - Decide Together</title>
+    <link rel="icon" type="image/png" href="images/tieBreaker.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* MODERN CSS RESET & VARIABLES */
+        :root {
+            --primary: #2563EB; /* Modern Blue */
+            --success: #10B981; /* Green */
+            --error: #EF4444;   /* Red */
+            --bg-color: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #8ac1f1; /* Your original background */
+            background-image: linear-gradient(135deg, #8ac1f1 0%, #e0f2fe 100%); /* Subtle gradient update */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* MAIN CARD CONTAINER */
+        .main-card {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0 0 10px 0;
+        }
+
+        p.subtitle {
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        /* BUTTONS */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .btn-register { background-color: var(--error); color: white; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4); }
+        .btn-login { background-color: var(--success); color: white; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
+        
+        .btn:hover { transform: translateY(-2px); filter: brightness(110%); }
+
+        /* LOCATION STATUS CARD */
+        .location-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loc-icon {
+            background: #DBEAFE;
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 20px;
+        }
+
+        .loc-info h4 { margin: 0; font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .loc-info p { margin: 5px 0 0 0; font-weight: 600; color: var(--text-main); font-size: 15px; }
+
+        /* LOADING ANIMATION */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #E5E7EB;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* UTILS */
+        .divider { height: 1px; background: #E5E7EB; margin: 30px 0; }
+        .debug-btn { font-size: 12px; color: #9CA3AF; background: none; border: 1px solid #E5E7EB; padding: 5px 10px; border-radius: 6px; cursor: pointer; margin: 5px; }
+        .debug-btn:hover { border-color: var(--text-muted); color: var(--text-main); }
+
+        /* ABOUT BUTTON */
+        .about-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .about-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+    </style>
+</head>
+<body>
+
+    <a href="about.html" class="about-btn">About TieBreaker</a>
+
+    <div class="main-card">
+        <img src="images/tieBreaker.png" alt="TieBreaker Logo" class="logo">
+        
+        <h1>TieBreaker</h1>
+        <p class="subtitle">
+            Stop debating. Start deciding.<br>
+            Pick your next meal, movie, or activity instantly.
+        </p>
+
+        <div class="btn-group">
+            <a href="register.html"><button class="btn btn-register">Register</button></a>
+            <a href="login.html"><button class="btn btn-login">Login</button></a>
+        </div>
+
+        <div class="location-card" id="loc-card">
+            <div class="loc-icon" id="loc-icon">📍</div>
+            
+            <div class="loc-info">
+                <h4>Current Location</h4>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <p id="address-val">Requesting access...</p>
+                    <div class="spinner" id="loading-spinner"></div>
+                </div>
+            </div>
+
+            <button onclick="requestLocation()" id="retry-btn" style="display:none; position: absolute; right: 20px; background: var(--text-main); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12px;">
+                Enable
+            </button>
+        </div>
+
+        <div class="divider"></div>
+
+        <p style="font-size: 12px; color: #9CA3AF; margin-bottom: 10px;">Developer Tools</p>
+        <button class="debug-btn" onclick="handleRegister()">Test Register</button>
+        <button class="debug-btn" onclick="handleLogin()">Test Login</button>
+    </div>
+
+    <script>
+        // Start process immediately
+        window.onload = function() {
+            requestLocation();
+        };
+
+        function requestLocation() {
+            const addressText = document.getElementById('address-val');
+            const spinner = document.getElementById('loading-spinner');
+            const retryBtn = document.getElementById('retry-btn');
+            const icon = document.getElementById('loc-icon');
+
+            // Reset UI State
+            addressText.textContent = "Locating you...";
+            spinner.style.display = "block"; // Show spinner
+            retryBtn.style.display = "none";
+            icon.style.background = "#DBEAFE"; // Blue bg
+            icon.textContent = "📍";
+
+            if (!navigator.geolocation) {
+                showError("Browser not supported");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
+        }
+
+        async function handleSuccess(position) {
+            const addressText = document.getElementById('address-val');
+            const spinner = document.getElementById('loading-spinner');
+            const icon = document.getElementById('loc-icon');
+
+            const { latitude, longitude } = position.coords;
+
+            // Update text to show we found coordinates, now fetching address
+            addressText.textContent = "Found you! Getting address...";
+
+            try {
+                // Call your Backend (Geocodio)
+                const response = await fetch('http://localhost:3000/api/reverse-geocode', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ lat: latitude, lng: longitude })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    spinner.style.display = "none"; // Hide spinner
+                    addressText.textContent = result.address;
+                    
+                    // Success Visuals
+                    icon.style.background = "#D1FAE5"; // Light Green
+                    icon.style.color = "#059669"; // Dark Green
+                    icon.textContent = "✓";
+                } else {
+                    throw new Error("Address lookup failed");
+                }
+            } catch (err) {
+                showError("Found coordinates, but address failed.");
+            }
+        }
+
+        function handleError(error) {
+            showError("Location access denied.");
+        }
+
+        function showError(msg) {
+            const addressText = document.getElementById('address-val');
+            const spinner = document.getElementById('loading-spinner');
+            const retryBtn = document.getElementById('retry-btn');
+            const icon = document.getElementById('loc-icon');
+
+            spinner.style.display = "none";
+            addressText.textContent = msg;
+            addressText.style.color = "#EF4444"; // Red text
+            
+            icon.style.background = "#FEE2E2"; // Light Red
+            icon.textContent = "!";
+            
+            retryBtn.style.display = "block"; // Show retry button
+        }
+    </script>
+
+    <script src="api.js"></script>
+</body>
+</html>
