@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TieBreaker - Decide Together</title>
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    
+
     <style>
         /* MODERN CSS RESET & VARIABLES */
         :root {
-            --primary: #2563EB; /* Modern Blue */
-            --success: #10B981; /* Green */
-            --error: #EF4444;   /* Red */
+            --primary: #2563EB;
+            /* Modern Blue */
+            --success: #10B981;
+            /* Green */
+            --error: #EF4444;
+            /* Red */
             --bg-color: #F3F4F6;
             --card-bg: #FFFFFF;
             --text-main: #1F2937;
@@ -23,8 +27,10 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
-            background-color: #8ac1f1; /* Your original background */
-            background-image: linear-gradient(135deg, #8ac1f1 0%, #e0f2fe 100%); /* Subtle gradient update */
+            background-color: #8ac1f1;
+            /* Your original background */
+            background-image: linear-gradient(135deg, #8ac1f1 0%, #e0f2fe 100%);
+            /* Subtle gradient update */
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -83,10 +89,22 @@
             font-size: 16px;
         }
 
-        .btn-register { background-color: var(--error); color: white; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4); }
-        .btn-login { background-color: var(--success); color: white; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
-        
-        .btn:hover { transform: translateY(-2px); filter: brightness(110%); }
+        .btn-register {
+            background-color: var(--error);
+            color: white;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-login {
+            background-color: var(--success);
+            color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(110%);
+        }
 
         /* LOCATION STATUS CARD */
         .location-card {
@@ -114,8 +132,20 @@
             font-size: 20px;
         }
 
-        .loc-info h4 { margin: 0; font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .loc-info p { margin: 5px 0 0 0; font-weight: 600; color: var(--text-main); font-size: 15px; }
+        .loc-info h4 {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .loc-info p {
+            margin: 5px 0 0 0;
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 15px;
+        }
 
         /* LOADING ANIMATION */
         .spinner {
@@ -125,15 +155,42 @@
             border-top: 3px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
         /* UTILS */
-        .divider { height: 1px; background: #E5E7EB; margin: 30px 0; }
-        .debug-btn { font-size: 12px; color: #9CA3AF; background: none; border: 1px solid #E5E7EB; padding: 5px 10px; border-radius: 6px; cursor: pointer; margin: 5px; }
-        .debug-btn:hover { border-color: var(--text-muted); color: var(--text-main); }
+        .divider {
+            height: 1px;
+            background: #E5E7EB;
+            margin: 30px 0;
+        }
+
+        .debug-btn {
+            font-size: 12px;
+            color: #9CA3AF;
+            background: none;
+            border: 1px solid #E5E7EB;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .debug-btn:hover {
+            border-color: var(--text-muted);
+            color: var(--text-main);
+        }
 
         /* ABOUT BUTTON */
         .about-btn {
@@ -147,24 +204,28 @@
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
             text-decoration: none;
             color: var(--text-main);
             transition: all 0.2s;
             display: inline-block;
         }
-        .about-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
+        .about-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
+
 <body>
 
     <a href="about.html" class="about-btn">About TieBreaker</a>
 
     <div class="main-card">
+        <br>
         <img src="images/tieBreaker.png" alt="TieBreaker Logo" class="logo">
-        
-        <h1>TieBreaker</h1>
+
         <p class="subtitle">
             Stop debating. Start deciding.<br>
             Pick your next meal, movie, or activity instantly.
@@ -177,7 +238,7 @@
 
         <div class="location-card" id="loc-card">
             <div class="loc-icon" id="loc-icon">📍</div>
-            
+
             <div class="loc-info">
                 <h4>Current Location</h4>
                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -186,7 +247,8 @@
                 </div>
             </div>
 
-            <button onclick="requestLocation()" id="retry-btn" style="display:none; position: absolute; right: 20px; background: var(--text-main); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12px;">
+            <button onclick="requestLocation()" id="retry-btn"
+                style="display:none; position: absolute; right: 20px; background: var(--text-main); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12px;">
                 Enable
             </button>
         </div>
@@ -200,7 +262,7 @@
 
     <script>
         // Start process immediately
-        window.onload = function() {
+        window.onload = function () {
             requestLocation();
         };
 
@@ -231,6 +293,8 @@
             const icon = document.getElementById('loc-icon');
 
             const { latitude, longitude } = position.coords;
+            localStorage.setItem('userLat', latitude);
+            localStorage.setItem('userLng', longitude);
 
             // Update text to show we found coordinates, now fetching address
             addressText.textContent = "Found you! Getting address...";
@@ -248,7 +312,7 @@
                 if (response.ok) {
                     spinner.style.display = "none"; // Hide spinner
                     addressText.textContent = result.address;
-                    
+
                     // Success Visuals
                     icon.style.background = "#D1FAE5"; // Light Green
                     icon.style.color = "#059669"; // Dark Green
@@ -274,14 +338,15 @@
             spinner.style.display = "none";
             addressText.textContent = msg;
             addressText.style.color = "#EF4444"; // Red text
-            
+
             icon.style.background = "#FEE2E2"; // Light Red
             icon.textContent = "!";
-            
+
             retryBtn.style.display = "block"; // Show retry button
         }
     </script>
 
     <script src="api.js"></script>
 </body>
+
 </html>

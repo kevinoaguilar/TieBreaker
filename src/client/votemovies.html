@@ -7,205 +7,209 @@
 </head>
 
 <body bgcolor="#8ac1f1">
-    <font face="Arial">
+<font face="Arial">
 
-        <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
-            <table width="100%">
+    <!-- TOP NAV BAR -->
+    <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+        <table width="100%">
+            <tr>
+                <td><b style="font-size: 20px;">TieBreaker</b></td>
+                <td align="right">
+                    <a href="dashboard.html" style="color: red; font-weight: bold;">Leave Session</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <br><br>
+
+    <center>
+
+        <div id="loadingMessage">
+            <p style="font-size: 18px; color: white;">Loading movies... please wait</p>
+        </div>
+
+        <div id="errorMessage" style="display: none;">
+            <p style="font-size: 18px; color: red;">Something went wrong loading movies. Is your server running?</p>
+        </div>
+
+        <div id="votingCard" style="display: none; background-color: white; width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+            <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Movie 1 of 10</p>
+            <img id="cardImg" src="" alt="Movie poster"
+                style="width: 100%; height: 320px; object-fit: contain; background-color: #f1f1f1; border-radius: 12px; margin-bottom: 15px;">
+            <h2 id="cardName" style="margin: 0 0 10px 0; color: #333;"></h2>
+
+            <!-- Row 1: Genre + Score -->
+            <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">
+                <b>Genre:</b> <span id="cardGenre"></span>
+                &nbsp;|&nbsp;
+                <b>Score:</b> <span id="cardScore"></span>
+            </p>
+
+            <!-- Row 2: Rating + Runtime -->
+            <p style="color: #666; font-size: 14px; margin: 0 0 10px 0;">
+                <b>Rated:</b> <span id="cardCert"></span>
+                &nbsp;|&nbsp;
+                <b>Runtime:</b> <span id="cardRuntime"></span>
+            </p>
+
+            <p id="cardOverview" style="color: #888; font-size: 13px; margin: 0 0 15px 0;"></p>
+            <a id="cardLink" href="#" target="_blank" style="color: #8ac1f1; font-weight: bold; font-size: 14px;">
+                More Info
+            </a>
+            <br><br>
+            <table width="100%" cellspacing="10">
                 <tr>
-                    <td><b style="font-size: 20px; color: #333;">TieBreaker</b></td>
-                    <td align="right">
-                        <a href="dashboard.html" style="text-decoration: none; color: red; font-weight: bold;">Leave
-                            Session</a>
+                    <td width="50%">
+                        <button onclick="vote('no')"
+                            style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                            No
+                        </button>
+                    </td>
+                    <td width="50%">
+                        <button onclick="vote('yes')"
+                            style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                            Yes
+                        </button>
                     </td>
                 </tr>
             </table>
         </div>
 
-        <br><br>
+        <div id="doneCard" style="display: none; background-color: white; width: 450px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+            <h1 style="color: #333;">All Done!</h1>
+            <p style="color: #666;">Waiting for the rest of your group...</p>
+            <br>
+            <b>Your Picks:</b>
+            <div id="picksList" style="margin-top: 10px;"></div>
+            <br>
+            <button onclick="location.href='dashboard.html'"
+                style="background-color: #333; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
+                Back to Dashboard
+            </button>
+        </div>
 
-        <center>
+    </center>
 
-            <!-- Voting Card -->
-            <div id="votingCard"
-                style="background-color: white; width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+</font>
 
-                <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Movie 1 of 6</p>
+<script>
 
-                <!-- Movie Poster -->
-                <img id="cardImg" src="" alt="Movie poster"
-                    style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; display: block; margin-bottom: 15px;">
+    var urlParams  = new URLSearchParams(window.location.search);
+    var sessionPin = urlParams.get('code');
 
-                <!-- Name -->
-                <h2 id="cardName" style="margin: 0 0 10px 0; color: #333;"></h2>
+    console.log("URL:", window.location.href);
+    console.log("Session PIN:", sessionPin);
 
-                <!-- Info Row -->
-                <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">
-                    <b>Genre:</b> <span id="cardGenre"></span> &nbsp;|&nbsp;
-                    <b>Rating:</b> <span id="cardRating"></span> &nbsp;|&nbsp;
-                    <b>Runtime:</b> <span id="cardRuntime"></span>
-                </p>
-                <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">
-                    <b>Score:</b> <span id="cardScore"></span>
-                </p>
+    var GENRE_MAP = {
+        28: "Action",   12: "Adventure", 16: "Animation",
+        35: "Comedy",   80: "Crime",     18: "Drama",
+        27: "Horror",   10749: "Romance", 878: "Sci-Fi",
+        53: "Thriller", 14: "Fantasy",   9648: "Mystery"
+    };
 
-                <!-- More Info Link -->
-                <a id="cardLink" href="#" target="_blank" style="color: #8ac1f1; font-weight: bold; font-size: 14px;">🔗
-                    More Info</a>
+    var movies       = [];
+    var currentIndex = 0;
+    var yesVotes     = [];
 
-                <br><br><br>
 
-                <!-- Vote Buttons -->
-                <table width="100%" cellspacing="10">
-                    <tr>
-                        <td width="50%">
-                            <button onclick="vote('no')"
-                                style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
-                                ✖ No
-                            </button>
-                        </td>
-                        <td width="50%">
-                            <button onclick="vote('yes')"
-                                style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
-                                ✔ Yes
-                            </button>
-                        </td>
-                    </tr>
-                </table>
+    async function fetchMovies() {
 
-            </div>
-
-            <!-- Done Screen -->
-            <div id="doneCard"
-                style="display: none; background-color: white; width: 450px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-                <h1 style="color: #333; margin-top: 0;">All Done! 🎉</h1>
-                <p style="color: #666; font-size: 16px;">Waiting for the rest of your group to finish voting...</p>
-                <br>
-                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 10px; text-align: left;">
-                    <p style="margin: 0 0 10px 0;"><b>Your Picks:</b></p>
-                    <div id="picksList"></div>
-                </div>
-                <br><br>
-                <button onclick="location.href='dashboard.html'"
-                    style="background-color: #333; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
-                    Back to Dashboard
-                </button>
-            </div>
-
-        </center>
-
-    </font>
-
-    <script>
-        // -------------------------------------------------------
-        // MOCK DATA — structured to match TMDB (The Movie Database) API response
-        // TODO: Replace this array with a real fetch call once backend is ready:
-        //   GET /api/sessions/:code/options
-        //   The backend should hit the TMDB API and return movies in this same format
-        // -------------------------------------------------------
-        var movies = [
-            {
-                name: "The Dark Knight",
-                genre: "Action",
-                rating: "PG-13",
-                runtime: "2h 32m",
-                score: "9.0 ⭐ (2.8M reviews)",
-                link: "https://www.imdb.com/title/tt0468569/",
-                image_url: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=600&q=80"
-            },
-            {
-                name: "Interstellar",
-                genre: "Sci-Fi",
-                rating: "PG-13",
-                runtime: "2h 49m",
-                score: "8.7 ⭐ (1.9M reviews)",
-                link: "https://www.imdb.com/title/tt0816692/",
-                image_url: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&q=80"
-            },
-            {
-                name: "The Lion King",
-                genre: "Animation",
-                rating: "G",
-                runtime: "1h 28m",
-                score: "8.5 ⭐ (1.1M reviews)",
-                link: "https://www.imdb.com/title/tt0110357/",
-                image_url: "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=600&q=80"
-            },
-            {
-                name: "Inception",
-                genre: "Sci-Fi / Thriller",
-                rating: "PG-13",
-                runtime: "2h 28m",
-                score: "8.8 ⭐ (2.4M reviews)",
-                link: "https://www.imdb.com/title/tt1375666/",
-                image_url: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=600&q=80"
-            },
-            {
-                name: "Get Out",
-                genre: "Horror / Thriller",
-                rating: "R",
-                runtime: "1h 44m",
-                score: "7.7 ⭐ (620K reviews)",
-                link: "https://www.imdb.com/title/tt5052448/",
-                image_url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&q=80"
-            },
-            {
-                name: "Crazy Rich Asians",
-                genre: "Romance / Comedy",
-                rating: "PG-13",
-                runtime: "2h 0m",
-                score: "6.9 ⭐ (180K reviews)",
-                link: "https://www.imdb.com/title/tt3104988/",
-                image_url: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=600&q=80"
-            }
-        ];
-
-        var currentIndex = 0;
-        var yesVotes = [];
-
-        loadCard(currentIndex);
-
-        function loadCard(i) {
-            var m = movies[i];
-            document.getElementById('cardImg').src = m.image_url;
-            document.getElementById('cardName').innerHTML = m.name;
-            document.getElementById('cardGenre').innerHTML = m.genre;
-            document.getElementById('cardRating').innerHTML = m.rating;
-            document.getElementById('cardRuntime').innerHTML = m.runtime;
-            document.getElementById('cardScore').innerHTML = m.score;
-            document.getElementById('cardLink').href = m.link;
-            document.getElementById('progressMsg').innerHTML = 'Movie ' + (i + 1) + ' of ' + movies.length;
+        if (!sessionPin) {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('errorMessage').innerHTML = '<p style="font-size: 18px; color: red;">No session code found in URL.<br>Go back to the dashboard and start a session.</p>';
+            document.getElementById('errorMessage').style.display = 'block';
+            return;
         }
 
-        function vote(choice) {
-            if (choice === 'yes') yesVotes.push(movies[currentIndex]);
+        try {
+            var url = 'http://localhost:3000/api/session/' + sessionPin + '/movies';
+            console.log("Fetching from:", url);
 
-            // TODO: Send vote to backend once ready
-            // POST /api/votes { sessionCode, optionName: movies[currentIndex].name, vote: choice }
+            var response = await fetch(url);
+            console.log("Server response status:", response.status);
 
-            currentIndex++;
+            var data = await response.json();
+            console.log("Data received:", data);
 
-            if (currentIndex < movies.length) {
-                loadCard(currentIndex);
+            var results = (data.results || [])
+                .filter(function(movie) { return movie.poster_path; })
+                .slice(0, 10);
+
+            movies = results.map(function(movie) {
+                var genreNames = movie.genre_ids
+                    .map(function(id) { return GENRE_MAP[id]; })
+                    .filter(function(name) { return name; })
+                    .slice(0, 2)
+                    .join(" / ");
+
+                return {
+                    name:      movie.title,
+                    genre:     genreNames || "Unknown",
+                    score:     movie.vote_average.toFixed(1) + " stars",
+                    runtime:   movie.runtime || "N/A",
+                    cert:      movie.certification || "NR",
+                    overview:  movie.overview,
+                    image_url: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
+                    link:      "https://www.themoviedb.org/movie/" + movie.id
+                };
+            });
+
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('votingCard').style.display     = 'block';
+            loadCard(0);
+
+        } catch (error) {
+            console.error("Fetch error:", error);
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display   = 'block';
+        }
+    }
+
+
+    function loadCard(i) {
+        var movie = movies[i];
+        document.getElementById('cardImg').src              = movie.image_url;
+        document.getElementById('cardName').textContent     = movie.name;
+        document.getElementById('cardGenre').textContent    = movie.genre;
+        document.getElementById('cardScore').textContent    = movie.score;
+        document.getElementById('cardCert').textContent     = movie.cert;
+        document.getElementById('cardRuntime').textContent  = movie.runtime;
+        document.getElementById('cardOverview').textContent = movie.overview;
+        document.getElementById('cardLink').href            = movie.link;
+        document.getElementById('progressMsg').textContent  = "Movie " + (i + 1) + " of " + movies.length;
+    }
+
+
+    function vote(choice) {
+        if (choice === 'yes') {
+            yesVotes.push(movies[currentIndex]);
+        }
+
+        currentIndex++;
+
+        if (currentIndex < movies.length) {
+            loadCard(currentIndex);
+        } else {
+            document.getElementById('votingCard').style.display = 'none';
+
+            var picksList = document.getElementById('picksList');
+
+            if (yesVotes.length === 0) {
+                picksList.innerHTML = '<p style="color: gray;">You said no to everything!</p>';
             } else {
-                document.getElementById('votingCard').style.display = 'none';
-
-                var picksList = document.getElementById('picksList');
-                if (yesVotes.length === 0) {
-                    picksList.innerHTML = '<p style="color:#999; margin:0;">You said no to everything!</p>';
-                } else {
-                    yesVotes.forEach(function (m) {
-                        picksList.innerHTML += '<p style="margin: 5px 0;">✔ <b>' + m.name + '</b> — ' + m.genre + ' | ' + m.rating + '</p>';
-                    });
-                }
-
-                document.getElementById('doneCard').style.display = 'block';
-
-                // TODO: Poll GET /api/results/:sessionCode until all group members are done
-                // then redirect to results.html
+                yesVotes.forEach(function(movie) {
+                    picksList.innerHTML += '<p>Yes: <b>' + movie.name + '</b> - ' + movie.genre + ' | ' + movie.cert + ' | ' + movie.runtime + '</p>';
+                });
             }
+
+            document.getElementById('doneCard').style.display = 'block';
         }
-    </script>
+    }
+
+    fetchMovies();
+
+</script>
 
 </body>
-
 </html>
