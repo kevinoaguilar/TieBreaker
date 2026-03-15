@@ -1,113 +1,89 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - TieBreaker</title>
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
+<body>
+    <a href="index.html" class="back-btn">← Back to Home</a>
 
-<body bgcolor="#8ac1f1">
-    <font face="Arial">
+    <div class="page-wrapper">
+        <div class="card" style="width: 100%; max-width: 460px;">
 
-        <a href="index.html">
-            <button
-                style="background-color: white; padding: 10px 15px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; margin: 10px;">
-                &larr; Back to Home
-            </button>
-        </a>
+            <h1 style="text-align:center; color: var(--text-main);">Welcome Back!</h1>
+            <div class="title-bar title-bar-green"></div>
 
-        <br><br><br>
+            <!-- Error message box (hidden until there's an error) -->
+            <div id="errorMsg" style="display:none; background:#FEE2E2; color:#B91C1C; padding:12px; border-radius:8px; margin-bottom:15px; font-size:14px;"></div>
 
-        <center>
-            <div
-                style="background-color: white; width: 450px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+            <form id="loginForm">
+                <label class="form-label">Username or Email:</label>
+                <input type="text" id="identifier" placeholder="Enter username or email"
+                    class="form-input" required>
 
-                <h1 style="color: #333; margin-bottom: 5px;">Welcome Back!</h1>
-                <div
-                    style="height: 4px; width: 300px; background-color: green; border-radius: 10px; margin-bottom: 25px;">
+                <label class="form-label">Password:</label>
+                <input type="password" id="password" placeholder="Enter your password"
+                    class="form-input" required>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <label style="font-size:14px; color:var(--text-muted); cursor:pointer;">
+                        <input type="checkbox" onchange="document.getElementById('password').type = this.checked ? 'text' : 'password'">
+                        Show Password
+                    </label>
+                    <a href="forgotPassword.html" style="color:var(--text-muted); font-size:14px; text-decoration:none;">
+                        Forgot password?
+                    </a>
                 </div>
 
-                <form id="loginForm">
-                    <p style="text-align: left; margin-bottom: 5px;"><b>Username or Email:</b></p>
-                    <input type="text" id="identifier" placeholder="Enter username or email" required
-                        style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
+                <button type="submit" class="btn btn-green" style="font-size:18px;">Login</button>
+            </form>
 
-                    <br><br>
-
-                    <p style="text-align: left; margin-bottom: 5px;"><b>Password:</b></p>
-                    <input type="password" id="password" placeholder="Enter your password" required
-                        style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
-
-                    <input type="checkbox"
-                        onclick="document.getElementById('password').type = this.checked ? 'text' : 'password'"> Show
-                    Password
-
-                    <p style="text-align: right; margin-top: 10px;">
-                        <a href="forgotpassword.html"
-                            style="color: #666; font-size: 14px; text-decoration: none;">Forgot password?</a>
-                    </p>
-
-                    <br>
-
-                    <button type="submit"
-                        style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 128, 0, 0.3);">
-                        Login
-                    </button>
-                </form>
-
-                <br><br>
-                <p style="color: #666;">Don't have an account? <a href="register.html"
-                        style="color: red; font-weight: bold; text-decoration: none;">Register here</a></p>
-            </div>
-        </center>
-
-    </font>
+            <div class="divider"></div>
+            <p style="text-align:center; color:var(--text-muted);">
+                Don't have an account?
+                <a href="register.html" style="color:var(--red); font-weight:bold; text-decoration:none;">Register here</a>
+            </p>
+        </div>
+    </div>
 
     <script>
-
-        // showError(msg)   → displays msg in a red box on screen
-        //TODO: This will help with the alert messages being on the screen instead 
-        // I dont have database access so i cant test but these should work id just need to call them in each spot
-
+        // Shows a red error box instead of a jarring alert popup
         function showError(msg) {
             const box = document.getElementById('errorMsg');
-            box.innerHTML = msg;
+            box.textContent = msg;
             box.style.display = 'block';
         }
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Stop page from refreshing
 
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
             const identifier = document.getElementById('identifier').value;
-            const password = document.getElementById('password').value;
+            const password   = document.getElementById('password').value;
 
             try {
-                // Fetching the login route from your backend
                 const response = await fetch('http://localhost:3000/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ identifier, password })
                 });
-
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Save the JWT token to bypass the "Please log in first!" gatekeeper
                     localStorage.setItem('tiebreaker_token', data.token);
-
-                    // Optional: Save user info for personalization
                     localStorage.setItem('user_info', JSON.stringify(data.user));
-
-                    alert("Login Successful!");
                     window.location.href = 'dashboard.html';
                 } else {
-                    alert(data.message || "Login failed. Please check your credentials.");
+                    // Backend sends 'message' for login errors
+                    showError(data.message || "Login failed. Please check your credentials.");
                 }
             } catch (error) {
                 console.error("Connection Error:", error);
-                alert("Could not connect to the server. Is your backend running?");
+                showError("Could not connect to the server. Is your backend running?");
             }
         });
     </script>
 </body>
-
 </html>

@@ -1,141 +1,87 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About TieBreaker</title>
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #8ac1f1;
-            background-image: linear-gradient(135deg, #8ac1f1 0%, #e0f2fe 100%);
-            min-height: 100vh;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <font face="Arial">
+    <a href="index.html" class="back-btn">← Back to Home</a>
 
-        <a href="index.html">
-            <button
-                style="background-color: white; padding: 10px 15px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; margin: 10px;">
-                &larr; Back to Home
-            </button>
-        </a>
+    <div class="page-wrapper">
+        <div class="card" style="width: 100%; max-width: 660px;">
 
-        <br><br>
-
-        <center>
-            <div
-                style="background-color: white; width: 600px; padding: 50px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-
-                <h1 style="font-size: 40px; margin-bottom: 5px; color: #333;">About TieBreaker</h1>
-                <div style="height: 3px; width: 350px; background-color: #000000; border-radius: 5px;"></div>
-
-                <br>
-
-                <div style="text-align: center; padding: 10px;">
-                    <p style="font-size: 17px; line-height: 1.8; color: #444; margin: 0;">
-                        <b>TieBreaker</b> was born from our frustration with endless group indecision.
-                        We've designed a platform that makes group choices easier, fairer, and completely unbiased.
-                        <br><br>
-                        By using an anonymous voting system we remove the peer pressure of
-                        social influence. This helps ensure results reflect what everyone actually wants.
-                    </p>
-                </div>
-
-                <br>
-                <hr color="#000000" width="100%" size="3">
-                <br>
-
-                <h2 style="color: black;">How It Works</h2>
-                <div
-                    style="border: 2px solid rgb(0, 0, 0); padding: 20px; border-radius: 15px; display: inline-block; background-color: #fbff8c;">
-                    <div style="display: inline-block; text-align: left;">
-                        1. <b>Create</b> a session for food, movies, or activities.<br>
-                        2. <b>Share</b> your unique 4-digit code with friends.<br>
-                        3. <b>Vote</b> on your favorite choices anonymously.<br>
-                        4. <b>Match!</b> TieBreaker reveals the winner based on votes.<br>
-                    </div>
-                </div>
-
-                <br><br><br>
-
-                <!-- Available Modes -->
-                <h2 style="color: #333;">Available Modes</h2>
-
-                <table cellspacing="10" style="width: 100%;">
-                    <tr>
-                        <td style="width: 33%;">
-                            <div
-                                style="background-color: #fff8f0; border: 2px solid #f97316; border-radius: 15px; padding: 20px;">
-                                <p style="font-size: 36px; margin: 0 0 8px 0;">🍕</p>
-                                <b style="font-size: 16px; color: #333;">Food</b>
-                                <p style="color: #666; font-size: 13px; margin: 6px 0 0 0;">Restaurants within 5 miles of the host.</p>
-                                <p style="color: #aaa; font-size: 11px; margin: 4px 0 0 0;"><i>Midpoint calc in the works</i></p>
-                            </div>
-                        </td>
-                        <td style="width: 33%;">
-                            <div
-                                style="background-color: #f0f4ff; border: 2px solid #6366f1; border-radius: 15px; padding: 20px;">
-                                <p style="font-size: 36px; margin: 0 0 8px 0;">🎬</p>
-                                <b style="font-size: 16px; color: #333;">Movies / Shows</b>
-                                <p style="color: #666; font-size: 13px; margin: 6px 0 0 0;">Browse all entertainment options together.</p>
-                                <p style="color: #aaa; font-size: 11px; margin: 4px 0 0 0;"><i>Categories coming soon</i></p>
-                            </div>
-                        </td>
-                        <td style="width: 33%;">
-                            <div
-                                style="background-color: #f0fff4; border: 2px solid #22c55e; border-radius: 15px; padding: 20px;">
-                                <p style="font-size: 36px; margin: 0 0 8px 0;">🎉</p>
-                                <b style="font-size: 16px; color: #333;">Activities</b>
-                                <p style="color: #666; font-size: 13px; margin: 6px 0 0 0;">Local fun within a 5 mile radius of the host.</p>
-                                <p style="color: #aaa; font-size: 11px; margin: 4px 0 0 0;"><i>Midpoint calc in the works</i></p>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-
-                <br><br>
-
-                <!-- Meet the Team -->
-                <h2 style="color: #333;">Meet the Team</h2>
-
-                <table cellspacing="12" style="width: 100%;">
-                    <tr>
-                        <!-- Chris -->
-                        <td style="width: 50%;">
-                            <div
-                                style="background-color: #f0f4ff; border: 2px solid #06f5f9; border-radius: 15px; padding: 25px;">
-                                <b style="font-size: 17px; color: #333;">Christopher Bogash</b>
-                                <br>
-                                <span
-                                    style="display: inline-block; margin-top: 6px; background-color: #06f5f9; color: white; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;">FRONTEND</span>
-                                <p style="color: #666; font-size: 13px; margin: 10px 0 0 0; line-height: 1.5;">UI/UX Design &amp; Session Flow</p>
-                            </div>
-                        </td>
-                        <!-- Kevin -->
-                        <td style="width: 50%;">
-                            <div
-                                style="background-color: #ffedfc; border: 2px solid #ff00d4; border-radius: 15px; padding: 25px;">
-                                <b style="font-size: 17px; color: #333;">Kevin Aguilar</b>
-                                <br>
-                                <span
-                                    style="display: inline-block; margin-top: 6px; background-color: #ff00d4; color: white; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;">BACKEND</span>
-                                <p style="color: #666; font-size: 13px; margin: 10px 0 0 0; line-height: 1.5;">Backend Logic &amp; Database Architecture</p>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-
-                <br><br>
+            <!-- Header -->
+            <div class="text-center">
+                <h1 style="font-size: 36px; color: var(--text-main);">About TieBreaker</h1>
+                <div class="title-bar title-bar-dark" style="width: 280px;"></div>
             </div>
-        </center>
 
-        <br><br>
-    </font>
+            <!-- Description -->
+            <p style="font-size: 16px; line-height: 1.8; color: #444; text-align: center; margin-bottom: 30px;">
+                <strong>TieBreaker</strong> was born from our frustration with endless group indecision.
+                We designed a platform that makes group choices easier, fairer, and completely unbiased.
+                By using an anonymous voting system, we remove peer pressure so results reflect
+                what everyone actually wants.
+            </p>
+
+            <div class="divider"></div>
+
+            <!-- How It Works -->
+            <h2 style="text-align:center; margin-bottom: 15px;">How It Works</h2>
+            <div class="warning-box text-center" style="width: 100%;">
+                <p style="margin: 6px 0;">1. <strong>Create</strong> a session for food, movies, or activities.</p>
+                <p style="margin: 6px 0;">2. <strong>Share</strong> your unique 4-digit code with friends.</p>
+                <p style="margin: 6px 0;">3. <strong>Vote</strong> on your favorite choices anonymously.</p>
+                <p style="margin: 6px 0;">4. <strong>Match!</strong> TieBreaker reveals the winner based on votes.</p>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Available Modes -->
+            <h2 style="text-align:center; margin-bottom: 20px;">Available Modes</h2>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <div class="mode-badge mode-badge-food" style="flex:1; min-width:160px; text-align:center; padding:20px; border-radius:15px;">
+                    <p style="font-size: 36px; margin-bottom: 8px;">🍕</p>
+                    <strong>Food</strong>
+                    <p style="font-size: 13px; color: #000000; margin-top: 6px;">Restaurants near the host.</p>
+                    <p style="font-size: 11px; color: #999; margin-top: 4px;"><em>Midpoint calculation coming soon</em></p>
+                </div>
+                <div class="mode-badge mode-badge-movies" style="flex:1; min-width:160px; text-align:center; padding:20px; border-radius:15px;">
+                    <p style="font-size: 36px; margin-bottom: 8px;">🎬</p>
+                    <strong>Movies / Shows</strong>
+                    <p style="font-size: 13px; color: #000000; margin-top: 6px;">Browse top-rated films together.</p>
+                    <p style="font-size: 11px; color: #999; margin-top: 4px;"><em>Categories coming soon</em></p>
+                </div>
+                <div class="mode-badge mode-badge-activities" style="flex:1; min-width:160px; text-align:center; padding:20px; border-radius:15px;">
+                    <p style="font-size: 36px; margin-bottom: 8px;">🎉</p>
+                    <strong>Activities</strong>
+                    <p style="font-size: 13px; color: #000000; margin-top: 6px;">Local fun near the host.</p>
+                    <p style="font-size: 11px; color: #999; margin-top: 4px;"><em>Midpoint calculation coming soon</em></p>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Meet the Team -->
+            <h2 style="text-align:center; margin-bottom: 20px;">Meet the Team</h2>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <div style="flex:1; min-width:200px; background:#EFF6FF; border:2px solid #06b6d4; border-radius:15px; padding:25px; text-align:center;">
+                    <strong style="font-size: 16px;">Christopher Bogash</strong><br>
+                    <span style="display:inline-block; margin-top:8px; background:#06b6d4; color:white; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px;">FRONTEND</span>
+                    <p style="color:#555; font-size:13px; margin-top:10px; line-height:1.5;">UI/UX Design &amp; Session Flow</p>
+                </div>
+                <div style="flex:1; min-width:200px; background:#FDF4FF; border:2px solid #c026d3; border-radius:15px; padding:25px; text-align:center;">
+                    <strong style="font-size: 16px;">Kevin Aguilar</strong><br>
+                    <span style="display:inline-block; margin-top:8px; background:#c026d3; color:white; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px;">BACKEND</span>
+                    <p style="color:#555; font-size:13px; margin-top:10px; line-height:1.5;">Backend Logic &amp; Database Architecture</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </body>
-
 </html>

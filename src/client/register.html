@@ -1,103 +1,79 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - TieBreaker</title>
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
+<body>
+    <a href="index.html" class="back-btn">← Back to Home</a>
 
-<body bgcolor="#8ac1f1">
-    <font face="Arial">
+    <div class="page-wrapper">
+        <div class="card" style="width: 100%; max-width: 460px;">
 
-        <a href="index.html">
-            <button
-                style="background-color: white; padding: 10px 15px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; margin: 10px;">
-                &larr; Back to Home
-            </button>
-        </a>
+            <h1 style="text-align:center; color: var(--text-main);">Create Account</h1>
+            <div class="title-bar title-bar-red"></div>
 
-        <br><br><br>
+            <!-- Error / Success message boxes -->
+            <div id="errorMsg"   style="display:none; background:#FEE2E2; color:#B91C1C; padding:12px; border-radius:8px; margin-bottom:15px; font-size:14px;"></div>
+            <div id="successMsg" style="display:none; background:#D1FAE5; color:#065F46; padding:12px; border-radius:8px; margin-bottom:15px; font-size:14px;"></div>
 
-        <center>
-            <div
-                style="background-color: white; width: 450px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
+            <form id="registerForm">
+                <label class="form-label">Username:</label>
+                <input type="text" id="username" placeholder="Choose a username"
+                    class="form-input" required>
 
-                <h1 style="color: #333; margin-bottom: 5px;">Create Account</h1>
-                <div
-                    style="height: 4px; width: 300px; background-color: red; border-radius: 10px; margin-bottom: 25px;">
-                </div>
+                <label class="form-label">Email:</label>
+                <input type="email" id="email" placeholder="your.email@example.com"
+                    class="form-input" required>
 
-                <form id="registerForm">
-                    <p style="text-align: left; margin-bottom: 5px;"><b>Username:</b></p>
-                    <input type="text" id="username" placeholder="Choose a username" required
-                        style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
+                <label class="form-label">Password:</label>
+                <input type="password" id="password" placeholder="Enter your password"
+                    class="form-input" required>
 
-                    <br><br>
+                <label class="form-label">Confirm Password:</label>
+                <input type="password" id="confirmPassword" placeholder="Re-enter your password"
+                    class="form-input" required>
 
-                    <p style="text-align: left; margin-bottom: 5px;"><b>Email:</b></p>
-                    <input type="email" id="email" placeholder="your.email@example.com" required
-                        style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
+                <button type="submit" class="btn btn-red" style="font-size:18px;">Register</button>
+            </form>
 
-                    <br><br>
-
-                    <p style="text-align: left; margin-bottom: 5px;"><b>Password:</b></p>
-                    <input type="password" id="password" placeholder="Enter your password" required
-                        style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
-
-                    <br><br>
-
-                    <p style="text-align: left; margin-bottom: 5px;"><b>Confirm Password:</b></p>
-                    <input type="password" id="confirmPassword" placeholder="Re-enter your password" required
-                        style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;">
-
-                    <br><br><br>
-                    <button type="submit"
-                        style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.3);">
-                        Register
-                    </button>
-                </form>
-
-                <br><br>
-                <p style="color: #666;">Already have an account? <a href="login.html"
-                        style="color: green; font-weight: bold; text-decoration: none;">Login here</a></p>
-            </div>
-        </center>
-
-    </font>
+            <div class="divider"></div>
+            <p style="text-align:center; color:var(--text-muted);">
+                Already have an account?
+                <a href="login.html" style="color:var(--green); font-weight:bold; text-decoration:none;">Login here</a>
+            </p>
+        </div>
+    </div>
 
     <script>
-        // showError(msg)   → displays msg in a red box on screen
-        // showSuccess(msg) → displays msg in a green box on screen
-        //TODO: This will help with the alert messages being on the screen instead 
-        // I dont have database access so i cant test but these should work id just need to call them in each spot
         function showError(msg) {
-            const box = document.getElementById('errorMsg');
-            box.innerHTML = msg;
-            box.style.display = 'block';
             document.getElementById('successMsg').style.display = 'none';
-        }
-
-        function showSuccess(msg) {
-            const box = document.getElementById('successMsg');
-            box.innerHTML = msg;
+            const box = document.getElementById('errorMsg');
+            box.textContent = msg;
             box.style.display = 'block';
+        }
+        function showSuccess(msg) {
             document.getElementById('errorMsg').style.display = 'none';
+            const box = document.getElementById('successMsg');
+            box.textContent = msg;
+            box.style.display = 'block';
         }
 
-        // Handle the registration submission
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Stop the page from refreshing
-
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            e.preventDefault();
+            const username        = document.getElementById('username').value;
+            const email           = document.getElementById('email').value;
+            const password        = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
 
             if (password !== confirmPassword) {
-                alert("Passwords do not match!");
+                showError("Passwords do not match!");
                 return;
             }
-
 
             try {
                 const response = await fetch('http://localhost:3000/api/auth/register', {
@@ -105,21 +81,20 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, email, password })
                 });
-
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert("Account created successfully! Please login.");
-                    window.location.href = 'login.html';
+                    showSuccess("Account created! Redirecting to login...");
+                    setTimeout(() => window.location.href = 'login.html', 1500);
                 } else {
-                    alert(data.error || "Username already exists.");
+                    // Backend sends 'error' for register failures
+                    showError(data.error || "Registration failed. Username may already exist.");
                 }
             } catch (error) {
                 console.error("Connection error:", error);
-                alert("Could not connect to the backend. Make sure your server is running!");
+                showError("Could not connect to the backend. Make sure your server is running!");
             }
         });
     </script>
 </body>
-
 </html>

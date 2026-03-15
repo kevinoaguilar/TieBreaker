@@ -1,104 +1,77 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Host Movies Session - TieBreaker</title>
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
-    
-    <style>
-        .user-row {
-            background-color: white; padding: 12px; margin: 8px;
-            border-left: 5px solid green; border-radius: 8px;
-            text-align: left; box-shadow: 0px 2px 5px rgba(0,0,0,0.05);
-            font-family: Arial, sans-serif; display: flex;
-            justify-content: space-between; align-items: center;
-        }
-        .user-row:first-child { border-left: 5px solid red; }
-        .host-badge {
-            background-color: red; color: white; padding: 3px 8px;
-            border-radius: 5px; font-size: 11px; font-weight: bold;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-
-<body bgcolor="#8ac1f1">
-    <font face="Arial">
-
-        <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
-            <table width="100%">
-                <tr>
-                    <td><b style="font-size: 20px; color: #333;">TieBreaker</b></td>
-                    <td align="right">
-                        <a href="dashboard.html" style="text-decoration: none; color: red; font-weight: bold;">Leave Session</a>
-                    </td>
-                </tr>
-            </table>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <span class="navbar-brand">TieBreaker</span>
+        <div>
+            <a href="dashboard.html" class="danger">Leave Session</a>
         </div>
+    </nav>
 
-        <br><br>
+    <div class="page-wrapper">
+        <div class="card" style="width: 100%; max-width: 520px; text-align: center;">
 
-        <center>
-            <div style="background-color: white; width: 500px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-                <h1 style="margin-top: 0; color: #333;">🎬 Movies Session Ready!</h1>
+            <h1 style="margin-top: 0; color: var(--text-main);">🎬 Movies Session Ready!</h1>
 
-                <div style="background-color: #e1f5fe; padding: 10px; border-radius: 10px; border: 1px solid #0288d1; color: #01579b; display: inline-block; width: 80%;">
-                    <b>MODE: MOVIES 🎬</b>
-                </div>
-
-                <br><br>
-
-                <div style="border: 2px dashed #8ac1f1; padding: 25px; background-color: #f1f5f9; border-radius: 15px;">
-                    <p style="margin-top: 0; color: #666;">Share this code with your group:</p>
-                    <h1 id="groupCode" style="font-size: 45px; color: red; letter-spacing: 5px; margin: 10px 0;">...</h1>
-                    <p style="color: #666; font-size: 14px;">They can enter this on the dashboard to join</p>
-                    <button onclick="copyCode()" style="background-color: #333; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Copy Code</button>
-                </div>
-
-                <br><br>
-
-                <h2 id="participant-count">Participants (0)</h2>
-
-                <div id="participants-container" style="background-color: #f1f5f9; padding: 15px; border-radius: 15px; min-height: 100px;">
-                    <p id="waitingMsg" style="color: gray; margin: 10px 0;"><i>Waiting for others to join...</i></p>
-                </div>
-
-                <br>
-
-                <button id="start-session-btn" disabled 
-                    style="background-color: #ccc; color: white; padding: 18px; width: 100%; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: not-allowed; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
-                    Start Session
+            <!-- PIN display box -->
+            <div class="info-panel" style="margin: 20px 0; border: 2px dashed #8ac1f1;">
+                <p style="color: var(--text-muted); margin: 0 0 5px 0;">Share this code with your group:</p>
+                <h1 id="groupCode" style="font-size: 48px; color: var(--red); letter-spacing: 8px; margin: 10px 0;">...</h1>
+                <p style="color: var(--text-muted); font-size: 14px; margin: 0 0 12px 0;">They enter this on the dashboard to join</p>
+                <button onclick="copyCode()" style="background-color: #333; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                    Copy Code
                 </button>
-                
-                <p id="requirementMsg" style="color: gray; font-size: 14px; margin-top: 10px;">
-                    Need at least 2 people to start
-                </p>
             </div>
-        </center>
 
-    </font>
-    
+            <!-- Participant count -->
+            <h2 id="participant-count" style="margin-bottom: 10px;">Participants (0)</h2>
+
+            <!-- Participant list -->
+            <div id="participants-container" class="info-panel" style="min-height: 80px; text-align: left; margin-bottom: 20px;">
+                <p style="color: var(--text-muted); margin: 5px 0;"><em>Waiting for others to join...</em></p>
+            </div>
+
+            <!-- Start button (disabled until 2+ people) -->
+            <button id="start-session-btn" disabled class="btn btn-gray" style="font-size: 20px;">
+                Start Session
+            </button>
+            <p id="requirementMsg" style="color: var(--text-muted); font-size: 14px; margin-top: 10px;">
+                Need at least 2 people to start
+            </p>
+
+        </div>
+    </div>
+
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
+        const urlParams  = new URLSearchParams(window.location.search);
         const currentPin = urlParams.get('code');
 
         if (currentPin) {
-            document.getElementById('groupCode').innerText = currentPin;
-            startPolling(); 
+            document.getElementById('groupCode').textContent = currentPin;
+            startPolling();
         } else {
-            document.getElementById('groupCode').innerText = "ERROR";
+            document.getElementById('groupCode').textContent = "ERROR";
             alert("No Session Code found! Please go back to Dashboard.");
         }
 
         function copyCode() {
-            var code = document.getElementById('groupCode').innerText;
+            const code = document.getElementById('groupCode').textContent;
             navigator.clipboard.writeText(code);
             alert('Code copied: ' + code);
         }
 
-        // --- Built-in Polling Logic ---
-        async function startPolling() {
+        function startPolling() {
             fetchUsers();
-            setInterval(fetchUsers, 2000); 
+            setInterval(fetchUsers, 2000);
         }
 
         async function fetchUsers() {
@@ -107,37 +80,36 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    document.getElementById('participant-count').innerText = `Participants (${data.users.length})`;
-                    const list = document.getElementById('participants-container');
-                    list.innerHTML = ''; 
+                    document.getElementById('participant-count').textContent = `Participants (${data.users.length})`;
 
+                    const list = document.getElementById('participants-container');
+                    list.innerHTML = '';
                     if (data.users.length === 0) {
-                        list.innerHTML = '<p style="color: gray; margin: 10px 0;"><i>Waiting for others to join...</i></p>';
+                        list.innerHTML = '<p style="color: var(--text-muted); margin: 5px 0;"><em>Waiting for others to join...</em></p>';
                     } else {
                         data.users.forEach((u, index) => {
                             const isHost = index === 0;
                             const row = document.createElement('div');
-                            row.className = 'user-row';
+                            row.className = 'user-row' + (isHost ? ' is-host' : '');
                             row.innerHTML = `<span>${u}</span> ${isHost ? '<span class="host-badge">HOST</span>' : ''}`;
                             list.appendChild(row);
                         });
                     }
 
                     const startBtn = document.getElementById('start-session-btn');
-                    const reqMsg = document.getElementById('requirementMsg');
-
+                    const reqMsg   = document.getElementById('requirementMsg');
                     if (data.users.length >= 2) {
-                        startBtn.disabled = false;
-                        startBtn.style.backgroundColor = 'green';
-                        startBtn.style.cursor = 'pointer';
-                        reqMsg.style.color = 'green';
-                        reqMsg.innerText = "Ready to start!";
+                        startBtn.disabled       = false;
+                        startBtn.className      = 'btn btn-green';
+                        startBtn.style.fontSize = '20px';
+                        reqMsg.textContent      = 'Ready to start!';
+                        reqMsg.style.color      = 'var(--green)';
                     } else {
-                        startBtn.disabled = true;
-                        startBtn.style.backgroundColor = '#ccc';
-                        startBtn.style.cursor = 'not-allowed';
-                        reqMsg.style.color = 'gray';
-                        reqMsg.innerText = "Need at least 2 people to start";
+                        startBtn.disabled       = true;
+                        startBtn.className      = 'btn btn-gray';
+                        startBtn.style.fontSize = '20px';
+                        reqMsg.textContent      = 'Need at least 2 people to start';
+                        reqMsg.style.color      = 'var(--text-muted)';
                     }
                 }
             } catch (err) {
@@ -145,15 +117,12 @@
             }
         }
 
-        // --- Start Button Logic ---
         document.getElementById('start-session-btn').addEventListener('click', async () => {
             try {
                 const response = await fetch(`http://localhost:3000/api/session/start/${currentPin}`, {
                     method: 'PUT'
                 });
-                
                 if (response.ok) {
-                    // Redirect specifically for Movies
                     window.location.href = `votemovies.html?code=${currentPin}`;
                 } else {
                     alert("Failed to start session. Try again.");
@@ -162,7 +131,6 @@
                 console.error("Error starting session:", err);
             }
         });
-
     </script>
 </body>
 </html>

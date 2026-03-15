@@ -1,141 +1,163 @@
 # TieBreaker
 
-**TieBreaker** is a web-based decision-making platform designed to help two or more people quickly decide what to eat, what to watch, or what activity to do, without the need for annoying debates or indecision.
+TieBreaker is a group decision-making app that helps friends decide what to eat, what to watch, or what activity to do — without the endless back-and-forth in the group chat.
 
-The application acts as a neutral third party that produces recommendations based on the host's location. As users log in to the application, it gathers further preferences based on previous decisions. TieBreaker is built to reduce decision fatigue and make group planning faster, simpler, and more enjoyable.
-
----
-
-## Problem Statement
-
-Group decisions often break down because:
-* People have different preferences.
-* No one wants to make the final call.
-* Plans that never make it out of the group chat
-
-TieBreaker solves this problem by structuring the decision process and applying logic to reach a clear result that everyone can agree on.
+A host creates a session and shares a 4-digit code. Everyone joins and votes yes or no on options. TieBreaker reveals what the group agreed on — and if there's a tie, it picks one randomly.
 
 ---
 
-## Core Features
+## The Problem
 
-* **Multi-user Sessions:** Simplifies group decisions in real-time with multiple users.
-* **Food Selection:** Generates dining options based on shared preferences/locations.
-* **Entertainment Selection:** Suggests movies or shows based on genres and availability.
-* **Activity Selection:** Recommends activities based on interests and location.
-* **Tie-breaking Logic:** Resolves conflicting inputs fairly.
-* **Session Workflow:** Uses shared links or codes for easy access.
+Group decisions are hard. Nobody wants to be "the one" who picks. People say "I don't care" but actually do care. Plans die in the group chat.
+
+TieBreaker fixes this by making voting anonymous — no one sees how anyone else voted until the result is revealed.
 
 ---
 
-## How TieBreaker Works
+## Features
 
-1.  **Create a Session:** A user selects a decision type: Food, Movie/Show, or Activity.
-2.  **Join the Session:** Other participants join using a session through link or code.
-3.  **Submit Preferences:** Each participant inputs their preferences (genres, cuisines, activity types, etc.).
-4.  **Decision Processing:** The system filters and evaluates all inputs using decision logic designed to be fair and unbiased.
-5.  **Final Result:** TieBreaker presents a single outcome, a final decision.
-
----
-
-## User Experience
-
-* Simple and intuitive interface.
-* Minimal setup time.
-* Mobile-friendly design.
-* Clear decision flow from start to finish.
+- Host creates a session, guests join with a 4-digit code
+- Anonymous yes/no voting on 10 options
+- Three categories: Food, Movies, and Activities
+- Movies pulled from The Movie Database (TMDB) API
+- Food and Activities use curated local options
+- Match detection — shows what everyone agreed on
+- If there's a tie, the host can randomize a final pick
+- Sessions automatically delete after 24 hours
 
 ---
 
-## Technology Stack
+## How It Works
 
-**Frontend**
-* HTML
-* CSS
-* JavaScript
-
-**Backend**
-* Java / Node.js
-* SQL / NoSQL
-
-**Infrastructure**
-* **Session Handling:** Unique session IDs and links
-* **Deployment:** GitHub Pages / Cloud hosting
+1. Register or log in at the home page
+2. Pick a category from the dashboard (Food, Movies, or Activities)
+3. Share the 4-digit code with your group
+4. Everyone joins the lobby using the code
+5. Host clicks Start once 2 or more people are in
+6. Each person votes yes or no on 10 options
+7. TieBreaker shows the result once everyone finishes
 
 ---
 
-## Project Context
+## Tech Stack
 
-TieBreaker is being developed as a college senior capstone project with an emphasis on:
-* Full-stack development
-* Real-world problem solving
-* Usability and fairness in system design
-
----
-
-## Future Enhancements
-
-* [ ] Location-based recommendations
-* [ ] Weighted or ranked preferences
-* [ ] AI-assisted suggestions
-* [ ] Real-time session updates
-* [ ] Decision history and analytics
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Node.js + Express
+- **Database:** MongoDB Atlas
+- **Auth:** JWT + bcryptjs
+- **Movies API:** TMDB
 
 ---
 
-## System Architecture
-
-The following diagram outlines the high-level architecture of the TieBreaker application, demonstrating the data flow from the client to the database.
-
-![System Architecture Diagram](docs/images/TieBreakerSystemArchitecture.jpg)
-
-### Architecture Overview
-
-**1. Client Layer**
-The "front door" of the application, consisting of the Mobile and Desktop browsers. This layer handles user interactions (HTML/CSS/JS) and sends HTTPS requests to the server.
-
-**2. API Gateway & Web Server**
-Acts as the entry point for the backend. It receives requests (e.g., "Join Session") and routes them to the appropriate service, ensuring valid traffic flow.
-
-**3. Backend Services Layer**
-Contains the core application logic, split into modular services:
-* **Session Management:** Handles room codes, user tracking, and lobby states.
-* **Voting & Preferences:** Collects and records user choices.
-* **Decision Engine:** The core logic component that processes votes and applies the tie-breaking algorithm to determine a winner.
-* **External Data Fetcher:** Communicates with third-party APIs to retrieve real-world data (e.g., movie or restaurant details).
-
-**4. Data Layer**
-* **Database:** Stores persistent data such as active session IDs, user votes, and history (SQL/NoSQL).
-* **External APIs:** Third-party services used to populate options for users.
-
----
-
-
-
-##  Project Structure
-
-Here is the overview of the file structure for the TieBreaker application.
+## Project Structure
 
 ```
 TieBreaker/
-├── docs/                  # Documentation files
-│   ├── images/            # Architecture diagrams and screenshots
-│   └── setup.md           # Extended setup instructions
-├── src/                   # Source code
-│   ├── client/            # Frontend (HTML, CSS, JS)
-│   │   ├── css/
-│   │   ├── js/
-│   │   └── index.html
-│   └── server/           # Backend (Node.js/Java)
-│       ├── controllers/   # Route logic (Session, Vote)
-│       ├── models/        # Database schemas
-│       ├── routes/        # API endpoints
-│       └── app.js         # Main entry point
-├── database/              # SQL scripts and DB configs
-│   └── schema.sql         # Database initialization
-├── .gitignore             # Files to ignore (node_modules, env)
-└── README.md              # Project overview
+├── src/
+│   ├── client/                  # All frontend pages
+│   │   ├── styles.css           # Shared stylesheet
+│   │   ├── index.html           # Landing / login page
+│   │   ├── about.html
+│   │   ├── login.html
+│   │   ├── register.html
+│   │   ├── forgotpassword.html
+│   │   ├── dashboard.html
+│   │   ├── hostfood.html        # Host lobby — Food
+│   │   ├── hostmovies.html      # Host lobby — Movies
+│   │   ├── hostactivities.html  # Host lobby — Activities
+│   │   ├── joinsession.html     # Guest lobby
+│   │   ├── votefood.html        # Voting — Food
+│   │   ├── votemovies.html      # Voting — Movies
+│   │   ├── voteactivities.html  # Voting — Activities
+│   │   └── results.html         # Results (all categories)
+│   └── server/                  # Backend
+│       ├── controllers/
+│       │   ├── authController.js
+│       │   └── sessionController.js
+│       ├── models/
+│       │   ├── User.js
+│       │   └── Session.js
+│       ├── routes/
+│       │   ├── authRoutes.js
+│       │   └── sessionRoutes.js
+│       ├── utils/
+│       │   └── geoService.js
+│       └── app.js
+├── .env
+├── package.json
+└── README.md
 ```
 
+---
+
+## Running the App Locally
+
+**Requirements**
+- Node.js
+- A free MongoDB Atlas account
+
+**Steps**
+
+1. Clone the repo
+```bash
+git clone https://github.com/your-username/tiebreaker.git
+cd tiebreaker
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Create a `.env` file in the root folder
+```
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=any_random_string
+TMDB_API_KEY=your_tmdb_key
+GEOCODIO_API_KEY=your_geocodio_key
+```
+
+4. Start the server
+```bash
+node src/server/app.js
+```
+
+5. Open `src/client/index.html` in your browser
+
+> In MongoDB Atlas, set Network Access to `0.0.0.0/0` so your machine can connect from any IP.
+
+---
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Create an account |
+| POST | `/api/auth/login` | Login |
+| POST | `/api/session/create` | Create a new session |
+| POST | `/api/session/join` | Join a session |
+| GET  | `/api/session/:pin` | Get session info |
+| PUT  | `/api/session/start/:pin` | Host starts the session |
+| GET  | `/api/session/:pin/movies` | Get movies from TMDB |
+| POST | `/api/session/:pin/vote` | Submit votes |
+| GET  | `/api/session/:pin/results` | Get results |
+| POST | `/api/session/:pin/pick` | Host sets the final pick |
+
+---
+
+## Future Ideas
+
+- Forgot password / email reset
+- Real-time updates with WebSockets instead of polling
+- Use live location and an API to find nearby restaurants and activities
+- Midpoint calculation of nearby restaurants and activities instead of being based on host location
+- Decision history so you can look back at past sessions
+- Mobile app
+- Profile section to customize or update user information
+- Add subcategories for each mode, such as cuisine type, price, horror, etc...
+
+---
+
 ## Authors
-Developed by **Christopher Bogash** & **Kevin Aguilar** as part of a senior capstone project.
+
+Built by **Christopher Bogash** and **Kevin Aguilar** as a senior capstone project.

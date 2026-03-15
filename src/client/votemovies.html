@@ -1,215 +1,278 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vote for Movies - TieBreaker</title>
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .vote-btn {
+            padding: 15px;
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: filter 0.2s;
+        }
+
+        .vote-btn:hover {
+            filter: brightness(110%);
+        }
+
+        .vote-btn-no {
+            background-color: var(--red);
+            color: white;
+        }
+
+        .vote-btn-yes {
+            background-color: var(--green);
+            color: white;
+        }
+    </style>
 </head>
 
-<body bgcolor="#8ac1f1">
-<font face="Arial">
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <span class="navbar-brand">TieBreaker</span>
+        <div>
+            <a href="dashboard.html" class="danger">Leave Session</a>
+        </div>
+    </nav>
 
-    <!-- TOP NAV BAR -->
-    <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
-        <table width="100%">
-            <tr>
-                <td><b style="font-size: 20px;">TieBreaker</b></td>
-                <td align="right">
-                    <a href="dashboard.html" style="color: red; font-weight: bold;">Leave Session</a>
-                </td>
-            </tr>
-        </table>
-    </div>
+    <div class="page-wrapper">
 
-    <br><br>
-
-    <center>
-
-        <div id="loadingMessage">
+        <!-- Loading state -->
+        <div id="loadingMessage" style="text-align: center;">
             <p style="font-size: 18px; color: white;">Loading movies... please wait</p>
         </div>
 
-        <div id="errorMessage" style="display: none;">
-            <p style="font-size: 18px; color: red;">Something went wrong loading movies. Is your server running?</p>
+        <!-- Error state -->
+        <div id="errorMessage" style="display: none; text-align: center;">
+            <div class="card" style="max-width: 460px;">
+                <p style="font-size: 18px; color: var(--red);" id="errorText">Something went wrong.</p>
+                <a href="dashboard.html" class="btn btn-dark"
+                    style="display: inline-block; text-decoration: none; padding: 12px 24px; border-radius: 10px; margin-top: 10px;">
+                    Back to Dashboard
+                </a>
+            </div>
         </div>
 
-        <div id="votingCard" style="display: none; background-color: white; width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-            <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Movie 1 of 10</p>
-            <img id="cardImg" src="" alt="Movie poster"
-                style="width: 100%; height: 320px; object-fit: contain; background-color: #f1f1f1; border-radius: 12px; margin-bottom: 15px;">
-            <h2 id="cardName" style="margin: 0 0 10px 0; color: #333;"></h2>
-
-            <!-- Row 1: Genre + Score -->
-            <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">
-                <b>Genre:</b> <span id="cardGenre"></span>
-                &nbsp;|&nbsp;
-                <b>Score:</b> <span id="cardScore"></span>
-            </p>
-
-            <!-- Row 2: Rating + Runtime -->
-            <p style="color: #666; font-size: 14px; margin: 0 0 10px 0;">
-                <b>Rated:</b> <span id="cardCert"></span>
-                &nbsp;|&nbsp;
-                <b>Runtime:</b> <span id="cardRuntime"></span>
-            </p>
-
-            <p id="cardOverview" style="color: #888; font-size: 13px; margin: 0 0 15px 0;"></p>
-            <a id="cardLink" href="#" target="_blank" style="color: #8ac1f1; font-weight: bold; font-size: 14px;">
-                More Info
-            </a>
-            <br><br>
-            <table width="100%" cellspacing="10">
-                <tr>
-                    <td width="50%">
-                        <button onclick="vote('no')"
-                            style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
-                            No
-                        </button>
-                    </td>
-                    <td width="50%">
-                        <button onclick="vote('yes')"
-                            style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
-                            Yes
-                        </button>
-                    </td>
-                </tr>
-            </table>
+        <!-- Voting card -->
+        <div id="votingCard" style="display: none; width: 100%; max-width: 460px;">
+            <div class="card">
+                <p id="progressMsg"
+                    style="color: var(--text-muted); font-size: 14px; margin-top: 0; margin-bottom: 12px;">
+                    Movie 1 of 10
+                </p>
+                <img id="cardImg" src="" alt="Movie poster"
+                    style="width: 100%; height: 320px; object-fit: contain; border-radius: 12px; margin-bottom: 15px; background-color: #f1f1f1; display: block;">
+                <h2 id="cardName" style="margin: 0 0 10px 0; color: var(--text-main);"></h2>
+                <p style="color: var(--text-muted); font-size: 14px; margin: 0 0 5px 0;">
+                    <strong>Genre:</strong> <span id="cardGenre"></span>
+                    &nbsp;|&nbsp;
+                    <strong>Score:</strong> <span id="cardScore"></span>
+                </p>
+                <p style="color: var(--text-muted); font-size: 14px; margin: 0 0 8px 0;">
+                    <strong>Rated:</strong> <span id="cardCert"></span>
+                    &nbsp;|&nbsp;
+                    <strong>Runtime:</strong> <span id="cardRuntime"></span>
+                </p>
+                <p id="cardOverview" style="color: #888; font-size: 13px; margin: 0 0 15px 0;"></p>
+                <a id="cardLink" href="#" target="_blank"
+                    style="color: var(--primary); font-weight: bold; font-size: 14px; text-decoration: none;">
+                    🔗 More Info
+                </a>
+                <br><br>
+                <div style="display: flex; gap: 15px;">
+                    <button class="vote-btn vote-btn-no" onclick="vote('no')">No</button>
+                    <button class="vote-btn vote-btn-yes" onclick="vote('yes')">Yes</button>
+                </div>
+            </div>
         </div>
 
-        <div id="doneCard" style="display: none; background-color: white; width: 450px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-            <h1 style="color: #333;">All Done!</h1>
-            <p style="color: #666;">Waiting for the rest of your group...</p>
-            <br>
-            <b>Your Picks:</b>
-            <div id="picksList" style="margin-top: 10px;"></div>
-            <br>
-            <button onclick="location.href='dashboard.html'"
-                style="background-color: #333; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
-                Back to Dashboard
-            </button>
+        <!-- Done card -->
+        <div id="doneCard" style="display: none; width: 100%; max-width: 460px;">
+            <div class="card text-center">
+                <h1 style="color: var(--text-main); margin-top: 0;">All Done!</h1>
+                <p style="color: var(--text-muted);">Waiting for the rest of your group to finish...</p>
+                <div id="pollStatus" style="margin: 15px 0; color: var(--text-muted); font-size: 14px;">
+                    Checking results...
+                </div>
+                <div class="info-panel" style="text-align: left; margin-bottom: 20px;">
+                    <p style="margin: 0 0 10px 0;"><strong>Your Picks:</strong></p>
+                    <div id="picksList"></div>
+                </div>
+                <button onclick="location.href='dashboard.html'" class="btn btn-dark">
+                    Back to Dashboard
+                </button>
+            </div>
         </div>
 
-    </center>
+    </div>
 
-</font>
+    <script>
+        var urlParams = new URLSearchParams(window.location.search);
+        var sessionPin = urlParams.get('code') || urlParams.get('pin');
+        console.log("Session PIN:", sessionPin);
 
-<script>
+        // Get username for vote submission
+        var username = "Guest";
+        try { username = JSON.parse(localStorage.getItem('user_info')).username || "Guest"; } catch (e) { }
 
-    var urlParams  = new URLSearchParams(window.location.search);
-    var sessionPin = urlParams.get('code');
+        var GENRE_MAP = {
+            28: "Action", 12: "Adventure", 16: "Animation",
+            35: "Comedy", 80: "Crime", 18: "Drama",
+            27: "Horror", 10749: "Romance", 878: "Sci-Fi",
+            53: "Thriller", 14: "Fantasy", 9648: "Mystery"
+        };
 
-    console.log("URL:", window.location.href);
-    console.log("Session PIN:", sessionPin);
+        var movies = [];
+        var currentIndex = 0;
+        var yesVotes = [];
 
-    var GENRE_MAP = {
-        28: "Action",   12: "Adventure", 16: "Animation",
-        35: "Comedy",   80: "Crime",     18: "Drama",
-        27: "Horror",   10749: "Romance", 878: "Sci-Fi",
-        53: "Thriller", 14: "Fantasy",   9648: "Mystery"
-    };
+        async function fetchMovies() {
+            if (!sessionPin) {
+                showError("No session code found. Go back to the dashboard and start a session.");
+                return;
+            }
+            try {
+                var url = 'http://localhost:3000/api/session/' + sessionPin + '/movies';
+                console.log("Fetching from:", url);
+                var response = await fetch(url);
+                console.log("Server response status:", response.status);
+                var data = await response.json();
+                console.log("Data received:", data);
 
-    var movies       = [];
-    var currentIndex = 0;
-    var yesVotes     = [];
+                var results = (data.results || [])
+                    .filter(function (movie) { return movie.poster_path; })
+                    .slice(0, 10);
 
+                movies = results.map(function (movie) {
 
-    async function fetchMovies() {
+                    var genreNames = movie.genre_ids
+                        .map(function (id) { return GENRE_MAP[id]; })
+                        .filter(function (name) { return name; })
+                        .slice(0, 2)
+                        .join(" / ");
 
-        if (!sessionPin) {
-            document.getElementById('loadingMessage').style.display = 'none';
-            document.getElementById('errorMessage').innerHTML = '<p style="font-size: 18px; color: red;">No session code found in URL.<br>Go back to the dashboard and start a session.</p>';
-            document.getElementById('errorMessage').style.display = 'block';
-            return;
+                    return {
+                        name: movie.title,
+                        genre: genreNames || "Unknown",
+                        score: movie.vote_average.toFixed(1) + " stars",
+                        runtime: movie.runtime ? formatRuntime(movie.runtime) : "N/A",
+                        cert: movie.certification || "NR",
+                        overview: movie.overview,
+                        image_url: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
+                        link: "https://www.themoviedb.org/movie/" + movie.id
+                    };
+                });
+
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('votingCard').style.display = 'block';
+                loadCard(0);
+            } catch (error) {
+                console.error("Fetch error:", error);
+                showError("Something went wrong loading movies. Is your server running?");
+            }
         }
 
-        try {
-            var url = 'http://localhost:3000/api/session/' + sessionPin + '/movies';
-            console.log("Fetching from:", url);
+        function loadCard(i) {
+            var movie = movies[i];
 
-            var response = await fetch(url);
-            console.log("Server response status:", response.status);
-
-            var data = await response.json();
-            console.log("Data received:", data);
-
-            var results = (data.results || [])
-                .filter(function(movie) { return movie.poster_path; })
-                .slice(0, 10);
-
-            movies = results.map(function(movie) {
-                var genreNames = movie.genre_ids
-                    .map(function(id) { return GENRE_MAP[id]; })
-                    .filter(function(name) { return name; })
-                    .slice(0, 2)
-                    .join(" / ");
-
-                return {
-                    name:      movie.title,
-                    genre:     genreNames || "Unknown",
-                    score:     movie.vote_average.toFixed(1) + " stars",
-                    runtime:   movie.runtime || "N/A",
-                    cert:      movie.certification || "NR",
-                    overview:  movie.overview,
-                    image_url: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
-                    link:      "https://www.themoviedb.org/movie/" + movie.id
-                };
-            });
-
-            document.getElementById('loadingMessage').style.display = 'none';
-            document.getElementById('votingCard').style.display     = 'block';
-            loadCard(0);
-
-        } catch (error) {
-            console.error("Fetch error:", error);
-            document.getElementById('loadingMessage').style.display = 'none';
-            document.getElementById('errorMessage').style.display   = 'block';
-        }
-    }
-
-
-    function loadCard(i) {
-        var movie = movies[i];
-        document.getElementById('cardImg').src              = movie.image_url;
-        document.getElementById('cardName').textContent     = movie.name;
-        document.getElementById('cardGenre').textContent    = movie.genre;
-        document.getElementById('cardScore').textContent    = movie.score;
-        document.getElementById('cardCert').textContent     = movie.cert;
-        document.getElementById('cardRuntime').textContent  = movie.runtime;
-        document.getElementById('cardOverview').textContent = movie.overview;
-        document.getElementById('cardLink').href            = movie.link;
-        document.getElementById('progressMsg').textContent  = "Movie " + (i + 1) + " of " + movies.length;
-    }
-
-
-    function vote(choice) {
-        if (choice === 'yes') {
-            yesVotes.push(movies[currentIndex]);
+            document.getElementById('cardImg').src = movie.image_url;
+            document.getElementById('cardName').textContent = movie.name;
+            document.getElementById('cardGenre').textContent = movie.genre;
+            document.getElementById('cardScore').textContent = movie.score;
+            document.getElementById('cardCert').textContent = movie.cert;
+            document.getElementById('cardRuntime').textContent = movie.runtime;
+            document.getElementById('cardOverview').textContent = movie.overview;
+            document.getElementById('cardLink').href = movie.link;
+            document.getElementById('progressMsg').textContent =
+                "Movie " + (i + 1) + " of " + movies.length;
         }
 
-        currentIndex++;
 
-        if (currentIndex < movies.length) {
-            loadCard(currentIndex);
-        } else {
+        function vote(choice) {
+            if (choice === 'yes') {
+                yesVotes.push(movies[currentIndex].name);
+            }
+            currentIndex++;
+            if (currentIndex < movies.length) {
+                loadCard(currentIndex);
+            } else {
+                finishVoting();
+            }
+        }
+
+        async function finishVoting() {
             document.getElementById('votingCard').style.display = 'none';
+            document.getElementById('doneCard').style.display = 'block';
 
             var picksList = document.getElementById('picksList');
-
             if (yesVotes.length === 0) {
-                picksList.innerHTML = '<p style="color: gray;">You said no to everything!</p>';
+                picksList.innerHTML = '<p style="color: var(--text-muted); margin: 0;">You said no to everything!</p>';
             } else {
-                yesVotes.forEach(function(movie) {
-                    picksList.innerHTML += '<p>Yes: <b>' + movie.name + '</b> - ' + movie.genre + ' | ' + movie.cert + ' | ' + movie.runtime + '</p>';
+                yesVotes.forEach(function (name) {
+                    picksList.innerHTML += '<p style="margin: 5px 0;">✔ <strong>' + name + '</strong></p>';
                 });
             }
 
-            document.getElementById('doneCard').style.display = 'block';
+            // Submit votes to backend
+            try {
+                await fetch(`http://localhost:3000/api/session/${sessionPin}/vote`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, picks: yesVotes })
+                });
+            } catch (err) {
+                console.error("Could not submit votes:", err);
+            }
+
+            // Poll until everyone is done, then redirect to results
+            pollForResults();
         }
-    }
 
-    fetchMovies();
+        function pollForResults() {
+            var statusEl = document.getElementById('pollStatus');
+            var interval = setInterval(async function () {
+                try {
+                    var response = await fetch('http://localhost:3000/api/session/' + sessionPin + '/results');
+                    var data = await response.json();
+                    if (data.ready) {
+                        clearInterval(interval);
+                        window.location.href = 'results.html?code=' + sessionPin + '&category=movies';
+                    } else {
+                        statusEl.textContent = data.message || "Waiting for others...";
+                    }
+                } catch (err) {
+                    console.error("Results poll error:", err);
+                }
+            }, 3000);
+        }
 
-</script>
+        function showError(msg) {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('errorText').textContent = msg;
+            document.getElementById('errorMessage').style.display = 'block';
+        }
 
+        function formatRuntime(mins) {
+            var h = Math.floor(mins / 60);
+            var m = mins % 60;
+            if (h === 0) return m + "m";
+            if (m === 0) return h + "h";
+            return h + "h " + m + "m";
+        }
+
+        fetchMovies();
+
+    </script>
 </body>
+
 </html>

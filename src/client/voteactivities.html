@@ -1,212 +1,301 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vote for Activities - TieBreaker</title>
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .vote-btn {
+            padding: 15px;
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: filter 0.2s;
+        }
+        .vote-btn:hover { filter: brightness(110%); }
+        .vote-btn-no  { background-color: var(--red);   color: white; }
+        .vote-btn-yes { background-color: var(--green); color: white; }
+    </style>
 </head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <span class="navbar-brand">TieBreaker</span>
+        <div>
+            <a href="dashboard.html" class="danger">Leave Session</a>
+        </div>
+    </nav>
 
-<body bgcolor="#8ac1f1">
-    <font face="Arial">
+    <div class="page-wrapper">
 
-        <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
-            <table width="100%">
-                <tr>
-                    <td><b style="font-size: 20px; color: #333;">TieBreaker</b></td>
-                    <td align="right">
-                        <a href="dashboard.html" style="text-decoration: none; color: red; font-weight: bold;">Leave
-                            Session</a>
-                    </td>
-                </tr>
-            </table>
+        <!-- Loading state -->
+        <div id="loadingMessage" style="text-align: center;">
+            <p style="font-size: 18px; color: white;">Finding activities... please wait</p>
         </div>
 
-        <br><br>
-
-        <center>
-
-            <!-- Voting Card -->
-            <div id="votingCard"
-                style="background-color: white; width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-
-                <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Activity 1 of 6</p>
-
-                <!-- Activity Image -->
-                <img id="cardImg" src="" alt="Activity photo"
-                    style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; display: block; margin-bottom: 15px;">
-
-                <!-- Name -->
-                <h2 id="cardName" style="margin: 0 0 10px 0; color: #333;"></h2>
-
-                <!-- Info Row -->
-                <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">
-                    <b>Type:</b> <span id="cardType"></span> &nbsp;|&nbsp;
-                    <b>Price:</b> <span id="cardPrice"></span> &nbsp;|&nbsp;
-                    <b>Distance:</b> <span id="cardDistance"></span>
-                </p>
-                <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">
-                    <b>Rating:</b> <span id="cardRating"></span>
-                </p>
-
-                <!-- More Info Link -->
-                <a id="cardLink" href="#" target="_blank" style="color: #8ac1f1; font-weight: bold; font-size: 14px;">🔗
-                    More Info / Website</a>
-
-                <br><br><br>
-
-                <!-- Vote Buttons -->
-                <table width="100%" cellspacing="10">
-                    <tr>
-                        <td width="50%">
-                            <button onclick="vote('no')"
-                                style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
-                                ✖ No
-                            </button>
-                        </td>
-                        <td width="50%">
-                            <button onclick="vote('yes')"
-                                style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
-                                ✔ Yes
-                            </button>
-                        </td>
-                    </tr>
-                </table>
-
+        <!-- Error state -->
+        <div id="errorMessage" style="display: none; text-align: center;">
+            <div class="card" style="max-width: 460px;">
+                <p style="font-size: 18px; color: var(--red);" id="errorText">Something went wrong.</p>
+                <a href="dashboard.html" class="btn btn-dark"
+                    style="display: inline-block; text-decoration: none; padding: 12px 24px; border-radius: 10px; margin-top: 10px;">
+                    Back to Dashboard
+                </a>
             </div>
+        </div>
 
-            <!-- Done Screen -->
-            <div id="doneCard"
-                style="display: none; background-color: white; width: 450px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-                <h1 style="color: #333; margin-top: 0;">All Done! 🎉</h1>
-                <p style="color: #666; font-size: 16px;">Waiting for the rest of your group to finish voting...</p>
-                <br>
-                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 10px; text-align: left;">
-                    <p style="margin: 0 0 10px 0;"><b>Your Picks:</b></p>
+        <!-- Voting card -->
+        <div id="votingCard" style="display: none; width: 100%; max-width: 460px;">
+            <div class="card">
+                <p id="progressMsg" style="color: var(--text-muted); font-size: 14px; margin-top: 0; margin-bottom: 12px;">
+                    Activity 1 of 10
+                </p>
+                <img id="cardImg" src="" alt="Activity photo"
+                    style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; background-color: #f1f1f1; display: block;">
+                <h2 id="cardName" style="margin: 0 0 10px 0; color: var(--text-main);"></h2>
+                <p style="color: var(--text-muted); font-size: 14px; margin: 0 0 5px 0;">
+                    <strong>Type:</strong> <span id="cardType"></span>
+                    &nbsp;|&nbsp;
+                    <strong>Price:</strong> <span id="cardPrice"></span>
+                    &nbsp;|&nbsp;
+                    <strong>Distance:</strong> <span id="cardDistance"></span>
+                </p>
+                <p style="color: var(--text-muted); font-size: 14px; margin: 0 0 15px 0;">
+                    <strong>Rating:</strong> <span id="cardRating"></span>
+                </p>
+                <a id="cardLink" href="#" target="_blank"
+                    style="color: var(--primary); font-weight: bold; font-size: 14px; text-decoration: none;">
+                    🔗 More Info / Website
+                </a>
+                <br><br>
+                <div style="display: flex; gap: 15px;">
+                    <button class="vote-btn vote-btn-no"  onclick="vote('no')">No</button>
+                    <button class="vote-btn vote-btn-yes" onclick="vote('yes')">Yes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Done card -->
+        <div id="doneCard" style="display: none; width: 100%; max-width: 460px;">
+            <div class="card text-center">
+                <h1 style="color: var(--text-main); margin-top: 0;">All Done!</h1>
+                <p style="color: var(--text-muted);">Waiting for the rest of your group to finish...</p>
+                <div id="pollStatus" style="margin: 15px 0; color: var(--text-muted); font-size: 14px;">
+                    Checking results...
+                </div>
+                <div class="info-panel" style="text-align: left; margin-bottom: 20px;">
+                    <p style="margin: 0 0 10px 0;"><strong>Your Picks:</strong></p>
                     <div id="picksList"></div>
                 </div>
-                <br><br>
-                <button onclick="location.href='dashboard.html'"
-                    style="background-color: #333; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
+                <button onclick="location.href='dashboard.html'" class="btn btn-dark">
                     Back to Dashboard
                 </button>
             </div>
+        </div>
 
-        </center>
-
-    </font>
+    </div>
 
     <script>
-        // -------------------------------------------------------
-        // MOCK DATA — structured to match Yelp Fusion API response
-        // TODO: Replace this array with a real fetch call once backend is ready:
-        //   GET /api/sessions/:code/options
-        //   The backend should hit the Yelp API using the host's location
-        //   and return activities in this same format
-        // -------------------------------------------------------
+        var urlParams  = new URLSearchParams(window.location.search);
+        var sessionPin = urlParams.get('code');
+
+        var username = "Guest";
+        try { username = JSON.parse(localStorage.getItem('user_info')).username || "Guest"; } catch(e) {}
+
         var activities = [
             {
-                name: "Lucky Strike Bowling",
-                type: "Indoor",
-                price: "$$",
-                distance: "3.5 mi",
-                rating: "4.2 ⭐ (530 reviews)",
-                link: "https://www.yelp.com",
+                name:      "Lucky Strike Bowling",
+                type:      "Indoor / Bowling",
+                price:     "$$",
+                distance:  "1.2 mi",
+                rating:    "4.3 ⭐ (530 reviews)",
+                link:      "https://maps.google.com",
                 image_url: "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=600&q=80"
             },
             {
-                name: "Adventure Mini Golf",
-                type: "Outdoor",
-                price: "$",
-                distance: "5.0 mi",
-                rating: "4.5 ⭐ (210 reviews)",
-                link: "https://www.yelp.com",
+                name:      "Adventure Mini Golf",
+                type:      "Outdoor / Mini Golf",
+                price:     "$",
+                distance:  "2.0 mi",
+                rating:    "4.5 ⭐ (210 reviews)",
+                link:      "https://maps.google.com",
                 image_url: "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=600&q=80"
             },
             {
-                name: "Main Street Cinema",
-                type: "Indoor",
-                price: "$$",
-                distance: "1.1 mi",
-                rating: "4.0 ⭐ (890 reviews)",
-                link: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=600&q=80"
-            },
-            {
-                name: "Escape Room Challenge",
-                type: "Indoor",
-                price: "$$$",
-                distance: "2.3 mi",
-                rating: "4.7 ⭐ (340 reviews)",
-                link: "https://www.yelp.com",
+                name:      "Escape Room Challenge",
+                type:      "Indoor / Escape Room",
+                price:     "$$$",
+                distance:  "0.8 mi",
+                rating:    "4.7 ⭐ (340 reviews)",
+                link:      "https://maps.google.com",
                 image_url: "https://images.unsplash.com/photo-1518644730709-0835105d9daa?w=600&q=80"
             },
             {
-                name: "Riverside Hiking Trail",
-                type: "Outdoor",
-                price: "Free",
-                distance: "4.2 mi",
-                rating: "4.6 ⭐ (1,100 reviews)",
-                link: "https://www.yelp.com",
+                name:      "Laser Tag Arena",
+                type:      "Indoor / Laser Tag",
+                price:     "$$",
+                distance:  "3.1 mi",
+                rating:    "4.3 ⭐ (420 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1563213126-a4273aed2016?w=600&q=80"
+            },
+            {
+                name:      "Riverside Hiking Trail",
+                type:      "Outdoor / Hiking",
+                price:     "Free",
+                distance:  "4.2 mi",
+                rating:    "4.6 ⭐ (1,100 reviews)",
+                link:      "https://maps.google.com",
                 image_url: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&q=80"
             },
             {
-                name: "Laser Tag Arena",
-                type: "Indoor",
-                price: "$$",
-                distance: "6.0 mi",
-                rating: "4.3 ⭐ (420 reviews)",
-                link: "https://www.yelp.com",
-                image_url: "https://images.unsplash.com/photo-1563213126-a4273aed2016?w=600&q=80"
+                name:      "Main Street Cinema",
+                type:      "Indoor / Movies",
+                price:     "$$",
+                distance:  "1.1 mi",
+                rating:    "4.0 ⭐ (890 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=600&q=80"
+            },
+            {
+                name:      "Top Golf",
+                type:      "Outdoor / Golf",
+                price:     "$$$",
+                distance:  "5.0 mi",
+                rating:    "4.5 ⭐ (760 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=600&q=80"
+            },
+            {
+                name:      "City Art Museum",
+                type:      "Indoor / Arts",
+                price:     "$$",
+                distance:  "2.3 mi",
+                rating:    "4.4 ⭐ (980 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1554907984-15263bfd63bd?w=600&q=80"
+            },
+            {
+                name:      "Axe Throwing Bar",
+                type:      "Indoor / Axe Throwing",
+                price:     "$$",
+                distance:  "1.6 mi",
+                rating:    "4.6 ⭐ (290 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67e?w=600&q=80"
+            },
+            {
+                name:      "Trampoline Park",
+                type:      "Indoor / Trampolines",
+                price:     "$$",
+                distance:  "3.8 mi",
+                rating:    "4.2 ⭐ (1,400 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=600&q=80"
             }
         ];
 
         var currentIndex = 0;
-        var yesVotes = [];
+        var yesVotes     = [];
 
-        loadCard(currentIndex);
+        function init() {
+            if (!sessionPin) {
+                showError("No session code found. Go back to the dashboard.");
+                return;
+            }
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('votingCard').style.display     = 'block';
+            loadCard(0);
+        }
 
         function loadCard(i) {
             var a = activities[i];
-            document.getElementById('cardImg').src = a.image_url;
-            document.getElementById('cardName').innerHTML = a.name;
-            document.getElementById('cardType').innerHTML = a.type;
-            document.getElementById('cardPrice').innerHTML = a.price;
-            document.getElementById('cardDistance').innerHTML = a.distance;
-            document.getElementById('cardRating').innerHTML = a.rating;
-            document.getElementById('cardLink').href = a.link;
-            document.getElementById('progressMsg').innerHTML = 'Activity ' + (i + 1) + ' of ' + activities.length;
+            document.getElementById('cardImg').src              = a.image_url;
+            document.getElementById('cardName').textContent     = a.name;
+            document.getElementById('cardType').textContent     = a.type;
+            document.getElementById('cardPrice').textContent    = a.price;
+            document.getElementById('cardDistance').textContent = a.distance;
+            document.getElementById('cardRating').textContent   = a.rating;
+            document.getElementById('cardLink').href            = a.link;
+            document.getElementById('progressMsg').textContent  = "Activity " + (i + 1) + " of " + activities.length;
         }
 
         function vote(choice) {
-            if (choice === 'yes') yesVotes.push(activities[currentIndex]);
-
-            // TODO: Send vote to backend once ready
-            // POST /api/votes { sessionCode, optionName: activities[currentIndex].name, vote: choice }
-
+            if (choice === 'yes') {
+                yesVotes.push(activities[currentIndex].name);
+            }
             currentIndex++;
-
             if (currentIndex < activities.length) {
                 loadCard(currentIndex);
             } else {
-                document.getElementById('votingCard').style.display = 'none';
-
-                var picksList = document.getElementById('picksList');
-                if (yesVotes.length === 0) {
-                    picksList.innerHTML = '<p style="color:#999; margin:0;">You said no to everything!</p>';
-                } else {
-                    yesVotes.forEach(function (a) {
-                        picksList.innerHTML += '<p style="margin: 5px 0;">✔ <b>' + a.name + '</b> — ' + a.type + ' | ' + a.price + '</p>';
-                    });
-                }
-
-                document.getElementById('doneCard').style.display = 'block';
-
-                // TODO: Poll GET /api/results/:sessionCode until all group members are done
-                // then redirect to results.html
+                finishVoting();
             }
         }
+
+        async function finishVoting() {
+            document.getElementById('votingCard').style.display = 'none';
+            document.getElementById('doneCard').style.display   = 'block';
+
+            var picksList = document.getElementById('picksList');
+            if (yesVotes.length === 0) {
+                picksList.innerHTML = '<p style="color: var(--text-muted); margin: 0;">You said no to everything!</p>';
+            } else {
+                yesVotes.forEach(function(name) {
+                    picksList.innerHTML += '<p style="margin: 5px 0;">✔ <strong>' + name + '</strong></p>';
+                });
+            }
+
+            try {
+                await fetch('http://localhost:3000/api/session/' + sessionPin + '/vote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, picks: yesVotes })
+                });
+            } catch (err) {
+                console.error("Could not submit votes:", err);
+            }
+
+            pollForResults();
+        }
+
+        function pollForResults() {
+            var statusEl = document.getElementById('pollStatus');
+            var attempts = 0;
+            var interval = setInterval(async function() {
+                attempts++;
+                if (attempts > 40) {
+                    clearInterval(interval);
+                    statusEl.textContent = "Timed out waiting for results.";
+                    return;
+                }
+                try {
+                    var response = await fetch('http://localhost:3000/api/session/' + sessionPin + '/results');
+                    var data = await response.json();
+                    if (data.ready) {
+                        clearInterval(interval);
+                        window.location.href = 'results.html?code=' + sessionPin + '&category=activities';
+                    } else {
+                        statusEl.textContent = data.message || "Waiting for others...";
+                    }
+                } catch (err) {
+                    console.error("Results poll error:", err);
+                }
+            }, 3000);
+        }
+
+        function showError(msg) {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('errorText').textContent = msg;
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+
+        init();
     </script>
-
 </body>
-
 </html>

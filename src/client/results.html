@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - TieBreaker</title>
+    <link rel="icon" type="image/png" href="images/tieBreaker.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <span class="navbar-brand">TieBreaker</span>
+        <div>
+            <a href="dashboard.html">Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <div class="card text-center" style="width: 100%; max-width: 520px;">
+
+            <!-- Loading state -->
+            <div id="loadingState">
+                <p style="color: var(--text-muted); font-size: 18px;">Loading results...</p>
+            </div>
+
+            <!-- Single perfect match or single winner -->
+            <div id="resultsState" style="display: none;">
+                <h1 id="resultsTitle" style="color: var(--text-main); margin-top: 0;"></h1>
+                <p id="resultsSubtitle" style="color: var(--text-muted); margin-bottom: 20px;"></p>
+                <div id="matchList" style="margin-bottom: 25px;"></div>
+                <button onclick="location.href='dashboard.html'" class="btn btn-dark">
+                    Back to Dashboard
+                </button>
+            </div>
+
+            <!-- Multiple matches or tie — host picks, others wait -->
+            <div id="multiState" style="display: none;">
+                <h1 id="multiTitle" style="color: var(--text-main); margin-top: 0;"></h1>
+                <p id="multiSubtitle" style="color: var(--text-muted); margin-bottom: 20px;"></p>
+                <div id="multiList" style="margin-bottom: 20px;"></div>
+
+                <!-- Host only sees this -->
+                <div id="hostPickSection" style="display: none;">
+                    <button onclick="pickRandom()" class="btn btn-red" style="font-size: 18px; margin-bottom: 20px;">
+                        Let TieBreaker Pick One Randomly
+                    </button>
+                </div>
+
+                <!-- Non-hosts see this while waiting -->
+                <div id="waitingForHost" style="display: none;">
+                    <p style="color: var(--text-muted); font-size: 15px;">Waiting for TieBreaker to make a randomized decision...</p>
+                </div>
+
+                <!-- Final pick revealed to everyone -->
+                <div id="finalPick" style="display: none; margin-bottom: 25px;">
+                    <p style="color: var(--text-muted); margin-bottom: 8px;">TieBreaker chose:</p>
+                    <div id="finalPickName" class="info-panel"
+                        style="font-size: 22px; font-weight: bold; color: var(--text-main); border: 2px solid var(--green);">
+                    </div>
+                </div>
+
+                <button onclick="location.href='dashboard.html'" class="btn btn-dark" style="margin-top: 10px;">
+                    Back to Dashboard
+                </button>
+            </div>
+
+            <!-- No match state -->
+            <div id="noMatchState" style="display: none;">
+                <h1 style="color: var(--text-main); margin-top: 0;">No Match Found</h1>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">
+                    Nobody agreed on anything — try again!
+                </p>
+                <button onclick="location.href='dashboard.html'" class="btn btn-dark">
+                    Back to Dashboard
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const urlParams  = new URLSearchParams(window.location.search);
+        const sessionPin = urlParams.get('code');
+        const category   = urlParams.get('category') || 'food';
+
+        // Get current username
+        let currentUser = "Guest";
+        try { currentUser = JSON.parse(localStorage.getItem('user_info')).username || "Guest"; } catch(e) {}
+
+        let isHost       = false;
+        let pollInterval = null;
+
+        async function loadResults() {
+            if (!sessionPin) {
+                document.getElementById('loadingState').innerHTML =
+                    '<p style="color: var(--red);">No session code found.</p>';
+                return;
+            }
+            try {
+                // Fetch results and session simultaneously
+                const [resultsResp, sessionResp] = await Promise.all([
+                    fetch(`http://localhost:3000/api/session/${sessionPin}/results`),
+                    fetch(`http://localhost:3000/api/session/${sessionPin}`)
+                ]);
+                const data        = await resultsResp.json();
+                const sessionData = await sessionResp.json();
+
+                // Check if current user is the host (first in users array)
+                if (sessionData.success && sessionData.users.length > 0) {
+                    isHost = sessionData.users[0] === currentUser;
+                }
+
+                document.getElementById('loadingState').style.display = 'none';
+
+                if (!data.ready) {
+                    document.getElementById('resultsState').style.display = 'block';
+                    document.getElementById('resultsTitle').textContent   = 'Still waiting...';
+                    document.getElementById('resultsSubtitle').textContent = data.message || 'Not everyone has voted yet.';
+                    return;
+                }
+
+                if (data.resultType === 'perfect') {
+                    // Single perfect match — just show it, no host pick needed
+                    document.getElementById('resultsState').style.display = 'block';
+                    document.getElementById('resultsTitle').textContent    = "It's a Match!";
+                    document.getElementById('resultsSubtitle').textContent = 'Everyone agreed on:';
+                    document.getElementById('matchList').innerHTML += `
+                        <div class="info-panel" style="margin: 10px 0; font-size: 18px; font-weight: bold; color: var(--text-main);">
+                            ${data.matches[0]}
+                        </div>`;
+
+                } else if (data.resultType === 'winner') {
+                    // One item got the most votes
+                    document.getElementById('resultsState').style.display = 'block';
+                    document.getElementById('resultsTitle').textContent    = 'The Group Chose!';
+                    document.getElementById('resultsSubtitle').textContent =
+                        `${data.voteCount} out of ${data.total} people voted for:`;
+                    document.getElementById('matchList').innerHTML += `
+                        <div class="info-panel" style="margin: 10px 0; font-size: 18px; font-weight: bold; color: var(--text-main);">
+                            ${data.matches[0]}
+                        </div>`;
+
+                } else if (data.resultType === 'perfect_multi' || data.resultType === 'tie') {
+                    // Multiple matches or tie — host picks
+                    document.getElementById('multiState').style.display = 'block';
+
+                    if (data.resultType === 'perfect_multi') {
+                        document.getElementById('multiTitle').textContent    = "It's a Match!";
+                        document.getElementById('multiSubtitle').textContent = 'Everyone agreed on all of these:';
+                    } else {
+                        document.getElementById('multiTitle').textContent    = "It's a Tie!";
+                        document.getElementById('multiSubtitle').textContent =
+                            `${data.voteCount} people voted for each of these:`;
+                    }
+
+                    // Build the list
+                    data.matches.forEach(name => {
+                        document.getElementById('multiList').innerHTML += `
+                            <div class="info-panel" style="margin: 10px 0; font-size: 16px; font-weight: bold; color: var(--text-main);">
+                                ${name}
+                            </div>`;
+                    });
+
+                    // If host already picked (page refresh case), just show it
+                    if (data.hostPick) {
+                        showFinalPick(data.hostPick);
+                    } else if (isHost) {
+                        document.getElementById('hostPickSection').style.display = 'block';
+                    } else {
+                        document.getElementById('waitingForHost').style.display = 'block';
+                        startPollingForHostPick(data.matches);
+                    }
+
+                } else {
+                    // Nobody voted yes on anything
+                    document.getElementById('noMatchState').style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('Results error:', error);
+                document.getElementById('loadingState').innerHTML =
+                    '<p style="color: var(--red);">Could not load results. Is your server running?</p>';
+            }
+        }
+
+        // Host clicks this — picks randomly from the matches and saves to backend
+        async function pickRandom() {
+            const items = Array.from(document.getElementById('multiList').querySelectorAll('.info-panel'))
+                .map(el => el.textContent.trim());
+            const pick = items[Math.floor(Math.random() * items.length)];
+
+            try {
+                await fetch(`http://localhost:3000/api/session/${sessionPin}/pick`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pick })
+                });
+            } catch (err) {
+                console.error("Could not save host pick:", err);
+            }
+
+            // Hide the button and show the result to the host immediately
+            document.getElementById('hostPickSection').style.display = 'none';
+            showFinalPick(pick);
+        }
+
+        // Non-hosts poll every 2 seconds until hostPick is set
+        function startPollingForHostPick() {
+            pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`http://localhost:3000/api/session/${sessionPin}/results`);
+                    const data = await response.json();
+                    if (data.hostPick) {
+                        clearInterval(pollInterval);
+                        document.getElementById('waitingForHost').style.display = 'none';
+                        showFinalPick(data.hostPick);
+                    }
+                } catch (err) {
+                    console.error("Host pick poll error:", err);
+                }
+            }, 2000);
+        }
+
+        // Reveals the final pick to everyone
+        function showFinalPick(pick) {
+            document.getElementById('finalPickName').textContent = pick;
+            document.getElementById('finalPick').style.display = 'block';
+        }
+
+        loadResults();
+    </script>
+</body>
+</html>

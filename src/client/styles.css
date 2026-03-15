@@ -1,0 +1,270 @@
+/* =============================================
+   TieBreaker - Shared Styles
+   Used by every page via <link rel="stylesheet" href="styles.css">
+   ============================================= */
+
+/* --- Color & Font Variables --- */
+:root {
+    --red: #EF4444;
+    --green: #10B981;
+    --primary: #2563EB;
+    --text-main: #1F2937;
+    --text-muted: #6B7280;
+    --bg-start: #8ac1f1;
+    --bg-end: #e0f2fe;
+    --shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+    --radius: 20px;
+}
+
+/* --- Base Reset --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+    min-height: 100vh;
+}
+
+/* --- Top Navigation Bar --- */
+.navbar {
+    background-color: white;
+    padding: 15px 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text-main);
+    text-decoration: none;
+}
+
+.navbar a {
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 15px;
+    color: var(--text-main);
+}
+
+.navbar a.danger {
+    color: var(--red);
+}
+
+/* --- White Card Container --- */
+.card {
+    background-color: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 40px;
+}
+
+/* --- Page Layout (centers card on page) --- */
+.page-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* --- Buttons --- */
+.btn {
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: filter 0.2s;
+}
+
+.btn:hover {
+    filter: brightness(110%);
+}
+
+.btn-red {
+    background-color: var(--red);
+    color: white;
+    box-shadow: 0px 4px 10px rgba(239, 68, 68, 0.3);
+}
+
+.btn-green {
+    background-color: var(--green);
+    color: white;
+    box-shadow: 0px 4px 10px rgba(16, 185, 129, 0.3);
+}
+
+.btn-dark {
+    background-color: #333;
+    color: white;
+}
+
+.btn-gray {
+    background-color: #ccc;
+    color: white;
+    cursor: not-allowed;
+}
+
+.btn-gray:hover {
+    filter: none;
+}
+
+/* --- Back Button (top-left on simple pages) --- */
+.back-btn {
+    display: inline-block;
+    background-color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 10px;
+    text-decoration: none;
+    color: var(--text-main);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Form Inputs --- */
+.form-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: var(--text-main);
+    text-align: left;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    margin-bottom: 20px;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* --- Accent Underline (below page titles) --- */
+.title-bar {
+    height: 4px;
+    width: 200px;
+    border-radius: 10px;
+    margin: 8px auto 25px auto;
+}
+
+.title-bar-red {
+    background-color: var(--red);
+}
+
+.title-bar-green {
+    background-color: var(--green);
+}
+
+.title-bar-dark {
+    background-color: #333;
+}
+
+/* --- Participant List (lobby) --- */
+.user-row {
+    background-color: white;
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-left: 5px solid var(--green);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.user-row.is-host {
+    border-left-color: var(--red);
+}
+
+.host-badge {
+    background-color: var(--red);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* --- Info Panels (grey boxes used inside cards) --- */
+.info-panel {
+    background-color: #f1f5f9;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+/* --- Category Mode Badge --- */
+.mode-badge {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid;
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.mode-badge-food {
+    background: #FFF7ED;
+    border-color: #dd4822;
+    color: #dd1212;
+}
+
+.mode-badge-movies {
+    background: #EFF6FF;
+    border-color: #3B82F6;
+    color: #0e4cf7;
+}
+
+.mode-badge-activities {
+    background: #F0FDF4;
+    border-color: #22C55E;
+    color: #0ab950;
+}
+
+/* --- Warning / Under Construction Box --- */
+.warning-box {
+    background-color: #FEF9C3;
+    border: 2px solid #EAB308;
+    border-radius: 12px;
+    padding: 20px 25px;
+    color: #000000;
+    display: inline-block;
+}
+
+/* --- Divider line --- */
+.divider {
+    height: 1px;
+    background-color: #E5E7EB;
+    margin: 25px 0;
+}
+
+/* --- Centered text helper --- */
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: var(--text-muted);
+}

@@ -1,176 +1,134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join Session - TieBreaker</title>
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
-    
-    <style>
-        .user-row {
-            background-color: white;
-            padding: 12px;
-            margin: 8px;
-            border-left: 5px solid green; /* Guest Color */
-            border-radius: 8px;
-            text-align: left;
-            box-shadow: 0px 2px 5px rgba(0,0,0,0.05);
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-row:first-child {
-            border-left: 5px solid red; /* Host Color */
-        }
-
-        .host-badge {
-            background-color: red;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
-<body bgcolor="#8ac1f1">
-    <font face="Arial">
-
-        <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
-            <table width="100%">
-                <tr>
-                    <td><b style="font-size: 20px; color: #333;">TieBreaker</b></td>
-                    <td align="right">
-                        <a href="dashboard.html" style="text-decoration: none; color: #333; font-weight: bold;">Back to Dashboard</a>
-                    </td>
-                </tr>
-            </table>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <span class="navbar-brand">TieBreaker</span>
+        <div>
+            <a href="dashboard.html">Back to Dashboard</a>
         </div>
+    </nav>
 
-        <br><br><br>
+    <div class="page-wrapper">
+        <div class="card" style="width: 100%; max-width: 520px; text-align: center;">
 
-        <center>
-            <div style="background-color: white; width: 500px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-                <h1 style="margin-top: 0; color: #333;">Join Session</h1>
+            <h1 style="margin-top: 0; color: var(--text-main);">Join Session</h1>
+            <p id="statusMsg" style="color: var(--text-muted); font-size: 18px;">Connecting to session...</p>
 
-                <p id="statusMsg" style="color: gray; font-size: 18px;">Connecting to session...</p>
+            <!-- Hidden until connected -->
+            <div id="sessionInfo" style="display: none;">
+                <div class="info-panel" style="margin-bottom: 20px; text-align: left;">
+                    <h2 style="color: var(--text-main); margin-top: 0;">
+                        <span id="session-icon"></span>
+                        <span id="session-title">Loading...</span>
+                    </h2>
+                    <p style="margin: 0; color: var(--text-muted);">
+                        Participants: <strong id="participantCount">0</strong>
+                    </p>
+                </div>
+
+                <h3 style="color: var(--black);">Waiting for host to start...</h3>
+
+                <div id="participants-container" class="info-panel" style="min-height: 60px; text-align: left;">
+                    <!-- User rows added here by JS -->
+                </div>
 
                 <br>
-
-                <div id="sessionInfo" style="display: none;">
-                    <div style="background-color: #f1f5f9; padding: 20px; border-radius: 15px; border: 1px solid #e2e8f0;">
-                        <h2 style="color: #333; margin-top: 0;">
-                            <span id="session-icon">🍕</span> 
-                            <span id="session-title">Loading...</span>
-                        </h2>
-                        
-                        <p style="margin: 5px 0;">Participants: <b id="participantCount">0</b></p>
-                    </div>
-
-                    <br>
-
-                    <h2 style="color: green;">Waiting for host to start...</h2>
-
-                    <div id="participants-container" style="background-color: #f1f5f9; padding: 15px; border-radius: 15px; min-height: 50px;">
-                        </div>
-
-                    <br><br>
-
-                    <button onclick="location.href='dashboard.html'"
-                        style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.2);">
-                        Leave Session
-                    </button>
-                </div>
+                <button class="btn btn-red" onclick="location.href='dashboard.html'">
+                    Leave Session
+                </button>
             </div>
-        </center>
-
-    </font>
+        </div>
+    </div>
 
     <script>
-        // 1. Get Setup Data (PIN + User)
+        // Read the PIN from the URL and the username from localStorage
         const urlParams = new URLSearchParams(window.location.search);
         const pin = urlParams.get('code');
-        
-        // Get username safely
+
         let username = "Guest";
         const storedInfo = localStorage.getItem('user_info');
         if (storedInfo) {
             try {
-                const parsed = JSON.parse(storedInfo);
-                username = parsed.username || "Guest";
+                username = JSON.parse(storedInfo).username || "Guest";
             } catch (e) {
                 username = storedInfo;
             }
         }
 
-        // 2. JOIN LOGIC (Runs once on load)
+        // Run immediately when page loads
+        joinAndListen();
+
         async function joinAndListen() {
             if (!pin) {
                 alert("No PIN code provided.");
                 window.location.href = 'dashboard.html';
                 return;
             }
-
             try {
-                // A. Join the Session in DB
+                // Tell the server we're joining
                 const joinResp = await fetch('http://localhost:3000/api/session/join', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pin, username })
                 });
-                
                 const joinData = await joinResp.json();
 
                 if (!joinData.success) {
-                    document.getElementById('statusMsg').innerText = "Error: " + (joinData.error || "Could not join.");
-                    document.getElementById('statusMsg').style.color = "red";
+                    document.getElementById('statusMsg').textContent = "Error: " + (joinData.error || "Could not join.");
+                    document.getElementById('statusMsg').style.color = "var(--red)";
                     return;
                 }
 
-                // B. Show UI
-                document.getElementById('statusMsg').innerHTML = `Connected! Code: <b style="color: #333;">${pin}</b>`;
+                // Show the waiting room
+                document.getElementById('statusMsg').innerHTML = `Connected! Code: <strong>${pin}</strong>`;
                 document.getElementById('sessionInfo').style.display = 'block';
 
-                // C. Start Polling for Updates
+                // Start polling every 2 seconds for updates
                 startPolling();
-
             } catch (err) {
                 console.error(err);
-                document.getElementById('statusMsg').innerText = "Server Connection Error";
+                document.getElementById('statusMsg').textContent = "Server Connection Error";
             }
         }
 
-        // 3. POLLING LOGIC (Repeats every 2 seconds)
-        async function startPolling() {
+        function startPolling() {
             setInterval(async () => {
                 try {
                     const response = await fetch(`http://localhost:3000/api/session/${pin}`);
                     const data = await response.json();
 
                     if (data.success) {
-                        // Update Category Labels
+                        // Update category label and icon
                         updateCategoryUI(data.category);
 
-                        // Update Participant Count
-                        document.getElementById('participantCount').innerText = data.users.length;
+                        // Update participant count
+                        document.getElementById('participantCount').textContent = data.users.length;
 
-                        // Update List
+                        // Rebuild the participant list
                         const list = document.getElementById('participants-container');
-                        list.innerHTML = ''; // clear old list
+                        list.innerHTML = '';
                         data.users.forEach((u, index) => {
                             const isHost = index === 0;
                             const row = document.createElement('div');
-                            row.className = 'user-row';
+                            row.className = 'user-row' + (isHost ? ' is-host' : '');
                             row.innerHTML = `<span>${u}</span> ${isHost ? '<span class="host-badge">HOST</span>' : ''}`;
                             list.appendChild(row);
                         });
 
-                        // CHECK IF STARTED -> REDIRECT
-                        if (data.status === 'started') {
-                            const targetPage = `vote${data.category}.html`; // votefood.html, votemovies.html, etc.
-                            window.location.href = `${targetPage}?code=${pin}`;
+                        // If host clicked Start, redirect to the voting page
+                        if (data.isActive) {
+                            window.location.href = `vote${data.category}.html?code=${pin}`;
                         }
                     }
                 } catch (e) {
@@ -179,26 +137,21 @@
             }, 2000);
         }
 
-        // 4. HELPER: Set Title & Icon
         function updateCategoryUI(category) {
             const title = document.getElementById('session-title');
             const icon = document.getElementById('session-icon');
-            
             if (category === 'movies') {
-                title.innerText = "Movies Session";
-                icon.innerText = "🎬";
+                title.textContent = "Movies Session";
+                icon.textContent = "🎬";
             } else if (category === 'activities') {
-                title.innerText = "Activities Session";
-                icon.innerText = "🎉";
+                title.textContent = "Activities Session";
+                icon.textContent = "🎉";
             } else {
-                title.innerText = "Food Session";
-                icon.innerText = "🍕";
+                title.textContent = "Food Session";
+                icon.textContent = "🍕";
             }
         }
-
-        // Run immediately
-        joinAndListen();
-
     </script>
 </body>
+
 </html>

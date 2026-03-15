@@ -1,0 +1,30 @@
+const mongoose = require('mongoose');
+
+const sessionSchema = new mongoose.Schema({
+    pin:      { type: String, required: true, unique: true },
+    users:    [String],
+    category: { type: String, default: 'food' },
+    status: {
+        type: String,
+        enum: ['waiting', 'started', 'completed'],
+        default: 'waiting'
+    },
+    isActive: { type: Boolean, default: true },
+
+    // Stores each user's yes-votes so we can calculate matches
+    // Example: [{ username: "Alice", picks: ["The Batman", "Dune"] }]
+    votes: [{
+        username: String,
+        picks: [String]
+    }],
+
+    moviePage: { type: Number, default: 1 },
+
+    // Set by the host when there are multiple matches/ties — stores the final pick
+    hostPick: { type: String, default: null },
+
+    // Sessions automatically delete from the DB after 24 hours
+    createdAt: { type: Date, default: Date.now, expires: 86400 }
+});
+
+module.exports = mongoose.model('Session', sessionSchema);

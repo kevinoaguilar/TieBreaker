@@ -1,237 +1,301 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vote for Food - TieBreaker</title>
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .vote-btn {
+            padding: 15px;
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: filter 0.2s;
+        }
+        .vote-btn:hover { filter: brightness(110%); }
+        .vote-btn-no  { background-color: var(--red);   color: white; }
+        .vote-btn-yes { background-color: var(--green); color: white; }
+    </style>
 </head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <span class="navbar-brand">TieBreaker</span>
+        <div>
+            <a href="dashboard.html" class="danger">Leave Session</a>
+        </div>
+    </nav>
 
-<body bgcolor="#8ac1f1">
-<font face="Arial">
+    <div class="page-wrapper">
 
-    <!-- TOP NAV BAR -->
-    <div style="background-color: white; padding: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
-        <table width="100%">
-            <tr>
-                <td><b style="font-size: 20px;">TieBreaker</b></td>
-                <td align="right">
-                    <a href="dashboard.html" style="color: red; font-weight: bold;">Leave Session</a>
-                </td>
-            </tr>
-        </table>
+        <!-- Loading state -->
+        <div id="loadingMessage" style="text-align: center;">
+            <p style="font-size: 18px; color: white;">Finding restaurants... please wait</p>
+        </div>
+
+        <!-- Error state -->
+        <div id="errorMessage" style="display: none; text-align: center;">
+            <div class="card" style="max-width: 460px;">
+                <p style="font-size: 18px; color: var(--red);" id="errorText">Something went wrong.</p>
+                <a href="dashboard.html" class="btn btn-dark"
+                    style="display: inline-block; text-decoration: none; padding: 12px 24px; border-radius: 10px; margin-top: 10px;">
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Voting card -->
+        <div id="votingCard" style="display: none; width: 100%; max-width: 460px;">
+            <div class="card">
+                <p id="progressMsg" style="color: var(--text-muted); font-size: 14px; margin-top: 0; margin-bottom: 12px;">
+                    Restaurant 1 of 10
+                </p>
+                <img id="cardImg" src="" alt="Restaurant photo"
+                    style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; background-color: #f1f1f1; display: block;">
+                <h2 id="cardName" style="margin: 0 0 10px 0; color: var(--text-main);"></h2>
+                <p style="color: var(--text-muted); font-size: 14px; margin: 0 0 5px 0;">
+                    <strong>Cuisine:</strong> <span id="cardCuisine"></span>
+                    &nbsp;|&nbsp;
+                    <strong>Price:</strong> <span id="cardPrice"></span>
+                    &nbsp;|&nbsp;
+                    <strong>Distance:</strong> <span id="cardDistance"></span>
+                </p>
+                <p style="color: var(--text-muted); font-size: 14px; margin: 0 0 15px 0;">
+                    <strong>Rating:</strong> <span id="cardRating"></span>
+                </p>
+                <a id="cardLink" href="#" target="_blank"
+                    style="color: var(--primary); font-weight: bold; font-size: 14px; text-decoration: none;">
+                    🔗 View on Google Maps
+                </a>
+                <br><br>
+                <div style="display: flex; gap: 15px;">
+                    <button class="vote-btn vote-btn-no"  onclick="vote('no')">No</button>
+                    <button class="vote-btn vote-btn-yes" onclick="vote('yes')">Yes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Done card -->
+        <div id="doneCard" style="display: none; width: 100%; max-width: 460px;">
+            <div class="card text-center">
+                <h1 style="color: var(--text-main); margin-top: 0;">All Done!</h1>
+                <p style="color: var(--text-muted);">Waiting for the rest of your group to finish...</p>
+                <div id="pollStatus" style="margin: 15px 0; color: var(--text-muted); font-size: 14px;">
+                    Checking results...
+                </div>
+                <div class="info-panel" style="text-align: left; margin-bottom: 20px;">
+                    <p style="margin: 0 0 10px 0;"><strong>Your Picks:</strong></p>
+                    <div id="picksList"></div>
+                </div>
+                <button onclick="location.href='dashboard.html'" class="btn btn-dark">
+                    Back to Dashboard
+                </button>
+            </div>
+        </div>
+
     </div>
 
-    <br><br>
+    <script>
+        var urlParams  = new URLSearchParams(window.location.search);
+        var sessionPin = urlParams.get('code');
 
-    <center>
+        var username = "Guest";
+        try { username = JSON.parse(localStorage.getItem('user_info')).username || "Guest"; } catch(e) {}
 
-        <div id="loadingMessage">
-            <p style="font-size: 18px; color: white;">Finding restaurants near you... please wait</p>
-        </div>
+        var restaurants = [
+            {
+                name:      "Bella Italia",
+                cuisine:   "Italian",
+                price:     "$$",
+                distance:  "0.4 mi",
+                rating:    "4.6 ⭐ (820 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80"
+            },
+            {
+                name:      "Dragon Palace",
+                cuisine:   "Chinese",
+                price:     "$$",
+                distance:  "0.7 mi",
+                rating:    "4.4 ⭐ (1,200 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80"
+            },
+            {
+                name:      "The Burger Joint",
+                cuisine:   "American",
+                price:     "$",
+                distance:  "0.2 mi",
+                rating:    "4.3 ⭐ (2,400 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80"
+            },
+            {
+                name:      "Sakura Sushi",
+                cuisine:   "Japanese",
+                price:     "$$$",
+                distance:  "1.1 mi",
+                rating:    "4.8 ⭐ (640 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80"
+            },
+            {
+                name:      "Casa Mexico",
+                cuisine:   "Mexican",
+                price:     "$",
+                distance:  "0.5 mi",
+                rating:    "4.5 ⭐ (1,800 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80"
+            },
+            {
+                name:      "The Greek Place",
+                cuisine:   "Greek",
+                price:     "$$",
+                distance:  "1.3 mi",
+                rating:    "4.4 ⭐ (530 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80"
+            },
+            {
+                name:      "Pho Saigon",
+                cuisine:   "Vietnamese",
+                price:     "$",
+                distance:  "0.9 mi",
+                rating:    "4.7 ⭐ (970 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=600&q=80"
+            },
+            {
+                name:      "India Garden",
+                cuisine:   "Indian",
+                price:     "$$",
+                distance:  "1.5 mi",
+                rating:    "4.5 ⭐ (740 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80"
+            },
+            {
+                name:      "Seoul BBQ",
+                cuisine:   "Korean",
+                price:     "$$$",
+                distance:  "2.0 mi",
+                rating:    "4.9 ⭐ (410 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1567529684892-09290a1b2d05?w=600&q=80"
+            },
+            {
+                name:      "Mediterranean Grill",
+                cuisine:   "Mediterranean",
+                price:     "$$",
+                distance:  "1.8 mi",
+                rating:    "4.3 ⭐ (660 reviews)",
+                link:      "https://maps.google.com",
+                image_url: "https://images.unsplash.com/photo-1544510807-8b8bdffeadb2?w=600&q=80"
+            }
+        ];
 
-        <div id="errorMessage" style="display: none;">
-            <p style="font-size: 18px; color: red;">Something went wrong loading restaurants. Is your server running?</p>
-        </div>
+        var currentIndex = 0;
+        var yesVotes     = [];
 
-        <!-- Voting Card -->
-        <div id="votingCard" style="display: none; background-color: white; width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-
-            <p id="progressMsg" style="color: gray; font-size: 14px; margin-top: 0;">Restaurant 1 of 10</p>
-
-            <img id="cardImg" src="" alt="Restaurant photo"
-                style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; margin-bottom: 15px;">
-
-            <h2 id="cardName" style="margin: 0 0 10px 0; color: #333;"></h2>
-
-            <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">
-                <b>Cuisine:</b> <span id="cardCuisine"></span> &nbsp;|&nbsp;
-                <b>Price:</b> <span id="cardPrice"></span> &nbsp;|&nbsp;
-                <b>Distance:</b> <span id="cardDistance"></span>
-            </p>
-            <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">
-                <b>Rating:</b> <span id="cardRating"></span>
-            </p>
-
-            <a id="cardLink" href="#" target="_blank" style="color: #8ac1f1; font-weight: bold; font-size: 14px;">
-                🔗 View on Yelp
-            </a>
-
-            <br><br>
-
-            <table width="100%" cellspacing="10">
-                <tr>
-                    <td width="50%">
-                        <button onclick="vote('no')"
-                            style="background-color: red; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
-                            ✖ No
-                        </button>
-                    </td>
-                    <td width="50%">
-                        <button onclick="vote('yes')"
-                            style="background-color: green; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
-                            ✔ Yes
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Done Screen -->
-        <div id="doneCard" style="display: none; background-color: white; width: 450px; padding: 40px; border-radius: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.2);">
-            <h1 style="color: #333;">All Done! 🎉</h1>
-            <p style="color: #666;">Waiting for the rest of your group...</p>
-            <br>
-            <b>Your Picks:</b>
-            <div id="picksList" style="margin-top: 10px;"></div>
-            <br>
-            <button onclick="location.href='dashboard.html'"
-                style="background-color: #333; color: white; padding: 15px; width: 100%; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;">
-                Back to Dashboard
-            </button>
-        </div>
-
-    </center>
-
-</font>
-
-<script>
-
-    // Read the PIN and location from storage
-    var urlParams  = new URLSearchParams(window.location.search);
-    var sessionPin = urlParams.get('code');
-    var userLat    = localStorage.getItem('userLat');
-    var userLng    = localStorage.getItem('userLng');
-
-    console.log("Session PIN:", sessionPin);
-    console.log("User location:", userLat, userLng);
-
-    var restaurants  = [];
-    var currentIndex = 0;
-    var yesVotes     = [];
-
-
-    async function fetchRestaurants() {
-
-        // Check PIN
-        if (!sessionPin) {
-            console.error("No session PIN in URL!");
-            showError("No session code found. Go back to the dashboard.");
-            return;
-        }
-
-        // Check location — must be saved from index.html
-        if (!userLat || !userLng) {
-            console.error("No location found in localStorage!");
-            showError("Location not found. Please go back to the login page and allow location access.");
-            return;
-        }
-
-        try {
-            // Pass lat/lng as query parameters to our backend
-            var url = 'http://localhost:3000/api/session/' + sessionPin + '/food'
-                    + '?lat=' + userLat
-                    + '&lng=' + userLng;
-
-            console.log("Fetching from:", url);
-
-            var response = await fetch(url);
-            console.log("Server response status:", response.status);
-
-            var data = await response.json();
-            console.log("Data received:", data);
-
-            // Yelp returns data.businesses as the array of restaurants
-            var results = (data.businesses || []).slice(0, 10);
-
-            if (results.length === 0) {
-                showError("No restaurants found near you.");
+        function init() {
+            if (!sessionPin) {
+                showError("No session code found. Go back to the dashboard.");
                 return;
             }
-
-            // Map Yelp fields to our card format
-            restaurants = results.map(function(r) {
-
-                // Yelp returns cuisine as an array like [{alias: "italian", title: "Italian"}]
-                var cuisine = r.categories
-                    .map(function(c) { return c.title; })
-                    .slice(0, 2)
-                    .join(" / ");
-
-                // Yelp returns distance in meters — convert to miles
-                var miles = (r.distance / 1609.34).toFixed(1) + " mi";
-
-                return {
-                    name:     r.name,
-                    cuisine:  cuisine || "Restaurant",
-                    price:    r.price || "N/A",
-                    distance: miles,
-                    rating:   r.rating + " ⭐ (" + r.review_count + " reviews)",
-                    link:     r.url,
-                    image_url: r.image_url || ""
-                };
-            });
-
             document.getElementById('loadingMessage').style.display = 'none';
             document.getElementById('votingCard').style.display     = 'block';
             loadCard(0);
-
-        } catch (error) {
-            console.error("Fetch error:", error);
-            showError("Something went wrong loading restaurants. Is your server running?");
-        }
-    }
-
-
-    function loadCard(i) {
-        var r = restaurants[i];
-        document.getElementById('cardImg').src              = r.image_url;
-        document.getElementById('cardName').textContent     = r.name;
-        document.getElementById('cardCuisine').textContent  = r.cuisine;
-        document.getElementById('cardPrice').textContent    = r.price;
-        document.getElementById('cardDistance').textContent = r.distance;
-        document.getElementById('cardRating').textContent   = r.rating;
-        document.getElementById('cardLink').href            = r.link;
-        document.getElementById('progressMsg').textContent  = "Restaurant " + (i + 1) + " of " + restaurants.length;
-    }
-
-
-    function vote(choice) {
-        if (choice === 'yes') {
-            yesVotes.push(restaurants[currentIndex]);
         }
 
-        currentIndex++;
+        function loadCard(i) {
+            var r = restaurants[i];
+            document.getElementById('cardImg').src              = r.image_url;
+            document.getElementById('cardName').textContent     = r.name;
+            document.getElementById('cardCuisine').textContent  = r.cuisine;
+            document.getElementById('cardPrice').textContent    = r.price;
+            document.getElementById('cardDistance').textContent = r.distance;
+            document.getElementById('cardRating').textContent   = r.rating;
+            document.getElementById('cardLink').href            = r.link;
+            document.getElementById('progressMsg').textContent  = "Restaurant " + (i + 1) + " of " + restaurants.length;
+        }
 
-        if (currentIndex < restaurants.length) {
-            loadCard(currentIndex);
-        } else {
+        function vote(choice) {
+            if (choice === 'yes') {
+                yesVotes.push(restaurants[currentIndex].name);
+            }
+            currentIndex++;
+            if (currentIndex < restaurants.length) {
+                loadCard(currentIndex);
+            } else {
+                finishVoting();
+            }
+        }
+
+        async function finishVoting() {
             document.getElementById('votingCard').style.display = 'none';
+            document.getElementById('doneCard').style.display   = 'block';
 
             var picksList = document.getElementById('picksList');
-
             if (yesVotes.length === 0) {
-                picksList.innerHTML = '<p style="color: gray;">You said no to everything!</p>';
+                picksList.innerHTML = '<p style="color: var(--text-muted); margin: 0;">You said no to everything!</p>';
             } else {
-                yesVotes.forEach(function(r) {
-                    picksList.innerHTML += '<p>✔ <b>' + r.name + '</b> — ' + r.cuisine + ' ' + r.price + '</p>';
+                yesVotes.forEach(function(name) {
+                    picksList.innerHTML += '<p style="margin: 5px 0;">✔ <strong>' + name + '</strong></p>';
                 });
             }
 
-            document.getElementById('doneCard').style.display = 'block';
+            try {
+                await fetch('http://localhost:3000/api/session/' + sessionPin + '/vote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, picks: yesVotes })
+                });
+            } catch (err) {
+                console.error("Could not submit votes:", err);
+            }
+
+            pollForResults();
         }
-    }
 
+        function pollForResults() {
+            var statusEl = document.getElementById('pollStatus');
+            var attempts = 0;
+            var interval = setInterval(async function() {
+                attempts++;
+                if (attempts > 40) {
+                    clearInterval(interval);
+                    statusEl.textContent = "Timed out waiting for results.";
+                    return;
+                }
+                try {
+                    var response = await fetch('http://localhost:3000/api/session/' + sessionPin + '/results');
+                    var data = await response.json();
+                    if (data.ready) {
+                        clearInterval(interval);
+                        window.location.href = 'results.html?code=' + sessionPin + '&category=food';
+                    } else {
+                        statusEl.textContent = data.message || "Waiting for others...";
+                    }
+                } catch (err) {
+                    console.error("Results poll error:", err);
+                }
+            }, 3000);
+        }
 
-    function showError(msg) {
-        document.getElementById('loadingMessage').style.display = 'none';
-        document.getElementById('errorMessage').innerHTML = '<p style="font-size: 18px; color: red;">' + msg + '</p>';
-        document.getElementById('errorMessage').style.display = 'block';
-    }
+        function showError(msg) {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('errorText').textContent = msg;
+            document.getElementById('errorMessage').style.display = 'block';
+        }
 
-
-    fetchRestaurants();
-
-</script>
-
+        init();
+    </script>
 </body>
 </html>

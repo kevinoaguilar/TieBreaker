@@ -3,7 +3,7 @@ const router = express.Router();
 const { addActivity, getNearbyActivities } = require('../controllers/activityController');
 
 // IMPORT GEO SERVICE CORRECTLY (Up 2 levels to 'utils')
-const { reverseGeocode } = require('../../../utils/geoService'); 
+const { reverseGeocode } = require('../utils/geoService'); 
 
 // 1. Route to Add Activity
 router.post('/activities', addActivity);

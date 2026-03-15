@@ -16,7 +16,7 @@ async function startNewSession() {
 }
 
 async function joinExistingSession() {
-    const code = prompt("Enter the 6-character Room Code:");
+    const code = prompt("Enter the 4-character Room Code:");
     const name = prompt("Enter your name:");
 
     if (!code || !name) return alert("Both fields are required!");
