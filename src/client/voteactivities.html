@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="leave-handler.js"></script>
     <style>
         .vote-btn {
             padding: 15px;
@@ -28,7 +29,7 @@
     <nav class="navbar">
         <span class="navbar-brand">TieBreaker</span>
         <div>
-            <a href="dashboard.html" class="danger">Leave Session</a>
+            <a href="#" class="danger" onclick="triggerLeaveAndRedirect('dashboard.html')">Leave Session</a>
         </div>
     </nav>
 
@@ -108,110 +109,45 @@
         var username = "Guest";
         try { username = JSON.parse(localStorage.getItem('user_info')).username || "Guest"; } catch(e) {}
 
-        var activities = [
-            {
-                name:      "Lucky Strike Bowling",
-                type:      "Indoor / Bowling",
-                price:     "$$",
-                distance:  "1.2 mi",
-                rating:    "4.3 ⭐ (530 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=600&q=80"
-            },
-            {
-                name:      "Adventure Mini Golf",
-                type:      "Outdoor / Mini Golf",
-                price:     "$",
-                distance:  "2.0 mi",
-                rating:    "4.5 ⭐ (210 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=600&q=80"
-            },
-            {
-                name:      "Escape Room Challenge",
-                type:      "Indoor / Escape Room",
-                price:     "$$$",
-                distance:  "0.8 mi",
-                rating:    "4.7 ⭐ (340 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1518644730709-0835105d9daa?w=600&q=80"
-            },
-            {
-                name:      "Laser Tag Arena",
-                type:      "Indoor / Laser Tag",
-                price:     "$$",
-                distance:  "3.1 mi",
-                rating:    "4.3 ⭐ (420 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1563213126-a4273aed2016?w=600&q=80"
-            },
-            {
-                name:      "Riverside Hiking Trail",
-                type:      "Outdoor / Hiking",
-                price:     "Free",
-                distance:  "4.2 mi",
-                rating:    "4.6 ⭐ (1,100 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&q=80"
-            },
-            {
-                name:      "Main Street Cinema",
-                type:      "Indoor / Movies",
-                price:     "$$",
-                distance:  "1.1 mi",
-                rating:    "4.0 ⭐ (890 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=600&q=80"
-            },
-            {
-                name:      "Top Golf",
-                type:      "Outdoor / Golf",
-                price:     "$$$",
-                distance:  "5.0 mi",
-                rating:    "4.5 ⭐ (760 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=600&q=80"
-            },
-            {
-                name:      "City Art Museum",
-                type:      "Indoor / Arts",
-                price:     "$$",
-                distance:  "2.3 mi",
-                rating:    "4.4 ⭐ (980 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1554907984-15263bfd63bd?w=600&q=80"
-            },
-            {
-                name:      "Axe Throwing Bar",
-                type:      "Indoor / Axe Throwing",
-                price:     "$$",
-                distance:  "1.6 mi",
-                rating:    "4.6 ⭐ (290 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67e?w=600&q=80"
-            },
-            {
-                name:      "Trampoline Park",
-                type:      "Indoor / Trampolines",
-                price:     "$$",
-                distance:  "3.8 mi",
-                rating:    "4.2 ⭐ (1,400 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=600&q=80"
-            }
-        ];
-
+        var activities   = [];
         var currentIndex = 0;
         var yesVotes     = [];
 
-        function init() {
+        async function init() {
             if (!sessionPin) {
                 showError("No session code found. Go back to the dashboard.");
                 return;
             }
-            document.getElementById('loadingMessage').style.display = 'none';
-            document.getElementById('votingCard').style.display     = 'block';
-            loadCard(0);
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/session/${sessionPin}/activities`);
+                if (!response.ok) throw new Error("Could not fetch activities from Yelp");
+                
+                const data = await response.json();
+                
+                if (!data.businesses || data.businesses.length === 0) {
+                    showError("No activities found nearby.");
+                    return;
+                }
+
+                activities = data.businesses.map(b => ({
+                    name: b.name,
+                    type: b.categories.map(c => c.title).join(", "),
+                    price: b.price || "N/A",
+                    distance: (b.distance * 0.000621371).toFixed(1) + " mi",
+                    rating: b.rating + " ⭐ (" + b.review_count + " reviews)",
+                    link: b.url,
+                    image_url: b.image_url || "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=600&q=80"
+                })).slice(0, 10);
+
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('votingCard').style.display     = 'block';
+                loadCard(0);
+
+            } catch (err) {
+                console.error(err);
+                showError("Failed to load activities.");
+            }
         }
 
         function loadCard(i) {
@@ -279,6 +215,7 @@
                     var data = await response.json();
                     if (data.ready) {
                         clearInterval(interval);
+                        if (typeof window.setInternalNavigation === 'function') window.setInternalNavigation();
                         window.location.href = 'results.html?code=' + sessionPin + '&category=activities';
                     } else {
                         statusEl.textContent = data.message || "Waiting for others...";

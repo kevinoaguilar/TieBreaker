@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="leave-handler.js"></script>
     <style>
         .vote-btn {
             padding: 15px;
@@ -28,7 +29,7 @@
     <nav class="navbar">
         <span class="navbar-brand">TieBreaker</span>
         <div>
-            <a href="dashboard.html" class="danger">Leave Session</a>
+            <a href="#" class="danger" onclick="triggerLeaveAndRedirect('dashboard.html')">Leave Session</a>
         </div>
     </nav>
 
@@ -108,110 +109,45 @@
         var username = "Guest";
         try { username = JSON.parse(localStorage.getItem('user_info')).username || "Guest"; } catch(e) {}
 
-        var restaurants = [
-            {
-                name:      "Bella Italia",
-                cuisine:   "Italian",
-                price:     "$$",
-                distance:  "0.4 mi",
-                rating:    "4.6 ⭐ (820 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80"
-            },
-            {
-                name:      "Dragon Palace",
-                cuisine:   "Chinese",
-                price:     "$$",
-                distance:  "0.7 mi",
-                rating:    "4.4 ⭐ (1,200 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80"
-            },
-            {
-                name:      "The Burger Joint",
-                cuisine:   "American",
-                price:     "$",
-                distance:  "0.2 mi",
-                rating:    "4.3 ⭐ (2,400 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80"
-            },
-            {
-                name:      "Sakura Sushi",
-                cuisine:   "Japanese",
-                price:     "$$$",
-                distance:  "1.1 mi",
-                rating:    "4.8 ⭐ (640 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80"
-            },
-            {
-                name:      "Casa Mexico",
-                cuisine:   "Mexican",
-                price:     "$",
-                distance:  "0.5 mi",
-                rating:    "4.5 ⭐ (1,800 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80"
-            },
-            {
-                name:      "The Greek Place",
-                cuisine:   "Greek",
-                price:     "$$",
-                distance:  "1.3 mi",
-                rating:    "4.4 ⭐ (530 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80"
-            },
-            {
-                name:      "Pho Saigon",
-                cuisine:   "Vietnamese",
-                price:     "$",
-                distance:  "0.9 mi",
-                rating:    "4.7 ⭐ (970 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=600&q=80"
-            },
-            {
-                name:      "India Garden",
-                cuisine:   "Indian",
-                price:     "$$",
-                distance:  "1.5 mi",
-                rating:    "4.5 ⭐ (740 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80"
-            },
-            {
-                name:      "Seoul BBQ",
-                cuisine:   "Korean",
-                price:     "$$$",
-                distance:  "2.0 mi",
-                rating:    "4.9 ⭐ (410 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1567529684892-09290a1b2d05?w=600&q=80"
-            },
-            {
-                name:      "Mediterranean Grill",
-                cuisine:   "Mediterranean",
-                price:     "$$",
-                distance:  "1.8 mi",
-                rating:    "4.3 ⭐ (660 reviews)",
-                link:      "https://maps.google.com",
-                image_url: "https://images.unsplash.com/photo-1544510807-8b8bdffeadb2?w=600&q=80"
-            }
-        ];
-
+        var restaurants  = [];
         var currentIndex = 0;
         var yesVotes     = [];
 
-        function init() {
+        async function init() {
             if (!sessionPin) {
                 showError("No session code found. Go back to the dashboard.");
                 return;
             }
-            document.getElementById('loadingMessage').style.display = 'none';
-            document.getElementById('votingCard').style.display     = 'block';
-            loadCard(0);
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/session/${sessionPin}/food`);
+                if (!response.ok) throw new Error("Could not fetch restaurants from Yelp");
+                
+                const data = await response.json();
+                
+                if (!data.businesses || data.businesses.length === 0) {
+                    showError("No restaurants found nearby.");
+                    return;
+                }
+
+                restaurants = data.businesses.map(b => ({
+                    name: b.name,
+                    cuisine: b.categories.map(c => c.title).join(", "),
+                    price: b.price || "N/A",
+                    distance: (b.distance * 0.000621371).toFixed(1) + " mi",
+                    rating: b.rating + " ⭐ (" + b.review_count + " reviews)",
+                    link: b.url,
+                    image_url: b.image_url || "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80"
+                })).slice(0, 10);
+
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('votingCard').style.display     = 'block';
+                loadCard(0);
+
+            } catch (err) {
+                console.error(err);
+                showError("Failed to load restaurants.");
+            }
         }
 
         function loadCard(i) {
@@ -279,6 +215,7 @@
                     var data = await response.json();
                     if (data.ready) {
                         clearInterval(interval);
+                        if (typeof window.setInternalNavigation === 'function') window.setInternalNavigation();
                         window.location.href = 'results.html?code=' + sessionPin + '&category=food';
                     } else {
                         statusEl.textContent = data.message || "Waiting for others...";
