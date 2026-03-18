@@ -7,13 +7,14 @@
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="leave-handler.js"></script>
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar">
         <span class="navbar-brand">TieBreaker</span>
         <div>
-            <a href="dashboard.html" class="danger">Leave Session</a>
+            <a href="#" class="danger" onclick="triggerLeaveAndRedirect('dashboard.html')">Leave Session</a>
         </div>
     </nav>
 
@@ -118,18 +119,36 @@
         }
 
         document.getElementById('start-session-btn').addEventListener('click', async () => {
-            try {
-                const response = await fetch(`http://localhost:3000/api/session/start/${currentPin}`, {
-                    method: 'PUT'
-                });
-                if (response.ok) {
-                    window.location.href = `voteactivities.html?code=${currentPin}`;
-                } else {
-                    alert("Failed to start session. Try again.");
+            const startBtn = document.getElementById('start-session-btn');
+            startBtn.disabled = true;
+            startBtn.textContent = 'Starting...';
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                try {
+                    const response = await fetch(`http://localhost:3000/api/session/start/${currentPin}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+                    });
+                    if (response.ok) {
+                        if (typeof window.setInternalNavigation === 'function') window.setInternalNavigation();
+                        window.location.href = `voteactivities.html?code=${currentPin}`;
+                    } else {
+                        alert("Failed to start session. Try again.");
+                        startBtn.disabled = false;
+                        startBtn.textContent = 'Start Session';
+                    }
+                } catch (err) {
+                    console.error("Error starting session:", err);
+                    startBtn.disabled = false;
+                    startBtn.textContent = 'Start Session';
                 }
-            } catch (err) {
-                console.error("Error starting session:", err);
-            }
+            }, (err) => {
+                console.warn("Location error:", err);
+                alert("Location is required to find local activities! Please allow location access.");
+                startBtn.disabled = false;
+                startBtn.textContent = 'Start Session';
+            });
         });
     </script>
 </body>
