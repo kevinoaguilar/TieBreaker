@@ -56,39 +56,6 @@
         .btn-register { background-color: var(--red);   color: white; box-shadow: 0 4px 14px rgba(239,68,68,0.4); }
         .btn-login    { background-color: var(--green); color: white; box-shadow: 0 4px 14px rgba(16,185,129,0.4); }
 
-        /* Location status card */
-        .location-card {
-            background: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-align: left;
-            position: relative;
-        }
-        .loc-icon {
-            background: #DBEAFE;
-            color: var(--primary);
-            width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        .loc-info h4 { margin: 0; font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .loc-info p  { margin: 5px 0 0 0; font-weight: 600; color: var(--text-main); font-size: 15px; }
-        .spinner {
-            width: 18px; height: 18px;
-            border: 3px solid #E5E7EB;
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            display: none;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
         .divider { height: 1px; background: #E5E7EB; margin: 25px 0; }
         
         .about-btn {
@@ -114,90 +81,7 @@
             <a href="register.html"><button class="btn btn-register">Register</button></a>
             <a href="login.html"><button class="btn btn-login">Login</button></a>
         </div>
-
-        <!-- Location card -->
-        <div class="location-card" id="loc-card">
-            <div class="loc-icon" id="loc-icon">📍</div>
-            <div class="loc-info">
-                <h4>Current Location</h4>
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <p id="address-val">Requesting access...</p>
-                    <div class="spinner" id="loading-spinner"></div>
-                </div>
-            </div>
-            <button onclick="requestLocation()" id="retry-btn"
-                style="display:none; position:absolute; right:15px; background:var(--text-main); color:white;
-                       border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:12px;">
-                Enable
-            </button>
-        </div>
     </div>
 
-    <script>
-        window.onload = function() { requestLocation(); };
-
-        function requestLocation() {
-            const addressText = document.getElementById('address-val');
-            const spinner     = document.getElementById('loading-spinner');
-            const retryBtn    = document.getElementById('retry-btn');
-            const icon        = document.getElementById('loc-icon');
-
-            addressText.textContent    = "Locating you...";
-            spinner.style.display      = "block";
-            retryBtn.style.display     = "none";
-            icon.style.background      = "#DBEAFE";
-            icon.textContent           = "📍";
-
-            if (!navigator.geolocation) { showError("Browser not supported"); return; }
-            navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
-        }
-
-        async function handleSuccess(position) {
-            const addressText = document.getElementById('address-val');
-            const spinner     = document.getElementById('loading-spinner');
-            const icon        = document.getElementById('loc-icon');
-            const { latitude, longitude } = position.coords;
-
-            // Save location so vote pages can use it later
-            localStorage.setItem('userLat', latitude);
-            localStorage.setItem('userLng', longitude);
-            addressText.textContent = "Found you! Getting address...";
-
-            try {
-                const response = await fetch('http://localhost:3000/api/reverse-geocode', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ lat: latitude, lng: longitude })
-                });
-                const result = await response.json();
-                if (response.ok) {
-                    spinner.style.display    = "none";
-                    addressText.textContent  = result.address;
-                    icon.style.background    = "#D1FAE5";
-                    icon.style.color         = "#059669";
-                    icon.textContent         = "✓";
-                } else {
-                    throw new Error("Address lookup failed");
-                }
-            } catch (err) {
-                showError("Found you, but couldn't get address.");
-            }
-        }
-
-        function handleError() { showError("Location access denied."); }
-
-        function showError(msg) {
-            const addressText = document.getElementById('address-val');
-            const spinner     = document.getElementById('loading-spinner');
-            const retryBtn    = document.getElementById('retry-btn');
-            const icon        = document.getElementById('loc-icon');
-            spinner.style.display   = "none";
-            addressText.textContent = msg;
-            addressText.style.color = "#EF4444";
-            icon.style.background   = "#FEE2E2";
-            icon.textContent        = "!";
-            retryBtn.style.display  = "block";
-        }
-    </script>
 </body>
 </html>

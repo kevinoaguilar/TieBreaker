@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="leave-handler.js"></script>
 </head>
 
 <body>
@@ -15,7 +16,7 @@
     <nav class="navbar">
         <span class="navbar-brand">TieBreaker</span>
         <div>
-            <a href="dashboard.html">Back to Dashboard</a>
+            <a href="#" onclick="triggerLeaveAndRedirect('dashboard.html')">Back to Dashboard</a>
         </div>
     </nav>
 
@@ -44,7 +45,7 @@
                 </div>
 
                 <br>
-                <button class="btn btn-red" onclick="location.href='dashboard.html'">
+                <button class="btn btn-red" onclick="triggerLeaveAndRedirect('dashboard.html')">
                     Leave Session
                 </button>
             </div>
@@ -128,6 +129,7 @@
 
                         // If host clicked Start, redirect to the voting page
                         if (data.isActive) {
+                            if (typeof window.setInternalNavigation === 'function') window.setInternalNavigation();
                             window.location.href = `vote${data.category}.html?code=${pin}`;
                         }
                     }
