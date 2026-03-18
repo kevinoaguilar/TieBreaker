@@ -4,6 +4,10 @@ const sessionSchema = new mongoose.Schema({
     pin:      { type: String, required: true, unique: true },
     users:    [String],
     category: { type: String, default: 'food' },
+    location: {
+        lat: { type: Number, default: null },
+        lng: { type: Number, default: null }
+    },
     status: {
         type: String,
         enum: ['waiting', 'started', 'completed'],
