@@ -8,13 +8,15 @@ const {
     startSession,
     submitVote,
     setHostPick,
-    getResults
+    getResults,
+    leaveSession
 } = require('../controllers/sessionController');
 
 // --- Session management ---
 router.post('/create', createSession);
 router.post('/join', joinSession);
 router.put('/start/:pin', startSession);
+router.post('/:pin/leave', leaveSession);
 
 // --- Voting & Results ---
 router.post('/:pin/vote', submitVote);
@@ -90,9 +92,16 @@ router.get('/:pin/movies', async (req, res) => {
 // Requires ?lat=&lng= query params
 router.get('/:pin/food', async (req, res) => {
     try {
-        const { lat, lng } = req.query;
+        let { lat, lng } = req.query;
+        
         if (!lat || !lng) {
-            return res.status(400).json({ error: 'Missing lat/lng — make sure location is enabled' });
+            const session = await Session.findOne({ pin: req.params.pin });
+            if (session && session.location && session.location.lat && session.location.lng) {
+                lat = session.location.lat;
+                lng = session.location.lng;
+            } else {
+                return res.status(400).json({ error: 'Missing lat/lng — make sure location is enabled' });
+            }
         }
 
         const url = 'https://api.yelp.com/v3/businesses/search'
@@ -117,9 +126,16 @@ router.get('/:pin/food', async (req, res) => {
 // Requires ?lat=&lng= query params
 router.get('/:pin/activities', async (req, res) => {
     try {
-        const { lat, lng } = req.query;
+        let { lat, lng } = req.query;
+        
         if (!lat || !lng) {
-            return res.status(400).json({ error: 'Missing lat/lng — make sure location is enabled' });
+            const session = await Session.findOne({ pin: req.params.pin });
+            if (session && session.location && session.location.lat && session.location.lng) {
+                lat = session.location.lat;
+                lng = session.location.lng;
+            } else {
+                return res.status(400).json({ error: 'Missing lat/lng — make sure location is enabled' });
+            }
         }
 
         const url = 'https://api.yelp.com/v3/businesses/search'
