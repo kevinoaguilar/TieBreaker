@@ -68,8 +68,10 @@ const joinSession = async (req, res) => {
         if (session.isActive) {
             return res.status(400).json({ success: false, error: "Session already started" });
         }
+        
+        // If the user is already in the session, just let them back in gracefully
         if (session.users.includes(username)) {
-            return res.status(400).json({ success: false, error: "Username already in session" });
+            return res.json({ success: true, category: session.category, users: session.users });
         }
 
         session.users.push(username);
@@ -87,6 +89,7 @@ const joinSession = async (req, res) => {
 const startSession = async (req, res) => {
     try {
         const { pin } = req.params;
+        const { lat, lng } = req.body; // Extract host geolocation
         const session = await Session.findOne({ pin });
 
         if (!session) {
@@ -94,6 +97,9 @@ const startSession = async (req, res) => {
         }
 
         session.isActive = true;
+        if (lat && lng) {
+            session.location = { lat, lng };
+        }
         await session.save();
 
         res.json({ success: true, message: "Session started" });
@@ -252,4 +258,30 @@ const getResults = async (req, res) => {
     }
 };
 
-module.exports = { createSession, getSession, joinSession, startSession, submitVote, setHostPick, getResults };
+// POST /api/session/:pin/leave
+const leaveSession = async (req, res) => {
+    try {
+        const { pin } = req.params;
+        const { username } = req.body;
+
+        if (!username) {
+            return res.status(400).json({ success: false, error: "Username is required" });
+        }
+
+        const session = await Session.findOne({ pin });
+        if (!session) {
+            return res.status(404).json({ success: false, error: "Session not found" });
+        }
+
+        // Use Mongoose pull to cleanly remove the array item and save
+        session.users.pull(username);
+        await session.save();
+
+        res.json({ success: true, message: "Left session" });
+    } catch (error) {
+        console.error("Leave Session Error:", error);
+        res.status(500).json({ success: false, error: "Server error" });
+    }
+};
+
+module.exports = { createSession, getSession, joinSession, startSession, submitVote, setHostPick, getResults, leaveSession };

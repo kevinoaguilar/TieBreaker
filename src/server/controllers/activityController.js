@@ -1,15 +1,12 @@
-const { getCoordinates } = require('../utils/geoService');
 const Activity = require('../models/Activity');
 
-// Add a new activity to the database (admin/seeding use)
+// Add a new activity to the database (admin/seeding use - deprecated Geocodio lookup)
 const addActivity = async (req, res) => {
     try {
         const { name, address } = req.body;
 
-        const geoData = await getCoordinates(address);
-        if (!geoData) {
-            return res.status(400).json({ error: "Could not find that address" });
-        }
+        // geoData service removed; returning error if used
+        return res.status(501).json({ error: "Geocoding service removed." });
 
         const newActivity = new Activity({
             name,
