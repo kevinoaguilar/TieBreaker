@@ -59,32 +59,28 @@
         <span class="navbar-brand">TieBreaker</span>
         <div style="display: flex; align-items: center; gap: 15px;">
             <span id="navUsername" style="color: var(--text-main); font-size: 14px; font-weight: 600;"></span>
-            <a href="dashboard.html">Dashboard</a>
             <a href="#" class="danger" onclick="handleLogout()">Logout</a>
         </div>
     </nav>
 
     <div style="text-align:center; padding: 40px 20px;">
 
-        <h1 style="color: white; font-size: 36px; margin-bottom: 10px;">Ready to Decide?</h1>
-        <p style="color: white; font-size: 18px; margin-bottom: 0;">Choose a category to start a new session</p>
+        <h1 style="color: rgb(0, 0, 0); font-size: 36px; margin-bottom: 10px;">Ready to Decide?</h1>
+        <p style="color: rgb(0, 0, 0); font-size: 18px; margin-bottom: 0;">Choose a category to start a new session</p>
 
         <!-- Category Cards -->
         <div class="category-grid">
             <div class="category-card">
-                <p class="emoji">🍕</p>
                 <h3>Food</h3>
                 <p class="desc">Decide where to eat</p>
                 <button class="btn btn-red" onclick="createSession('food')">Start Food Session</button>
             </div>
             <div class="category-card">
-                <p class="emoji">🎬</p>
                 <h3>Movies</h3>
                 <p class="desc">Pick what to watch</p>
                 <button class="btn btn-red" onclick="createSession('movies')">Start Movie Session</button>
             </div>
             <div class="category-card">
-                <p class="emoji">🎉</p>
                 <h3>Activities</h3>
                 <p class="desc">Find something fun to do</p>
                 <button class="btn btn-red" onclick="createSession('activities')">Start Activity Session</button>
