@@ -44,7 +44,8 @@ const getSession = async (req, res) => {
             success: true,
             users: session.users,
             category: session.category,
-            isActive: session.isActive
+            isActive: session.isActive,
+            status: session.status
         });
 
     } catch (error) {
@@ -89,7 +90,7 @@ const joinSession = async (req, res) => {
 const startSession = async (req, res) => {
     try {
         const { pin } = req.params;
-        const { lat, lng } = req.body; // Extract host geolocation
+        const { lat, lng } = req.body || {}; // Extract host geolocation
         const session = await Session.findOne({ pin });
 
         if (!session) {
@@ -97,6 +98,7 @@ const startSession = async (req, res) => {
         }
 
         session.isActive = true;
+        session.status = 'started';
         if (lat && lng) {
             session.location = { lat, lng };
         }
