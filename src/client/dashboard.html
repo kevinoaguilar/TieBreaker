@@ -8,32 +8,108 @@
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+
     <style>
-        /* Category card grid */
-        .category-grid {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 30px 0;
+        /* Dashboard Header Text */
+        .dashboard-header {
+            color: rgb(0, 0, 0);
+            font-size: 36px;
+            margin-bottom: 10px;
         }
 
-        .category-card {
-            background: white;
-            width: 220px;
+        .dashboard-subheader {
+            color: rgb(0, 0, 0);
+            font-size: 18px;
+            margin-bottom: 0;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0 50px 0;
+        }
+
+        /* Interactive Dashboard Cards */
+        .dashboard-card {
+            flex: 1;
+            min-width: 220px;
+            max-width: 280px;
             padding: 30px 20px;
-            border-radius: var(--radius);
+            border-radius: 16px;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background-color: white;
             box-shadow: var(--shadow);
         }
 
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
 
-        .category-card h3 {
-            margin: 0 0 8px 0;
+        /* Specific Mode Colors */
+        .card-food {
+            background: #FFF7ED;
+            border-color: #F97316;
+        }
+
+        .card-movies {
+            background: #EFF6FF;
+            border-color: #3B82F6;
+        }
+
+        .card-activities {
+            background: #F0FDF4;
+            border-color: #22C55E;
+        }
+
+        /* Card Content Styling */
+        .dashboard-card h3 {
+            margin: 0;
+            font-size: 22px;
             color: var(--text-main);
         }
-        
+
+        .mode-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-desc {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        /* Join Room Section */
+        .join-card {
+            max-width: 420px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .join-input {
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
     </style>
+
     <script>
         // Redirect to login if not logged in
         const token = localStorage.getItem('tiebreaker_token');
@@ -45,48 +121,56 @@
 </head>
 
 <body>
-    <!-- Navbar -->
     <nav class="navbar">
-        <span class="navbar-brand">TieBreaker</span>
+        <a href="index.html" class="navbar-brand">TieBreaker</a>
         <div style="display: flex; align-items: center; gap: 15px;">
             <span id="navUsername" style="color: var(--text-main); font-size: 14px; font-weight: 600;"></span>
             <a href="#" class="danger" onclick="handleLogout()">Logout</a>
         </div>
     </nav>
 
-    <div style="text-align:center; padding: 40px 20px;">
+    <div class="page-wrapper" style="display: block; text-align: center;">
 
-        <h1 style="color: rgb(0, 0, 0); font-size: 36px; margin-bottom: 10px;">Ready to Decide?</h1>
-        <p style="color: rgb(0, 0, 0); font-size: 18px; margin-bottom: 0;">Choose a category to start a new session</p>
+        <h1 class="dashboard-header">Ready to Decide?</h1>
+        <p class="dashboard-subheader">Choose a category to start a new session</p>
 
-        <!-- Category Cards -->
-        <div class="category-grid">
-            <div class="category-card">
+        <div class="dashboard-grid">
+            <div class="dashboard-card card-food">
                 <h3>Food</h3>
-                <p class="desc">Decide where to eat</p>
-                <button class="btn btn-red" onclick="createSession('food')">Start Food Session</button>
+                <img src="images/food.png" alt="Food" class="mode-image">
+                <p class="card-desc">Decide where to eat with your group.</p>
+                <button class="btn btn-red" style="background-color: #F97316;" onclick="createSession('food')">Start
+                    Food</button>
             </div>
-            <div class="category-card">
+
+            <div class="dashboard-card card-movies">
                 <h3>Movies</h3>
-                <p class="desc">Pick what to watch</p>
-                <button class="btn btn-red" onclick="createSession('movies')">Start Movie Session</button>
+                <img src="images/movie.png" alt="Movies" class="mode-image">
+                <p class="card-desc">Pick what to watch together.</p>
+                <button class="btn btn-red" style="background-color: #3B82F6;" onclick="createSession('movies')">Start
+                    Movies</button>
             </div>
-            <div class="category-card">
+
+            <div class="dashboard-card card-activities">
                 <h3>Activities</h3>
-                <p class="desc">Find something fun to do</p>
-                <button class="btn btn-red" onclick="createSession('activities')">Start Activity Session</button>
+                <img src="images/activities.png" alt="Activities" class="mode-image">
+                <p class="card-desc">Find something fun to do locally.</p>
+                <button class="btn btn-red" style="background-color: #22C55E;"
+                    onclick="createSession('activities')">Start Activities</button>
             </div>
         </div>
 
-        <!-- Join Session -->
-        <div class="card" style="max-width: 420px; margin: 0 auto; text-align: left;">
-            <h2 style="margin-top: 0; text-align: center;">Join Existing Room</h2>
-            <p style="color: var(--text-muted); text-align: center; margin-bottom: 20px;">Enter the 4-digit code shared
-                by your host</p>
-            <input type="text" id="groupCode" placeholder="e.g. 4821" maxlength="6" class="form-input"
-                style="text-align: center; font-size: 24px; margin-bottom: 15px;">
-            <button class="btn btn-green" onclick="joinSession()">Join Session</button>
+        <div class="divider" style="max-width: 600px; margin: 0 auto 40px auto;"></div>
+
+        <div class="card join-card">
+            <h2 style="margin-top: 0;">Join Existing Room</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Enter the 4-digit code shared by your host</p>
+
+            <input type="text" id="groupCode" placeholder="e.g. 4821" maxlength="6" class="form-input join-input">
+
+            <button class="btn btn-dark" onclick="joinSession()">Join Session</button>
         </div>
+
     </div>
 
     <script>

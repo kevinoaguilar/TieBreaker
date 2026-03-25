@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,31 @@
     <link rel="icon" type="image/png" href="images/tieBreaker.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .foodlogo {
+            width: 140px;
+            height: auto;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .movielogo {
+            width: 140px;
+            height: auto;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .activitylogo {
+            width: 140px;
+            height: auto;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
+
 <body>
     <a href="index.html" class="back-btn">← Back to Home</a>
 
@@ -42,43 +67,56 @@
             <div class="divider"></div>
 
             <!-- Available Modes -->
-            <h2 style="text-align:center; margin-bottom: 20px;">Available Modes</h2>
-            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <div class="mode-badge mode-badge-food" style="flex:1; min-width:160px; text-align:center; padding:20px; border-radius:15px;">
-                    <strong>Food</strong>
-                    <p style="font-size: 13px; color: #000000; margin-top: 6px;">Restaurants near the host.</p>
-                    <p style="font-size: 11px; color: #999; margin-top: 4px;"><em>Midpoint calculation coming soon</em></p>
+            <h2 class="text-center" style="margin-bottom: 20px;">Available Modes</h2>
+
+            <div class="modes-container">
+                <div class="mode-card mode-food">
+                    <span class="mode-title">Food</span>
+                    <img src="images/food.png" alt="Food" class="mode-image">
+                    <p class="mode-desc">Restaurants near the host.</p>
+                    <p class="mode-note">Midpoint calculation coming soon</p>
                 </div>
-                <div class="mode-badge mode-badge-movies" style="flex:1; min-width:160px; text-align:center; padding:20px; border-radius:15px;">
-                    <strong>Movies / Shows</strong>
-                    <p style="font-size: 13px; color: #000000; margin-top: 6px;">Browse top-rated films together.</p>
-                    <p style="font-size: 11px; color: #999; margin-top: 4px;"><em>Categories coming soon</em></p>
+
+                <div class="mode-card mode-movies">
+                    <span class="mode-title">Movies</span>
+                    <img src="images/movie.png" alt="Movies" class="mode-image">
+                    <p class="mode-desc">Browse top-rated films together.</p>
+                    <p class="mode-note">Categories coming soon</p>
                 </div>
-                <div class="mode-badge mode-badge-activities" style="flex:1; min-width:160px; text-align:center; padding:20px; border-radius:15px;">
-                    <strong>Activities</strong>
-                    <p style="font-size: 13px; color: #000000; margin-top: 6px;">Local fun near the host.</p>
-                    <p style="font-size: 11px; color: #999; margin-top: 4px;"><em>Midpoint calculation coming soon</em></p>
+
+                <div class="mode-card mode-activities">
+                    <span class="mode-title">Activities</span>
+                    <img src="images/activities.png" alt="Activities" class="mode-image">
+                    <p class="mode-desc">Local fun near the host.</p>
+                    <p class="mode-note">Midpoint calculation coming soon</p>
                 </div>
             </div>
 
-            <div class="divider"></div>
+        <div class="divider"></div>
 
-            <!-- Meet the Team -->
-            <h2 style="text-align:center; margin-bottom: 20px;">Meet the Team</h2>
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <div style="flex:1; min-width:200px; background:#EFF6FF; border:2px solid #06b6d4; border-radius:15px; padding:25px; text-align:center;">
-                    <strong style="font-size: 16px;">Christopher Bogash</strong><br>
-                    <span style="display:inline-block; margin-top:8px; background:#06b6d4; color:white; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px;">FRONTEND</span>
-                    <p style="color:#555; font-size:13px; margin-top:10px; line-height:1.5;">UI/UX Design &amp; Session Flow</p>
-                </div>
-                <div style="flex:1; min-width:200px; background:#FDF4FF; border:2px solid #c026d3; border-radius:15px; padding:25px; text-align:center;">
-                    <strong style="font-size: 16px;">Kevin Aguilar</strong><br>
-                    <span style="display:inline-block; margin-top:8px; background:#c026d3; color:white; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px;">BACKEND</span>
-                    <p style="color:#555; font-size:13px; margin-top:10px; line-height:1.5;">Backend Logic &amp; Database Architecture</p>
-                </div>
+        <!-- Meet the Team -->
+        <h2 style="text-align:center; margin-bottom: 20px;">Meet the Team</h2>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <div
+                style="flex:1; min-width:200px; background:#EFF6FF; border:2px solid #06b6d4; border-radius:15px; padding:25px; text-align:center;">
+                <strong style="font-size: 16px;">Christopher Bogash</strong><br>
+                <span
+                    style="display:inline-block; margin-top:8px; background:#06b6d4; color:white; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px;">FRONTEND</span>
+                <p style="color:#555; font-size:13px; margin-top:10px; line-height:1.5;">UI/UX Design &amp; Session Flow
+                </p>
             </div>
-
+            <div
+                style="flex:1; min-width:200px; background:#FDF4FF; border:2px solid #c026d3; border-radius:15px; padding:25px; text-align:center;">
+                <strong style="font-size: 16px;">Kevin Aguilar</strong><br>
+                <span
+                    style="display:inline-block; margin-top:8px; background:#c026d3; color:white; font-size:11px; font-weight:bold; padding:3px 10px; border-radius:20px;">BACKEND</span>
+                <p style="color:#555; font-size:13px; margin-top:10px; line-height:1.5;">Backend Logic &amp; Database
+                    Architecture</p>
+            </div>
         </div>
+
+    </div>
     </div>
 </body>
+
 </html>
