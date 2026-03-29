@@ -5,7 +5,6 @@ const cors = require('cors');
 
 // Import Routes
 const authRoutes = require('./routes/authRoutes.js');
-const activityRoutes = require('./routes/activityRoutes');
 const sessionRoutes = require('./routes/sessionRoutes');
 
 const app = express();
@@ -17,7 +16,6 @@ app.use(express.json());
 
 // Use Routes
 app.use('/api/auth', authRoutes);
-app.use('/api', activityRoutes);
 app.use('/api/session', sessionRoutes);
 
 
