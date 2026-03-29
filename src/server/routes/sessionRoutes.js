@@ -25,8 +25,7 @@ router.get('/:pin/results', getResults);
 
 // --- Data routes (fetch options for voting) ---
 
-// Movies: returns popular movies from TMDB
-// The PIN is in the URL but not used — same movies for everyone (fine for MVP)
+
 // Movies: returns popular movies from TMDB with runtime + certification
 router.get('/:pin/movies', async (req, res) => {
     try {

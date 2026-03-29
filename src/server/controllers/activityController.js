@@ -8,17 +8,6 @@ const addActivity = async (req, res) => {
         // geoData service removed; returning error if used
         return res.status(501).json({ error: "Geocoding service removed." });
 
-        const newActivity = new Activity({
-            name,
-            address: geoData.fullAddress,
-            location: {
-                type: 'Point',
-                coordinates: geoData.coordinates // [longitude, latitude]
-            }
-        });
-        await newActivity.save();
-
-        res.status(201).json({ message: "Activity added!", data: newActivity });
     } catch (error) {
         console.error("Add Activity Error:", error);
         res.status(500).json({ error: "Internal Server Error" });
