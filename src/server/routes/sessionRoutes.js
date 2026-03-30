@@ -25,7 +25,8 @@ router.get('/:pin/results', getResults);
 
 // --- Data routes (fetch options for voting) ---
 
-
+// Movies: returns popular movies from TMDB
+// The PIN is in the URL but not used — same movies for everyone (fine for MVP)
 // Movies: returns popular movies from TMDB with runtime + certification
 router.get('/:pin/movies', async (req, res) => {
     try {
@@ -107,13 +108,15 @@ router.get('/:pin/food', async (req, res) => {
             + '?latitude=' + lat
             + '&longitude=' + lng
             + '&categories=restaurants'
-            + '&sort_by=rating'
-            + '&limit=10';
+            + '&sort_by=review_count'
+            + '&limit=50'
+            + '&radius=24140';
 
         const response = await fetch(url, {
             headers: { 'Authorization': 'Bearer ' + process.env.YELP_API_KEY }
         });
         const data = await response.json();
+        data.businesses = (data.businesses || []).filter(b => b.review_count >= 100 && b.price);
         res.json(data);
     } catch (error) {
         console.error('Yelp food fetch error:', error);

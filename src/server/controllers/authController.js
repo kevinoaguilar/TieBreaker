@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
         await newUser.save();
         res.status(201).json({ message: "User registered successfully!" });
     } catch (err) {
-        console.error("Register Error:", err); // Added for debugging
+        console.error("Register Error:", err); 
         res.status(500).json({ error: "Registration failed. Username/Email may already exist." });
     }
 };
