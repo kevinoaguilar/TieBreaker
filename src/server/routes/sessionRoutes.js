@@ -143,14 +143,27 @@ router.get('/:pin/activities', async (req, res) => {
         const url = 'https://api.yelp.com/v3/businesses/search'
             + '?latitude=' + lat
             + '&longitude=' + lng
-            + '&categories=active,arts,entertainment,amusementparks,bowling,escapegames,golf,hiking,lasertag,minigolf'
-            + '&sort_by=rating'
-            + '&limit=10';
+            + '&categories=bowling,escapegames,golf,minigolf,lasertag,amusementparks,arcades,trampolineparks,gokarts,axethrowing,rockclimbing,skatingrinks,paintball,zoos,aquariums,waterparks,zipline,billiards,movietheaters,museums'
+            + '&sort_by=review_count'
+            + '&limit=50'
+            + '&radius=8047';
 
         const response = await fetch(url, {
             headers: { 'Authorization': 'Bearer ' + process.env.YELP_API_KEY }
         });
         const data = await response.json();
+        const foodCategories = ['restaurants','food','bars','lounges','thai','mexican','italian','chinese','japanese','korean','vietnamese','indian','american','pizza','burgers','sandwiches','seafood','sushi','breakfast_brunch','coffee','bakeries','delis','desserts','icecream','juicebars','nightlife','cocktailbars','sportsbars','wine_bars','pubs','breweries','karaoke'];
+        let theaterCount = 0;
+        data.businesses = (data.businesses || []).filter(b => {
+            const cats = b.categories.map(c => c.alias);
+            const hasFood = cats.some(c => foodCategories.includes(c));
+            if (hasFood || b.review_count < 50) return false;
+            if (cats.includes('movietheaters')) {
+                theaterCount++;
+                if (theaterCount > 1) return false;
+            }
+            return true;
+        });
         res.json(data);
     } catch (error) {
         console.error('Yelp activities fetch error:', error);
