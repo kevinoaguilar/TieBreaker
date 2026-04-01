@@ -10,6 +10,8 @@ const createSession = async (req, res) => {
 
         const pin = Math.floor(1000 + Math.random() * 9000).toString();
         const moviePage = Math.floor(Math.random() * 10) + 1;
+        const foodOffset = Math.floor(Math.random() * 150);
+        const activityOffset = Math.floor(Math.random() * 20);
 
         const session = new Session({
             pin,
@@ -18,7 +20,9 @@ const createSession = async (req, res) => {
             isActive: false,
             votes: [],
             hostPick: null,
-            moviePage
+            moviePage,
+            foodOffset,
+            activityOffset
         });
 
         await session.save();
@@ -44,8 +48,7 @@ const getSession = async (req, res) => {
             success: true,
             users: session.users,
             category: session.category,
-            isActive: session.isActive,
-            status: session.status
+            isActive: session.isActive
         });
 
     } catch (error) {
@@ -90,7 +93,7 @@ const joinSession = async (req, res) => {
 const startSession = async (req, res) => {
     try {
         const { pin } = req.params;
-        const { lat, lng } = req.body || {}; // Extract host geolocation
+        const { lat, lng } = req.body; // Extract host geolocation
         const session = await Session.findOne({ pin });
 
         if (!session) {
@@ -98,7 +101,6 @@ const startSession = async (req, res) => {
         }
 
         session.isActive = true;
-        session.status = 'started';
         if (lat && lng) {
             session.location = { lat, lng };
         }
