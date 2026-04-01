@@ -87,7 +87,7 @@
                 <p id="cardOverview" style="color: #888; font-size: 13px; margin: 0 0 15px 0;"></p>
                 <a id="cardLink" href="#" target="_blank"
                     style="color: var(--primary); font-weight: bold; font-size: 14px; text-decoration: none;">
-                    More Info
+                    🔗 View on TMDB
                 </a>
                 <br><br>
                 <div style="display: flex; gap: 15px;">
@@ -165,7 +165,7 @@
                     return {
                         name: movie.title,
                         genre: genreNames || "Unknown",
-                        score: movie.vote_average.toFixed(1) + " stars",
+                        score: movie.vote_average.toFixed(1) + " ⭐",
                         runtime: movie.runtime ? formatRuntime(movie.runtime) : "N/A",
                         cert: movie.certification || "NR",
                         overview: movie.overview,
