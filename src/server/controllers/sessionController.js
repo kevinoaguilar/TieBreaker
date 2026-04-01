@@ -93,7 +93,7 @@ const joinSession = async (req, res) => {
 const startSession = async (req, res) => {
     try {
         const { pin } = req.params;
-        const { lat, lng } = req.body; // Extract host geolocation
+        const { lat, lng } = req.body || {}; // Extract host geolocation
         const session = await Session.findOne({ pin });
 
         if (!session) {
