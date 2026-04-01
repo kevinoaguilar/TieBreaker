@@ -1,6 +1,27 @@
 const express = require('express');
 const Session = require('../models/Session');
 const router = express.Router();
+
+// Deterministic seeded PRNG so every user in a session sees the same order
+function seededRandom(seed) {
+    let s = 0;
+    for (let i = 0; i < seed.length; i++) {
+        s = ((s << 5) - s + seed.charCodeAt(i)) | 0;
+    }
+    return function () {
+        s = (s * 1664525 + 1013904223) | 0;
+        return ((s >>> 0) / 4294967296);
+    };
+}
+
+function seededShuffle(arr, seed) {
+    const rng = seededRandom(seed);
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
 const {
     createSession,
     joinSession,
@@ -93,9 +114,14 @@ router.get('/:pin/movies', async (req, res) => {
 router.get('/:pin/food', async (req, res) => {
     try {
         let { lat, lng } = req.query;
-        
+        const session = await Session.findOne({ pin: req.params.pin });
+
+        // Return cached results if already fetched for this session
+        if (session && session.foodCache) {
+            return res.json(session.foodCache);
+        }
+
         if (!lat || !lng) {
-            const session = await Session.findOne({ pin: req.params.pin });
             if (session && session.location && session.location.lat && session.location.lng) {
                 lat = session.location.lat;
                 lng = session.location.lng;
@@ -104,19 +130,38 @@ router.get('/:pin/food', async (req, res) => {
             }
         }
 
-        const url = 'https://api.yelp.com/v3/businesses/search'
-            + '?latitude=' + lat
-            + '&longitude=' + lng
-            + '&categories=restaurants'
-            + '&sort_by=review_count'
-            + '&limit=50'
-            + '&radius=24140';
+        const offset = session ? session.foodOffset : 0;
 
-        const response = await fetch(url, {
-            headers: { 'Authorization': 'Bearer ' + process.env.YELP_API_KEY }
-        });
-        const data = await response.json();
-        data.businesses = (data.businesses || []).filter(b => b.review_count >= 100 && b.price);
+        async function fetchFood(off) {
+            const url = 'https://api.yelp.com/v3/businesses/search'
+                + '?latitude=' + lat
+                + '&longitude=' + lng
+                + '&categories=restaurants'
+                + '&sort_by=review_count'
+                + '&limit=50'
+                + '&radius=24140'
+                + '&offset=' + off;
+            const resp = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + process.env.YELP_API_KEY }
+            });
+            const d = await resp.json();
+            d.businesses = (d.businesses || []).filter(b => b.review_count >= 100 && b.price);
+            return d;
+        }
+
+        let data = await fetchFood(offset);
+        // Fallback: if offset returned nothing, retry from 0
+        if (data.businesses.length === 0 && offset > 0) {
+            data = await fetchFood(0);
+        }
+        seededShuffle(data.businesses, req.params.pin + 'food');
+
+        // Cache results so every user in this session gets the same list
+        if (session) {
+            session.foodCache = data;
+            await session.save();
+        }
+
         res.json(data);
     } catch (error) {
         console.error('Yelp food fetch error:', error);
@@ -129,9 +174,14 @@ router.get('/:pin/food', async (req, res) => {
 router.get('/:pin/activities', async (req, res) => {
     try {
         let { lat, lng } = req.query;
-        
+        const session = await Session.findOne({ pin: req.params.pin });
+
+        // Return cached results if already fetched for this session
+        if (session && session.activityCache) {
+            return res.json(session.activityCache);
+        }
+
         if (!lat || !lng) {
-            const session = await Session.findOne({ pin: req.params.pin });
             if (session && session.location && session.location.lat && session.location.lng) {
                 lat = session.location.lat;
                 lng = session.location.lng;
@@ -140,30 +190,49 @@ router.get('/:pin/activities', async (req, res) => {
             }
         }
 
-        const url = 'https://api.yelp.com/v3/businesses/search'
-            + '?latitude=' + lat
-            + '&longitude=' + lng
-            + '&categories=bowling,escapegames,golf,minigolf,lasertag,amusementparks,arcades,trampolineparks,gokarts,axethrowing,rockclimbing,skatingrinks,paintball,zoos,aquariums,waterparks,zipline,billiards,movietheaters,museums'
-            + '&sort_by=review_count'
-            + '&limit=50'
-            + '&radius=8047';
+        const offset = session ? session.activityOffset : 0;
+        const foodCategories = ['restaurants', 'food', 'bars', 'lounges', 'thai', 'mexican', 'italian', 'chinese', 'japanese', 'korean', 'vietnamese', 'indian', 'american', 'pizza', 'burgers', 'sandwiches', 'seafood', 'sushi', 'breakfast_brunch', 'coffee', 'bakeries', 'delis', 'desserts', 'icecream', 'juicebars', 'nightlife', 'cocktailbars', 'sportsbars', 'wine_bars', 'pubs', 'breweries', 'karaoke'];
 
-        const response = await fetch(url, {
-            headers: { 'Authorization': 'Bearer ' + process.env.YELP_API_KEY }
-        });
-        const data = await response.json();
-        const foodCategories = ['restaurants','food','bars','lounges','thai','mexican','italian','chinese','japanese','korean','vietnamese','indian','american','pizza','burgers','sandwiches','seafood','sushi','breakfast_brunch','coffee','bakeries','delis','desserts','icecream','juicebars','nightlife','cocktailbars','sportsbars','wine_bars','pubs','breweries','karaoke'];
-        let theaterCount = 0;
-        data.businesses = (data.businesses || []).filter(b => {
-            const cats = b.categories.map(c => c.alias);
-            const hasFood = cats.some(c => foodCategories.includes(c));
-            if (hasFood || b.review_count < 50) return false;
-            if (cats.includes('movietheaters')) {
-                theaterCount++;
-                if (theaterCount > 1) return false;
-            }
-            return true;
-        });
+        async function fetchActivities(off) {
+            const url = 'https://api.yelp.com/v3/businesses/search'
+                + '?latitude=' + lat
+                + '&longitude=' + lng
+                + '&categories=bowling,escapegames,golf,minigolf,lasertag,amusementparks,arcades,trampolineparks,gokarts,axethrowing,rockclimbing,skatingrinks,paintball,zoos,aquariums,waterparks,zipline,billiards,movietheaters,museums'
+                + '&sort_by=review_count'
+                + '&limit=50'
+                + '&radius=8047'
+                + '&offset=' + off;
+            const resp = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + process.env.YELP_API_KEY }
+            });
+            const d = await resp.json();
+            let theaterCount = 0;
+            d.businesses = (d.businesses || []).filter(b => {
+                const cats = b.categories.map(c => c.alias);
+                const hasFood = cats.some(c => foodCategories.includes(c));
+                if (hasFood || b.review_count < 50) return false;
+                if (cats.includes('movietheaters')) {
+                    theaterCount++;
+                    if (theaterCount > 1) return false;
+                }
+                return true;
+            });
+            return d;
+        }
+
+        let data = await fetchActivities(offset);
+        // Fallback: if offset returned nothing, retry from 0
+        if (data.businesses.length === 0 && offset > 0) {
+            data = await fetchActivities(0);
+        }
+        seededShuffle(data.businesses, req.params.pin + 'activities');
+
+        // Cache results so every user in this session gets the same list
+        if (session) {
+            session.activityCache = data;
+            await session.save();
+        }
+
         res.json(data);
     } catch (error) {
         console.error('Yelp activities fetch error:', error);

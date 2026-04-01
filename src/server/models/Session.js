@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const sessionSchema = new mongoose.Schema({
-    pin:      { type: String, required: true, unique: true },
-    users:    [String],
+    pin: { type: String, required: true, unique: true },
+    users: [String],
     category: { type: String, default: 'food' },
     location: {
         lat: { type: Number, default: null },
@@ -23,6 +23,12 @@ const sessionSchema = new mongoose.Schema({
     }],
 
     moviePage: { type: Number, default: 1 },
+    foodOffset: { type: Number, default: 0 },
+    activityOffset: { type: Number, default: 0 },
+
+    // Cached Yelp results — first user fetch populates these, then everyone gets the same list
+    foodCache: { type: mongoose.Schema.Types.Mixed, default: null },
+    activityCache: { type: mongoose.Schema.Types.Mixed, default: null },
 
     // Set by the host when there are multiple matches/ties — stores the final pick
     hostPick: { type: String, default: null },
