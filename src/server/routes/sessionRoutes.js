@@ -63,6 +63,7 @@ async function fetchAndCacheFood(session, lat, lng) {
 
     seededShuffle(data.businesses, session.pin + 'food');
     session.foodCache = data;
+    session.markModified('foodCache');
     await session.save();
     return data;
 }
@@ -122,6 +123,7 @@ async function fetchAndCacheActivities(session, lat, lng) {
 
     seededShuffle(data.businesses, session.pin + 'activities');
     session.activityCache = data;
+    session.markModified('activityCache');
     await session.save();
     return data;
 }
@@ -143,18 +145,24 @@ router.put('/start/:pin', async (req, res) => {
             return res.status(404).json({ success: false, error: 'Session not found' });
         }
 
-        session.isActive = true;
+        // Save location first (isActive stays false while cache is being built)
         if (lat && lng) {
             session.location = { lat, lng };
+            await session.save();
         }
-        await session.save();
 
-        // Pre-warm Yelp cache before anyone reaches the vote page
+        // Pre-warm cache BEFORE marking the session active.
+        // Users poll getSession every 2s and redirect when they see isActive = true.
+        // By setting isActive only after the cache is ready, every user — regardless
+        // of how many — is guaranteed to hit a populated cache and see the same list.
         if (session.category === 'food' && lat && lng) {
             await fetchAndCacheFood(session, lat, lng);
         } else if (session.category === 'activities' && lat && lng) {
             await fetchAndCacheActivities(session, lat, lng);
         }
+
+        session.isActive = true;
+        await session.save();
 
         res.json({ success: true, message: 'Session started' });
     } catch (error) {
