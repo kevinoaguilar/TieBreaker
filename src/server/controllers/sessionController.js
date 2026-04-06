@@ -1,4 +1,5 @@
 const Session = require('../models/Session');
+const { seededShuffle } = require('../utils/seededShuffle');
 
 // POST /api/session/create
 const createSession = async (req, res) => {
@@ -104,6 +105,28 @@ const startSession = async (req, res) => {
         if (lat && lng) {
             session.location = { lat, lng };
         }
+
+        // Pre-fetch and cache food/activities so all users see the same list
+        if (session.category === 'food' && lat && lng && !session.foodCache) {
+            try {
+                const foodData = await fetchYelpFood(lat, lng, session.foodOffset);
+                seededShuffle(foodData.businesses, pin + 'food');
+                session.foodCache = foodData;
+            } catch (e) {
+                console.error('Pre-fetch food error:', e);
+            }
+        }
+
+        if (session.category === 'activities' && lat && lng && !session.activityCache) {
+            try {
+                const activityData = await fetchYelpActivities(lat, lng, session.activityOffset);
+                seededShuffle(activityData.businesses, pin + 'activities');
+                session.activityCache = activityData;
+            } catch (e) {
+                console.error('Pre-fetch activities error:', e);
+            }
+        }
+
         await session.save();
 
         res.json({ success: true, message: "Session started" });
@@ -113,6 +136,79 @@ const startSession = async (req, res) => {
         res.status(500).json({ success: false, error: "Server error" });
     }
 };
+
+// --- Yelp fetch helpers (used by startSession to pre-cache) ---
+
+const foodCategories = ['restaurants', 'food', 'bars', 'lounges', 'thai', 'mexican', 'italian', 'chinese', 'japanese', 'korean', 'vietnamese', 'indian', 'american', 'pizza', 'burgers', 'sandwiches', 'seafood', 'sushi', 'breakfast_brunch', 'coffee', 'bakeries', 'delis', 'desserts', 'icecream', 'juicebars', 'nightlife', 'cocktailbars', 'sportsbars', 'wine_bars', 'pubs', 'breweries', 'karaoke'];
+
+async function fetchYelpFood(lat, lng, offset) {
+    async function doFetch(off) {
+        const url = 'https://api.yelp.com/v3/businesses/search'
+            + '?latitude=' + lat
+            + '&longitude=' + lng
+            + '&categories=restaurants'
+            + '&sort_by=review_count'
+            + '&limit=50'
+            + '&radius=24140'
+            + '&offset=' + off;
+        const resp = await fetch(url, {
+            headers: { 'Authorization': 'Bearer ' + process.env.YELP_API_KEY }
+        });
+        const d = await resp.json();
+        d.businesses = (d.businesses || []).filter(b => b.review_count >= 100 && b.price);
+        return d;
+    }
+
+    let data = await doFetch(offset);
+    if (data.businesses.length === 0 && offset > 0) {
+        data = await doFetch(0);
+    }
+    return data;
+}
+
+const ACTIVITY_CATEGORIES = 'bowling,escapegames,golf,minigolf,lasertag,amusementparks,arcades,trampolineparks,gokarts,axethrowing,rockclimbing,skatingrinks,paintball,zoos,aquariums,waterparks,zipline,billiards,movietheaters,museums,hikingtrails,parks,gardens,boating,surfing,skiing,horsebackriding,fitness,yoga,dancestudios,martialarts,swimmingpools,sportsteams,stadiumsarenas,beaches,playgrounds';
+
+async function fetchYelpActivities(lat, lng, offset) {
+    async function doFetch(off, radius, minReviews) {
+        const url = 'https://api.yelp.com/v3/businesses/search'
+            + '?latitude=' + lat
+            + '&longitude=' + lng
+            + '&categories=' + ACTIVITY_CATEGORIES
+            + '&sort_by=review_count'
+            + '&limit=50'
+            + '&radius=' + radius
+            + '&offset=' + off;
+        const resp = await fetch(url, {
+            headers: { 'Authorization': 'Bearer ' + process.env.YELP_API_KEY }
+        });
+        const d = await resp.json();
+        let theaterCount = 0;
+        d.businesses = (d.businesses || []).filter(b => {
+            const cats = b.categories.map(c => c.alias);
+            const hasFood = cats.some(c => foodCategories.includes(c));
+            if (hasFood || b.review_count < minReviews) return false;
+            if (cats.includes('movietheaters')) {
+                theaterCount++;
+                if (theaterCount > 1) return false;
+            }
+            return true;
+        });
+        return d;
+    }
+
+    // Try with offset first, then fallback to offset 0, then widen radius, then drop review filter
+    let data = await doFetch(offset, 16093, 20);
+    if (data.businesses.length < 10 && offset > 0) {
+        data = await doFetch(0, 16093, 20);
+    }
+    if (data.businesses.length < 10) {
+        data = await doFetch(0, 40000, 10);
+    }
+    if (data.businesses.length < 10) {
+        data = await doFetch(0, 40000, 0);
+    }
+    return data;
+}
 
 // POST /api/session/:pin/vote
 const submitVote = async (req, res) => {
