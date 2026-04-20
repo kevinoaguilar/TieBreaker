@@ -101,8 +101,8 @@
             try {
                 // Fetch results and session simultaneously
                 const [resultsResp, sessionResp] = await Promise.all([
-                    fetch(`http://localhost:3000/api/session/${sessionPin}/results`),
-                    fetch(`http://localhost:3000/api/session/${sessionPin}`)
+                    fetch(`https://tiebreaker.onrender.com/api/session/${sessionPin}/results`),
+                    fetch(`https://tiebreaker.onrender.com/api/session/${sessionPin}`)
                 ]);
                 const data        = await resultsResp.json();
                 const sessionData = await sessionResp.json();
@@ -192,7 +192,7 @@
             const pick = items[Math.floor(Math.random() * items.length)];
 
             try {
-                await fetch(`http://localhost:3000/api/session/${sessionPin}/pick`, {
+                await fetch(`https://tiebreaker.onrender.com/api/session/${sessionPin}/pick`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pick })
@@ -210,7 +210,7 @@
         function startPollingForHostPick() {
             pollInterval = setInterval(async () => {
                 try {
-                    const response = await fetch(`http://localhost:3000/api/session/${sessionPin}/results`);
+                    const response = await fetch(`https://tiebreaker.onrender.com/api/session/${sessionPin}/results`);
                     const data = await response.json();
                     if (data.hostPick) {
                         clearInterval(pollInterval);

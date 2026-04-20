@@ -24,7 +24,7 @@
     function leaveSession() {
         if (window.isInternalNavigation) return;
         
-        const url = `http://localhost:3000/api/session/${pin}/leave`;
+        const url = `https://tiebreaker.onrender.com/api/session/${pin}/leave`;
         const data = JSON.stringify({ username });
         
         fetch(url, {
@@ -43,7 +43,7 @@
         if (window.isInternalNavigation) return;
         window.isInternalNavigation = true; // Prevents double firing on unload
         
-        fetch(`http://localhost:3000/api/session/${pin}/leave`, {
+        fetch(`https://tiebreaker.onrender.com/api/session/${pin}/leave`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username })
