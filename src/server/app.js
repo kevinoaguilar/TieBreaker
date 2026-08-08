@@ -9,6 +9,9 @@ const sessionRoutes = require('./routes/sessionRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../client')));
+console.log('static root:', path.join(__dirname, '../client'));
 
 // Middleware
 app.use(cors());
@@ -17,7 +20,6 @@ app.use(express.json());
 // Use Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/session', sessionRoutes);
-
 
 // --- DATABASE CONNECTION ---
 mongoose.connect(process.env.MONGO_URI)
