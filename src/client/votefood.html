@@ -120,7 +120,7 @@
             }
 
             try {
-                const response = await fetch(`https://tiebreaker.onrender.com/api/session/${sessionPin}/food`);
+                const response = await fetch(`/api/session/${sessionPin}/food`);
                 if (!response.ok) throw new Error("Could not fetch restaurants from Yelp");
                 
                 const data = await response.json();
@@ -188,7 +188,7 @@
             }
 
             try {
-                await fetch('https://tiebreaker.onrender.com/api/session/' + sessionPin + '/vote', {
+                await fetch('/api/session/' + sessionPin + '/vote', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: username, picks: yesVotes })
@@ -211,7 +211,7 @@
                     return;
                 }
                 try {
-                    var response = await fetch('https://tiebreaker.onrender.com/api/session/' + sessionPin + '/results');
+                    var response = await fetch('/api/session/' + sessionPin + '/results');
                     var data = await response.json();
                     if (data.ready) {
                         clearInterval(interval);

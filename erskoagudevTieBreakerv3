@@ -1,0 +1,26 @@
+[35msrc/client/dashboard.html[m[36m:[m[32m198[m[36m:[m                const response = await fetch('https://tiebreaker.[1;31monrender.com[m/api/session/create', {
+[35msrc/client/hostactivities.html[m[36m:[m[32m80[m[36m:[m                const response = await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${currentPin}`);
+[35msrc/client/hostactivities.html[m[36m:[m[32m128[m[36m:[m                    const response = await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/start/${currentPin}`, {
+[35msrc/client/hostfood.html[m[36m:[m[32m80[m[36m:[m                const response = await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${currentPin}`);
+[35msrc/client/hostfood.html[m[36m:[m[32m128[m[36m:[m                    const response = await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/start/${currentPin}`, {
+[35msrc/client/hostmovies.html[m[36m:[m[32m80[m[36m:[m                const response = await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${currentPin}`);
+[35msrc/client/hostmovies.html[m[36m:[m[32m123[m[36m:[m                const response = await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/start/${currentPin}`, {
+[35msrc/client/joinsession.html[m[36m:[m[32m81[m[36m:[m                const joinResp = await fetch('https://tiebreaker.[1;31monrender.com[m/api/session/join', {
+[35msrc/client/joinsession.html[m[36m:[m[32m109[m[36m:[m                    const response = await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${pin}`);
+[35msrc/client/leave-handler.js[m[36m:[m[32m27[m[36m:[m        const url = `https://tiebreaker.[1;31monrender.com[m/api/session/${pin}/leave`;
+[35msrc/client/leave-handler.js[m[36m:[m[32m46[m[36m:[m        fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${pin}/leave`, {
+[35msrc/client/login.html[m[36m:[m[32m67[m[36m:[m                const response = await fetch('https://tiebreaker.[1;31monrender.com[m/api/auth/login', {
+[35msrc/client/register.html[m[36m:[m[32m79[m[36m:[m                const response = await fetch('https://tiebreaker.[1;31monrender.com[m/api/auth/register', {
+[35msrc/client/results.html[m[36m:[m[32m104[m[36m:[m                    fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${sessionPin}/results`),
+[35msrc/client/results.html[m[36m:[m[32m105[m[36m:[m                    fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${sessionPin}`)
+[35msrc/client/results.html[m[36m:[m[32m195[m[36m:[m                await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${sessionPin}/pick`, {
+[35msrc/client/results.html[m[36m:[m[32m213[m[36m:[m                    const response = await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${sessionPin}/results`);
+[35msrc/client/voteactivities.html[m[36m:[m[32m123[m[36m:[m                const response = await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${sessionPin}/activities`);
+[35msrc/client/voteactivities.html[m[36m:[m[32m191[m[36m:[m                await fetch('https://tiebreaker.[1;31monrender.com[m/api/session/' + sessionPin + '/vote', {
+[35msrc/client/voteactivities.html[m[36m:[m[32m214[m[36m:[m                    var response = await fetch('https://tiebreaker.[1;31monrender.com[m/api/session/' + sessionPin + '/results');
+[35msrc/client/votefood.html[m[36m:[m[32m123[m[36m:[m                const response = await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${sessionPin}/food`);
+[35msrc/client/votefood.html[m[36m:[m[32m191[m[36m:[m                await fetch('https://tiebreaker.[1;31monrender.com[m/api/session/' + sessionPin + '/vote', {
+[35msrc/client/votefood.html[m[36m:[m[32m214[m[36m:[m                    var response = await fetch('https://tiebreaker.[1;31monrender.com[m/api/session/' + sessionPin + '/results');
+[35msrc/client/votemovies.html[m[36m:[m[32m146[m[36m:[m                var url = 'https://tiebreaker.[1;31monrender.com[m/api/session/' + sessionPin + '/movies';
+[35msrc/client/votemovies.html[m[36m:[m[32m229[m[36m:[m                await fetch(`https://tiebreaker.[1;31monrender.com[m/api/session/${sessionPin}/vote`, {
+[35msrc/client/votemovies.html[m[36m:[m[32m246[m[36m:[m                    var response = await fetch('https://tiebreaker.[1;31monrender.com[m/api/session/' + sessionPin + '/results');

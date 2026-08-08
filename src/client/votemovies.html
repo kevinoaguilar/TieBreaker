@@ -143,7 +143,7 @@
                 return;
             }
             try {
-                var url = 'https://tiebreaker.onrender.com/api/session/' + sessionPin + '/movies';
+                var url = '/api/session/' + sessionPin + '/movies';
                 console.log("Fetching from:", url);
                 var response = await fetch(url);
                 console.log("Server response status:", response.status);
@@ -226,7 +226,7 @@
 
             // Submit votes to backend
             try {
-                await fetch(`https://tiebreaker.onrender.com/api/session/${sessionPin}/vote`, {
+                await fetch(`/api/session/${sessionPin}/vote`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: username, picks: yesVotes })
@@ -243,7 +243,7 @@
             var statusEl = document.getElementById('pollStatus');
             var interval = setInterval(async function () {
                 try {
-                    var response = await fetch('https://tiebreaker.onrender.com/api/session/' + sessionPin + '/results');
+                    var response = await fetch('/api/session/' + sessionPin + '/results');
                     var data = await response.json();
                     if (data.ready) {
                         clearInterval(interval);

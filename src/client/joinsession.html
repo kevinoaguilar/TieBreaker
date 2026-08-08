@@ -78,7 +78,7 @@
             }
             try {
                 // Tell the server we're joining
-                const joinResp = await fetch('https://tiebreaker.onrender.com/api/session/join', {
+                const joinResp = await fetch('/api/session/join', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pin, username })
@@ -106,7 +106,7 @@
         function startPolling() {
             setInterval(async () => {
                 try {
-                    const response = await fetch(`https://tiebreaker.onrender.com/api/session/${pin}`);
+                    const response = await fetch(`/api/session/${pin}`);
                     const data = await response.json();
 
                     if (data.success) {
