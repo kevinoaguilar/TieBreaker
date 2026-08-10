@@ -33,6 +33,7 @@ Hosted on Render's free tier — the first request after a period of inactivity 
 
 ## Try it live
 https://tiebreaker-3xzq.onrender.com/
+
 TieBreaker requires two participants to create a session. To try it solo:
 1. Register your own account
 2. Use the demo account below as your second participant
