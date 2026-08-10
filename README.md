@@ -4,6 +4,8 @@ A group decision-making app for food, movies, and activities. A host creates a s
 
 Built by **Christopher Bogash** and **Kevin Aguilar** as a senior capstone project.
 
+Hosted on Render's free tier — the first request after a period of inactivity takes ~30 seconds while the service wakes up.
+
 ---
 
 ## Tech Stack
@@ -26,6 +28,29 @@ Built by **Christopher Bogash** and **Kevin Aguilar** as a senior capstone proje
 5. Host starts once 2+ people are in
 6. Each person votes yes or no on 10 options
 7. TieBreaker reveals the result once everyone finishes — if it's a tie, the host randomizes a final pick
+
+---
+
+## Try it live
+https://tiebreaker-3xzq.onrender.com/
+
+TieBreaker requires two participants to create a session. To try it solo:
+1. Register your own account
+2. Use the demo account below as your second participant
+
+**Demo account**
+- Username: `TestUser`
+- Password: `TestPassword123`
+
+---
+
+## Design Notes
+
+Consistent ordering across clients. Participants load the option list independently, so a naive random shuffle would show everyone a different order and make vote tallies meaningless. Options are shuffled with a PRNG seeded on the session PIN, producing identical ordering for every client without any coordination between them.
+
+Avoiding the empty-cache race. Clients poll session status every two seconds and redirect once the session goes active. Fetching API results after flipping that flag meant early clients could arrive before the cache was populated and see a different list. The session is now marked active only once the cache is written, so every participant is guaranteed the same populated result set.
+
+Caching to control API cost. Yelp bills per call. Results are cached on the session document rather than refetched per participant, so a ten-person lobby costs the same number of API calls as a one-person lobby.
 
 ---
 
@@ -71,11 +96,11 @@ TieBreaker/
 
 ## Running Locally
 
-**Requirements:** Node.js, MongoDB Atlas account
+**Requirements:** Node.js, a MongoDB Atlas account, and free API keys from TMDB and Yelp Fusion.
 
 ```bash
-git clone https://github.com/your-username/tiebreaker.git
-cd tiebreaker
+git clone https://github.com/kevinoaguilar/tiebreaker.git
+cd TieBreaker
 npm install
 ```
 
@@ -91,7 +116,7 @@ YELP_API_KEY=your_yelp_key
 node src/server/app.js
 ```
 
-Then open `src/client/index.html` in your browser.
+Then open `hhtp://localhost:3000` in your browser. Express serves both the API and the frontend from a single origin, so there's no separate dev server to run.
 
 > In MongoDB Atlas, set Network Access to `0.0.0.0/0` to allow connections from your machine.
 
@@ -126,3 +151,9 @@ Then open `src/client/index.html` in your browser.
 - Mobile app
 - User profiles
 - Subcategories (cuisine type, genre, price range, etc.)
+
+---
+
+## Attribution
+
+Movie data provided by TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB. Business data provided by Yelp.
