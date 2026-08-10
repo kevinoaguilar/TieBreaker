@@ -31,6 +31,18 @@ Hosted on Render's free tier — the first request after a period of inactivity 
 
 ---
 
+## Try it live
+https://tiebreaker-3xzq.onrender.com/
+TieBreaker requires two participants to create a session. To try it solo:
+1. Register your own account
+2. Use the demo account below as your second participant
+
+**Demo account**
+- Username: `TestUser`
+- Password: `TestPassword123`
+
+---
+
 ## Design Notes
 
 Consistent ordering across clients. Participants load the option list independently, so a naive random shuffle would show everyone a different order and make vote tallies meaningless. Options are shuffled with a PRNG seeded on the session PIN, producing identical ordering for every client without any coordination between them.
